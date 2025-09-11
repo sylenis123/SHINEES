@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let i = 1; i <= chapter.total_paginas; i++) {
                 const pageNumber = i.toString().padStart(2, '0');
                 // La URL simple y correcta, asumiendo que no hay espacios en los nombres de las carpetas
-                const imageUrl = `${BASE_CONTENT_URL}${chapter.path}/${pageNumber}.${chapter.formato_paginas}`;
+                const imageUrl = `${BASE_CONTENT_URL}${chapter.path}/${pageNumber}.${chapter.formato}`;
                 const img = document.createElement('img');
                 img.src = imageUrl;
                 readerContent.appendChild(img);
