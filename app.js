@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 2. CONFIGURACIÓN Y VARIABLES ---
 const GITHUB_USER = 'sylenis123';
 const GITHUB_REPO = 'SHINEES';
-const BASE_CONTENT_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/contenido/`;
+const BASE_CONTENT_URL = `https://github.com/${GITHUB_USER}/${GITHUB_REPO}/blob/main/contenido/`;
 let seriesData = [];
     
 
@@ -39,7 +39,7 @@ let seriesData = [];
         if (chapter.path && chapter.total_paginas > 0) {
             for (let i = 1; i <= chapter.total_paginas; i++) {
                 const pageNumber = i.toString().padStart(2, '0');
-                const imageUrl = `${BASE_CONTENT_URL}${chapter.path}/${pageNumber}.${chapter.formato_paginas}`;
+                const imageUrl = `${BASE_CONTENT_URL}${encodedPath}/${pageNumber}.${chapter.formato_paginas}?raw=true`;
                 const img = document.createElement('img');
                 img.src = imageUrl;
                 readerContent.appendChild(img);
