@@ -14,10 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeToggleButton = document.getElementById('theme-toggle');
 
     // --- 2. CONFIGURACIÓN Y VARIABLES ---
-    const GITHUB_USER = 'sylenis123';
-    const GITHUB_REPO = 'SHINEES';
-    const BASE_CONTENT_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/contenido/`;
-    let seriesData = [];
+const GITHUB_USER = 'sylenis123';
+const GITHUB_REPO = 'SHINEES';
+const BASE_CONTENT_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/contenido/`;
+let seriesData = [];
+    
 
     // --- 3. FUNCIONES PRINCIPALES (sin cambios en su lógica interna ) ---
 
