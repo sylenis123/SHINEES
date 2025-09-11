@@ -4,7 +4,7 @@
       "id": "carino-huelga",
       "titulo": "Cariño, me voy de huelga",
       "descripcion": "Descripción detallada de 'Cariño, me voy de huelga'.",
-      "portada": "https://raw.githubusercontent.com/sylenis123/SHINEES/main/images/portada_01.jpg",
+      "portada": "https://i.imgur.com/jMWrnPj.jpeg",
       "categoria": "#1 en Romance",
       "destacado": true,
       "capitulos": []
@@ -13,7 +13,7 @@
       "id": "elimina-exmarido",
       "titulo": "Elimina a tu exmarido",
       "descripcion": "Descripción detallada de 'Elimina a tu exmarido'.",
-      "portada": "https://raw.githubusercontent.com/sylenis123/SHINEES/main/images/portada_02.jpg",
+      "portada": "https://i.imgur.com/1zq72ZT.jpeg",
       "categoria": "#1 en Fantasía",
       "destacado": true,
       "capitulos": []
@@ -22,7 +22,7 @@
       "id": "lillien-turin",
       "titulo": "Lillien de Turín",
       "descripcion": "Descripción detallada de 'Lillien de Turín'.",
-      "portada": "https://raw.githubusercontent.com/sylenis123/SHINEES/main/images/portada_03.jpg",
+      "portada": "https://i.imgur.com/EJ0lYEI.jpeg",
       "categoria": "Drama",
       "destacado": true,
       "capitulos": []
@@ -31,13 +31,13 @@
       "id": "aisha",
       "titulo": "Aisha",
       "descripcion": "Descripción detallada de la serie 'Aisha'.",
-      "portada": "https://raw.githubusercontent.com/sylenis123/SHINEES/main/images/portada_04.jpg",
+      "portada": "https://i.imgur.com/qrsqST8.png",
       "categoria": "Fantasia",
       "destacado": false,
       "capitulos": [
         {
           "numero": 1,
-          "titulo_cap": "Capítulo 1: El Comienzo",
+          "titulo_cap": "Capítulo 1",
           "tipo": "vertical-reader",
           "path": "Aisha/cap 1",
           "total_paginas": 55,
@@ -49,7 +49,7 @@
       "id": "alerta-adolescente",
       "titulo": "Alerta Adolescente",
       "descripcion": "Descripción detallada de 'Alerta Adolescente'.",
-      "portada": "https://raw.githubusercontent.com/sylenis123/SHINEES/main/images/portada_05.jpg",
+      "portada": "https://i.imgur.com/NV7Wahw.jpeg",
       "categoria": "Romance",
       "destacado": false,
       "capitulos": []
@@ -58,7 +58,7 @@
       "id": "torcer-cuello",
       "titulo": "Torceré el cuello de ese bastardo",
       "descripcion": "Descripción detallada de 'Torceré el cuello de ese bastardo'.",
-      "portada": "https://raw.githubusercontent.com/sylenis123/SHINEES/main/images/portada_06.jpg",
+      "portada": "https://i.imgur.com/QE1d1vT.jpeg",
       "categoria": "Venganza",
       "destacado": false,
       "capitulos": []
@@ -67,7 +67,7 @@
       "id": "quisiera-enganarte",
       "titulo": "Quisiera poder engañarte",
       "descripcion": "Descripción detallada de 'Quisiera poder engañarte'.",
-      "portada": "https://raw.githubusercontent.com/sylenis123/SHINEES/main/images/portada_07.jpg",
+      "portada": "https://i.imgur.com/WJQtrlw.jpeg",
       "categoria": "Drama",
       "destacado": false,
       "capitulos": []
