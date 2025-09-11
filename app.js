@@ -1,4 +1,4 @@
-// Espera a que todo el contenido del DOM (la estructura HTML) esté cargado
+// Espera a que todo el contenido del DOM esté cargado
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- 1. OBTENER REFERENCIAS A ELEMENTOS DEL HTML ---
@@ -6,88 +6,122 @@ document.addEventListener('DOMContentLoaded', () => {
     const popularSeriesGrid = document.getElementById('popular-series');
     const loader = document.getElementById('loader');
     const appContent = document.getElementById('app-content');
+    const modal = document.getElementById('viewer-modal');
+    const modalContent = document.getElementById('viewer-content');
+    const closeModalButton = document.querySelector('.close-button');
+
+    let seriesData = []; // Variable para guardar los datos de las series
 
     // --- 2. FUNCIÓN PARA CREAR LA TARJETA DE UNA SERIE ---
-    // Esta función crea el HTML para una tarjeta de serie individual.
-    // Así no repetimos código.
     function createSeriesCard(serie) {
-        // Creamos un elemento 'a' (enlace) que será la tarjeta
         const card = document.createElement('a');
-        card.href = `#serie/${serie.id}`; // Enlace único para cada serie
+        // Usamos data-id para identificar la serie al hacer clic
+        card.dataset.id = serie.id; 
         card.className = 'series-card';
+        card.href = '#'; // Evitamos que la página recargue
 
-        // Creamos la imagen de portada
-        const img = document.createElement('img');
-        img.src = serie.portada;
-        img.alt = serie.titulo;
+        card.innerHTML = `
+            <img src="${serie.portada}" alt="${serie.titulo}">
+            <div class="series-card-info">
+                <h3>${serie.titulo}</h3>
+                <p>${serie.categoria}</p>
+            </div>
+        `;
 
-        // Creamos el contenedor para la información (título y categoría)
-        const info = document.createElement('div');
-        info.className = 'series-card-info';
+        // AÑADIMOS EL EVENTO DE CLIC PARA MOSTRAR CAPÍTULOS
+        card.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevenimos la navegación
+            showChapterList(serie.id);
+        });
 
-        // Creamos el título
-        const title = document.createElement('h3');
-        title.textContent = serie.titulo;
-
-        // Creamos el párrafo para la categoría
-        const category = document.createElement('p');
-        category.textContent = serie.categoria;
-
-        // Juntamos todo:
-        info.appendChild(title);
-        info.appendChild(category);
-        card.appendChild(img);
-        card.appendChild(info);
-
-        // Devolvemos la tarjeta completa
         return card;
     }
 
-    // --- 3. FUNCIÓN PRINCIPAL PARA CARGAR Y MOSTRAR EL CONTENIDO ---
+    // --- 3. FUNCIÓN PARA MOSTRAR LA LISTA DE CAPÍTULOS EN EL MODAL ---
+    function showChapterList(serieId) {
+        const serie = seriesData.find(s => s.id === serieId);
+        if (!serie) return;
+
+        modalContent.innerHTML = `<h2>${serie.titulo}</h2><hr>`;
+        
+        const chapterList = document.createElement('ul');
+        chapterList.className = 'chapter-list';
+
+        if (serie.capitulos.length > 0) {
+            serie.capitulos.forEach(cap => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = '#';
+                link.textContent = `${cap.numero}: ${cap.titulo_cap}`;
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openViewer(cap.tipo, cap.url);
+                });
+                listItem.appendChild(link);
+                chapterList.appendChild(listItem);
+            });
+        } else {
+            const noChapters = document.createElement('p');
+            noChapters.textContent = 'Aún no hay capítulos disponibles para esta serie.';
+            chapterList.appendChild(noChapters);
+        }
+
+        modalContent.appendChild(chapterList);
+        modal.style.display = 'block'; // Mostramos el modal
+    }
+
+    // --- 4. FUNCIÓN PARA ABRIR EL VISOR DE PDF O VIDEO ---
+    function openViewer(type, url) {
+        if (type === 'pdf') {
+            // Usamos un iframe para mostrar el PDF directamente
+            modalContent.innerHTML = `<iframe src="${url}" width="100%" height="600px"></iframe>`;
+        } else if (type === 'video') {
+            modalContent.innerHTML = `<video controls autoplay width="100%"><source src="${url}" type="video/mp4">Tu navegador no soporta videos.</video>`;
+        }
+    }
+
+    // --- 5. FUNCIÓN PRINCIPAL PARA CARGAR EL CONTENIDO ---
     async function loadContent() {
         try {
-            // Hacemos una petición para obtener el archivo database.json
             const response = await fetch('database.json');
-            // Si la petición falla (ej: archivo no encontrado), lanzamos un error
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            // Convertimos la respuesta a formato JSON
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
+            seriesData = data.series; // Guardamos los datos
 
-            // Limpiamos los contenedores por si acaso
             featuredCarousel.innerHTML = '';
             popularSeriesGrid.innerHTML = '';
 
-            // Recorremos cada serie en nuestra base de datos
-            data.series.forEach(serie => {
+            seriesData.forEach(serie => {
                 const card = createSeriesCard(serie);
-                
-                // Si la serie es 'destacada', la añadimos al carrusel
                 if (serie.destacado) {
                     featuredCarousel.appendChild(card);
                 } else {
-                    // Si no, la añadimos a la parrilla de series populares
                     popularSeriesGrid.appendChild(card);
                 }
             });
 
-            // --- 4. OCULTAR EL LOADER Y MOSTRAR EL CONTENIDO ---
-            // Una vez que todo el contenido ha sido creado...
-            loader.style.display = 'none'; // Ocultamos el loader
-            appContent.style.display = 'block'; // Mostramos el contenido de la app
+            loader.style.display = 'none';
+            appContent.style.display = 'block';
 
         } catch (error) {
-            // Si algo falla (ej: el JSON está mal escrito o no se encuentra),
-            // lo mostramos en la consola para poder depurarlo.
             console.error("No se pudo cargar el contenido:", error);
-            // Podríamos mostrar un mensaje de error al usuario aquí
             loader.innerHTML = '<p>Error al cargar el contenido. Intenta refrescar la página.</p>';
         }
     }
 
-    // --- 5. INICIAR LA CARGA DEL CONTENIDO ---
-    // Llamamos a la función principal para que todo comience.
-    loadContent();
+    // --- 6. EVENTOS PARA CERRAR EL MODAL ---
+    closeModalButton.addEventListener('click', () => {
+        modal.style.display = 'none';
+        modalContent.innerHTML = ''; // Limpiamos el contenido
+    });
 
+    window.addEventListener('click', (event) => {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+            modalContent.innerHTML = ''; // Limpiamos el contenido
+        }
+    });
+
+    // --- 7. INICIAR LA CARGA ---
+    loadContent();
 });
