@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // ... (el resto del código es idéntico, solo cambia la función openVerticalReader)
     const mainView = document.getElementById('main-view');
     const detailView = document.getElementById('series-detail-view');
     const readerView = document.getElementById('vertical-reader');
@@ -32,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const bottomNav = document.querySelector('.bottom-nav');
         readerContent.innerHTML = '';
 
+        // Cargar todas las imágenes del capítulo
         chapter.tiras.forEach(tira => {
             for (let i = 1; i <= tira.paginas; i++) {
                 const pageNumber = i.toString().padStart(2, '0');
@@ -42,27 +42,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // ===== LÓGICA DEL ANUNCIO CORREGIDA (SIN ESTILOS INLINE) =====
-        const endOfChapterMarker = document.createElement('div');
-        endOfChapterMarker.id = 'end-of-chapter'; // Le daremos estilo con CSS
-        readerContent.appendChild(endOfChapterMarker);
+        // ===== NUEVA LÓGICA: EL BOTÓN MANUAL =====
+        // 1. Crear el botón de fin de capítulo
+        const endButton = document.createElement('button');
+        endButton.id = 'show-ad-button';
+        endButton.textContent = 'Finalizar Capítulo y Ver Anuncio';
+        
+        // 2. Añadir el botón al final del contenido
+        readerContent.appendChild(endButton);
 
-        setTimeout(() => {
-            const observer = new IntersectionObserver((entries) => {
-                if (entries[0].isIntersecting) {
-                    adModal.classList.remove('hidden');
-                    observer.disconnect();
-                }
-            }, { threshold: 1.0 });
-            observer.observe(endOfChapterMarker);
-        }, 500);
-        // ===== FIN DE LA CORRECCIÓN =====
+        // 3. Añadir el evento para que al hacer clic, se muestre el modal
+        endButton.addEventListener('click', () => {
+            adModal.classList.remove('hidden');
+        });
+        // ===== FIN DE LA NUEVA LÓGICA =====
 
         bottomNav.classList.add('hidden');
         navigateTo('reader');
     }
 
-    // ... (El resto del código es exactamente el mismo que te pasé antes)
     function buildDetailPage(serie) {
         currentSeriesId = serie.id;
         detailView.innerHTML = `<div class="series-detail-container"><header class="detail-header" style="background-image: url('${serie.portada}')"><button class="back-button">‹</button><div class="detail-info"><div class="detail-info-cover"><img src="${serie.portada}" alt="${serie.titulo}"></div><div class="detail-info-text"><h1>${serie.titulo}</h1><p>${serie.categoria}</p></div></div></header><div class="detail-content"><p class="detail-description">${serie.descripcion}</p><h2>Capítulos</h2><ul class="chapter-list" id="detail-chapter-list"></ul></div></div>`;
