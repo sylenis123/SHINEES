@@ -1,6 +1,10 @@
+/* ==========================================================================
+   SHINEES - ARCHIVO DE ESTILOS PRINCIPAL v2.0
+   ========================================================================== */
+
 /* ===== CONFIGURACIÓN GLOBAL Y VARIABLES DE COLOR ===== */
 :root {
-    /* Tema Oscuro (Default ) */
+    /* TEMA OSCURO (DEFAULT) */
     --color-bg-dark: #121212;
     --color-surface-dark: #1e1e1e;
     --color-primary-dark: #bb86fc;
@@ -9,7 +13,7 @@
     --color-text-secondary-dark: #8e8e8e;
     --color-border-dark: #2c2c2c;
 
-    /* Tema Claro */
+    /* TEMA CLARO */
     --color-bg-light: #f5f5f5;
     --color-surface-light: #ffffff;
     --color-primary-light: #6200ee;
@@ -19,6 +23,7 @@
     --color-border-light: #e0e0e0;
 }
 
+/* Aplicación de Temas */
 html[data-theme='dark'] {
     --bg-color: var(--color-bg-dark);
     --surface-color: var(--color-surface-dark);
@@ -39,231 +44,87 @@ html[data-theme='light'] {
     --border-color: var(--color-border-light);
 }
 
-/* Estilos base y reseteo */
+/* ===== ESTILOS BASE Y RESETEO ===== */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-primary);
     transition: background-color 0.3s, color 0.3s;
 }
+a { text-decoration: none; color: inherit; }
 
-/* ===== LOADER (SIN CAMBIOS) ===== */
+/* ===== LOADER ===== */
 #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-color); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; }
 .spinner { width: 50px; height: 50px; border: 5px solid var(--surface-color); border-top-color: var(--secondary-color); border-radius: 50%; animation: spin 1s linear infinite; }
 #loader p { margin-top: 20px; font-size: 1.5rem; font-weight: bold; color: var(--text-secondary); }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ===== NUEVO HEADER ===== */
-.main-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 1.5rem;
-    background-color: var(--bg-color);
-    border-bottom: 1px solid var(--border-color);
-    position: sticky;
-    top: 0;
-    z-index: 50;
-}
-.main-header h1 { font-size: 1.5rem; color: var(--text-primary); }
+/* ===== HEADER PRINCIPAL ===== */
+.main-header { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1.5rem; background-color: var(--bg-color); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 50; }
+.main-header h1 { font-size: 1.5rem; }
 .theme-button { background: none; border: none; font-size: 1.5rem; cursor: pointer; }
 
-/* ===== ESTRUCTURA PRINCIPAL ===== */
-main { padding: 1rem 0 80px 0; }
-h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--text-primary); padding: 0 1.5rem; }
+/* ===== VISTAS DE PÁGINA (CONTENEDORES PRINCIPALES) ===== */
+.page-view { padding-bottom: 80px; /* Espacio para el nav inferior */ }
+.page-view.hidden { display: none; }
+main h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--text-primary); padding: 0 1.5rem; }
 
-/* ===== CARRUSEL HÉROE MEJORADO PARA PORTADAS VERTICALES ===== */
-.hero-carousel-section { 
-    margin-bottom: 2.5rem; 
-}
-
-.carousel-container {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    gap: 15px;
-    padding: 0 1.5rem 15px 1.5rem;
-}
+/* ===== CARRUSEL HÉROE ===== */
+.hero-carousel-section { margin-bottom: 2.5rem; }
+.carousel-container { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 0 1.5rem 15px 1.5rem; }
 .carousel-container::-webkit-scrollbar { height: 8px; }
 .carousel-container::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
 
-.hero-card {
-    flex: 0 0 85%;
-    max-width: 85%;
-    height: 300px; /* <<< ALTURA AUMENTADA */
-    scroll-snap-align: center;
-    position: relative;
-    border-radius: 12px;
-    overflow: hidden;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+.hero-card { flex: 0 0 85%; max-width: 85%; height: 300px; scroll-snap-align: center; position: relative; border-radius: 12px; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+.hero-card-background { width: 100%; height: 100%; object-fit: cover; filter: blur(20px) brightness(0.5); transform: scale(1.2); position: absolute; z-index: 1; }
+.hero-card-cover { height: 95%; z-index: 2; position: relative; border-radius: 6px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
+.hero-card-info { position: absolute; bottom: 0; left: 0; padding: 1rem; z-index: 3; width: 100%; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent 100%); color: white; }
+.hero-card-info h3 { font-size: 1.3rem; font-weight: 700; }
+.hero-card-info p { font-size: 0.9rem; opacity: 0.9; }
 
-/* ANTES */
-.hero-card-background {
-    /* ...otros estilos... */
-    filter: blur(15px) brightness(0.6);
-    /* ...otros estilos... */
-}
+/* ===== PARRILLA DE SERIES POPULARES (CORREGIDO Y VERIFICADO) ===== */
+.series-section { margin-bottom: 2.5rem; }
+.series-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px 15px; padding: 0 1.5rem; }
 
-/* DESPUÉS */
-.hero-card-background {
-    /* ...otros estilos... */
-    filter: blur(20px) brightness(0.5); /* <-- MÁS BLUR, MÁS OSCURO */
-    /* ...otros estilos... */
-}
+.series-card { display: block; transition: transform 0.2s ease-in-out; }
+.series-card:hover { transform: translateY(-5px); }
 
-}
-
-/* La portada nítida superpuesta */
-.hero-card-cover {
-    height: 95%; /* <<< TAMAÑO AUMENTADO */
-    z-index: 2;
-    position: relative;
-    border-radius: 6px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-}
-
-/* ANTES */
 .series-card img {
     width: 100%;
     height: 220px;
     object-fit: cover;
+    object-position: top;
     display: block;
     border-radius: 8px;
     margin-bottom: 0.5rem;
-}
-
-/* DESPUÉS */
-.series-card img {
-    width: 100%;
-    height: 220px; /* Mantenemos la altura fija */
-    object-fit: cover; /* <-- ESTA ES LA PROPIEDAD CLAVE */
-    object-position: top; /* Enfoca la parte superior de la imagen, bueno para portadas */
-    display: block;
-    border-radius: 8px;
-    margin-bottom: 0.5rem;
-    background-color: var(--surface-color); /* Añade un fondo por si alguna imagen no carga bien */
-}
-
-
-/* ===== NUEVA BARRA DE NAVEGACIÓN ===== */
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 65px;
     background-color: var(--surface-color);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    border-top: 1px solid var(--border-color);
-    z-index: 100;
 }
-.nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--text-secondary); }
+.series-card-info h3 { font-size: 1rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-primary); }
+.series-card-info p { font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px; }
+
+/* ===== PÁGINA DE DETALLES DE SERIE ===== */
+.detail-header { height: 250px; position: relative; background-size: cover; background-position: center; }
+.detail-header::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, var(--bg-color) 5%, rgba(0,0,0,0.6) 70%, var(--bg-color) 100%); }
+.back-button { position: absolute; top: 15px; left: 15px; z-index: 3; background: rgba(0,0,0,0.5); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.detail-info { display: flex; gap: 20px; padding: 0 1.5rem; position: relative; z-index: 2; transform: translateY(150px); }
+.detail-info-cover img { width: 120px; border-radius: 8px; border: 3px solid var(--bg-color); box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+.detail-info-text { padding-top: 50px; }
+.detail-info-text h1 { font-size: 1.8rem; color: var(--text-primary); margin-bottom: 0.5rem; }
+.detail-info-text p { font-size: 0.9rem; color: var(--text-secondary); }
+.detail-content { padding: 170px 1.5rem 1.5rem 1.5rem; }
+.detail-description { margin-bottom: 2rem; line-height: 1.6; }
+.detail-content h2 { padding: 0; }
+
+/* ===== LISTA DE CAPÍTULOS ===== */
+.chapter-list { list-style: none; margin-top: 1rem; }
+.chapter-list li { margin-bottom: 0.5rem; }
+.chapter-list a { display: block; padding: 12px 15px; background-color: var(--surface-color); border: 1px solid var(--border-color); border-radius: 5px; transition: background-color 0.2s; }
+.chapter-list a:hover { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
+
+/* ===== BARRA DE NAVEGACIÓN INFERIOR ===== */
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background-color: var(--surface-color); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border-color); z-index: 100; }
+.nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-secondary); }
 .nav-item.active { color: var(--primary-color); }
 .nav-item svg { width: 28px; height: 28px; fill: currentColor; }
 .nav-item span { font-size: 0.7rem; margin-top: 2px; }
-
-/* ===== MODAL (CON PEQUEÑOS AJUSTES) ===== */
-.modal { display: none; position: fixed; z-index: 200; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px); }
-.modal-content { background-color: var(--surface-color); margin: 15% auto; padding: 25px; border: 1px solid var(--border-color); width: 90%; max-width: 500px; position: relative; border-radius: 12px; }
-.close-button { color: #aaa; position: absolute; top: 15px; right: 20px; font-size: 28px; font-weight: bold; cursor: pointer; }
-.close-button:hover { color: var(--text-primary); }
-.chapter-list { list-style: none; padding: 0; margin-top: 1rem; }
-.chapter-list li { margin-bottom: 0.5rem; }
-.chapter-list a { display: block; padding: 12px 15px; background-color: var(--bg-color); color: var(--text-primary); text-decoration: none; border-radius: 5px; transition: background-color 0.2s; border: 1px solid var(--border-color); }
-.chapter-list a:hover { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
-.modal-content h2 { color: var(--text-primary); }
-.modal-content hr { border: none; border-top: 1px solid var(--border-color); margin: 1rem 0; }
-/* ===== ESTILOS PARA LA PÁGINA DE DETALLES DE SERIE ===== */
-.page-view.hidden {
-    display: none;
-}
-
-.series-detail-container {
-    padding-bottom: 80px; /* Espacio para el nav inferior */
-}
-
-.detail-header {
-    height: 250px;
-    position: relative;
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: flex-end;
-}
-
-.detail-header::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to top, var(--bg-color) 5%, rgba(0,0,0,0.6) 70%, var(--bg-color) 100%);
-}
-
-.detail-info {
-    display: flex;
-    gap: 20px;
-    padding: 0 1.5rem;
-    position: relative;
-    z-index: 2;
-    transform: translateY(40px); /* Mueve la portada hacia arriba */
-}
-
-.detail-info-cover img {
-    width: 120px;
-    height: auto;
-    border-radius: 8px;
-    border: 3px solid var(--bg-color);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-}
-
-.detail-info-text {
-    padding-top: 50px; /* Alinea el texto con la portada */
-}
-
-.detail-info-text h1 {
-    font-size: 1.8rem;
-    color: var(--text-primary);
-    margin-bottom: 0.5rem;
-}
-
-.detail-info-text p {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-}
-
-.detail-content {
-    padding: 60px 1.5rem 1.5rem 1.5rem; /* Padding superior para compensar la portada */
-}
-
-.detail-description {
-    margin-bottom: 2rem;
-    line-height: 1.6;
-}
-
-.back-button {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    z-index: 3;
-    background: rgba(0,0,0,0.5);
-    color: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    font-size: 24px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
