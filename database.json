@@ -28,8 +28,18 @@
       "descripcion": "Una aventura cósmica llena de humor y personajes extravagantes que deben salvar la galaxia por accidente.",
       "categoria": "Comedia",
       "destacado": true,
-      "capitulos": []
-    },
+      // Busca la serie "aisha" y reemplaza sus capítulos con esto:
+"capitulos": [
+  {
+    "numero": 1,
+    "titulo_cap": "Capítulo 1",
+    "tipo": "vertical-reader",
+    "path": "aisha /capitulo-01", //
+    "total_paginas": 55, // 
+    "formato_paginas": "jpg" //
+  }
+]
+
     {
       "id": "alerta-adolescente",
       "titulo": "Alerta Adolescente",
