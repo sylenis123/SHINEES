@@ -233,3 +233,7 @@ h1, h2, h3 { color: var(--text-color); }
     cursor: pointer;
     font-size: 1rem;
 }
+#end-of-chapter {
+    height: 1px;
+    width: 100%;
+}
