@@ -250,3 +250,38 @@ h2 {
 .close-button:focus {
     color: var(--text-primary);
 }
+/* ===== ESTILOS ADICIONALES PARA LISTA DE CAPÍTULOS ===== */
+.chapter-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+}
+
+.chapter-list li {
+    margin-bottom: 0.5rem;
+}
+
+.chapter-list a {
+    display: block;
+    padding: 12px 15px;
+    background-color: var(--surface-color);
+    color: var(--text-primary);
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+
+.chapter-list a:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.modal-content h2 {
+    color: var(--text-primary);
+}
+
+.modal-content hr {
+    border: none;
+    border-top: 1px solid #444;
+    margin: 1rem 0;
+}
