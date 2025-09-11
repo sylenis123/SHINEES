@@ -64,8 +64,6 @@ h1, h2, h3 { color: var(--text-color); }
     padding: 0 15px 15px;
     -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
 }
-.hero-carousel::-webkit-scrollbar { display: none; } /* Ocultar barra de scroll */
-
 .hero-card {
     flex: 0 0 85%;
     scroll-snap-align: center;
