@@ -29,27 +29,29 @@ document.addEventListener('DOMContentLoaded', () => {
     function openVerticalReader(chapter) {
         const readerContent = document.getElementById('reader-content');
         const bottomNav = document.querySelector('.bottom-nav');
-        readerContent.innerHTML = ''; // Limpiar el lector anterior
+        readerContent.innerHTML = ''; // Limpiar el lector
 
-        // ===== ¡¡¡LA PARTE QUE FALTABA!!! =====
-        // Cargar todas las imágenes del capítulo
-        chapter.tiras.forEach(tira => {
-            for (let i = 1; i <= tira.paginas; i++) {
-                const pageNumber = i.toString().padStart(2, '0');
-                const imageUrl = `${BASE_CONTENT_URL}${chapter.path}/${tira.id}_${pageNumber}.${chapter.formato}`;
-                const img = document.createElement('img');
-                img.src = imageUrl;
-                readerContent.appendChild(img);
-            }
-        });
-        // ===== FIN DE LA PARTE QUE FALTABA =====
+        // ===== LÓGICA DE CARGA DE IMÁGENES CORRECTA =====
+        // Verificar si la propiedad 'tiras' existe y es un array
+        if (chapter.tiras && Array.isArray(chapter.tiras)) {
+            // Recorrer cada objeto 'tira' dentro del array
+            chapter.tiras.forEach(tira => {
+                // Recorrer el número de páginas de esa tira
+                for (let i = 1; i <= tira.paginas; i++) {
+                    const pageNumber = i.toString().padStart(2, '0');
+                    const imageUrl = `${BASE_CONTENT_URL}${chapter.path}/${tira.id}_${pageNumber}.${chapter.formato}`;
+                    const img = document.createElement('img');
+                    img.src = imageUrl;
+                    readerContent.appendChild(img);
+                }
+            });
+        }
+        // ===== FIN DE LA LÓGICA CORRECTA =====
 
         // Crear el botón de fin de capítulo
         const endButton = document.createElement('button');
         endButton.id = 'show-ad-button';
-        endButton.textContent = 'Finalizar Capítulo y Ver Anuncio';
-        
-        // Añadir el botón al final del contenido
+        endButton.textContent = 'Finalizar Capítulo';
         readerContent.appendChild(endButton);
 
         // Añadir el evento para que al hacer clic, se muestre el modal
