@@ -40,11 +40,10 @@
           "titulo_cap": "Capítulo 1",
           "tipo": "vertical-reader",
           "path": "Aisha/cap-1",
-          "formato": "jpg",
           "tiras": [
-            { "numero_tira": 1, "partes": 20 },
-            { "numero_tira": 2, "partes": 21 },
-            { "numero_tira": 3, "partes": 14 }
+            { "id": "1", "paginas": 20, "formato": "jpg" },
+            { "id": "2", "paginas": 21, "formato": "jpg" },
+            { "id": "3", "paginas": 14, "formato": "jpg" }
           ]
         }
       ]
