@@ -3,91 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shinees - Tus Manhwas Favoritos</title>
+    <title>Shinees</title>
     <link rel="stylesheet" href="style.css">
-    <meta name="robots" content="noindex, nofollow">
-    <!-- Google Fonts para una mejor tipografía -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
+    <!-- Pantalla de Carga Inicial -->
     <div id="loader">
         <div class="spinner"></div>
         <p>Shinees</p>
     </div>
 
-    <div id="app-content" style="display:none;">
-        <header class="main-header">
-            <div class="header-logo">
-                <!-- Puedes poner un logo SVG aquí si quieres -->
+    <!-- Contenido Principal de la Aplicación (inicialmente oculto ) -->
+    <div id="app-content" style="display: none;">
+        
+        <!-- Vista Principal (Home) -->
+        <main id="main-view" class="page-view">
+            <header class="main-header">
                 <h1>Shinees</h1>
-            </div>
-            <div class="header-actions">
-                <!-- Botón para cambiar tema (lo activaremos con JS después ) -->
-                <button id="theme-toggle" class="theme-button">☀️</button>
-            </div>
-        </header>
-
-        <main>
-            <!-- Sección 1: Carrusel Héroe (antes 'Destacados') -->
-            <section class="hero-carousel-section">
-                <div class="carousel-container" id="featured-carousel">
-                    <!-- El contenido del carrusel se generará con JavaScript -->
-                </div>
+                <button id="theme-toggle">☀️</button>
+            </header>
+            
+            <section id="featured-carousel" class="hero-carousel">
+                <!-- El carrusel se generará con JavaScript -->
             </section>
-
-            <!-- Sección 2: Series Populares y en Tendencia -->
-            <section class="series-section">
+            
+            <section class="series-grid-container">
                 <h2>Series Populares</h2>
-                <div class="series-grid" id="popular-series">
-                    <!-- Las tarjetas de las series se generarán con JavaScript -->
+                <div id="popular-series" class="series-grid">
+                    <!-- Las tarjetas de series se generarán con JavaScript -->
                 </div>
             </section>
         </main>
 
-        <!-- Visor de PDF/Video (Modal) -->
-        <div id="viewer-modal" class="modal">
-            <div class="modal-content">
-                <span class="close-button">&times;</span>
-                <div id="viewer-content">
-                    <!-- Aquí se cargará el contenido dinámico -->
-                </div>
-            </div>
-        </div>
-
-        <!-- BARRA DE NAVEGACIÓN INFERIOR CON ICONOS SVG -->
-        <nav class="bottom-nav">
-            <a href="#" class="nav-item active">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"/></svg>
-                <span>Inicio</span>
-            </a>
-            <a href="#" class="nav-item">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
-                <span>Series</span>
-            </a>
-            <a href="#" class="nav-item">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
-                <span>Originales</span>
-            </a>
-            <a href="#" class="nav-item">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                <span>Yo</span>
-            </a>
-        </nav>
-    </div>
-    
-    <script src="app.js"></script>
-</body>
-</html>
-<main id="main-view">
-       <main id="main-view">
-
-        <!-- ===== NUEVA VISTA DE DETALLES DE SERIE (INICIALMENTE OCULTA) ===== -->
+        <!-- Vista de Detalles de Serie (inicialmente oculta) -->
         <div id="series-detail-view" class="page-view hidden">
             <!-- El contenido de esta vista se generará con JavaScript -->
         </div>
 
-        <!-- Visor de PDF/Video (Modal) -->
+        <!-- Lector Vertical (inicialmente oculto) -->
+        <div id="vertical-reader" class="page-view hidden">
+            <header class="reader-header">
+                <button class="reader-close-button">X</button>
+            </header>
+            <div id="reader-content">
+                <!-- Las imágenes del capítulo se generarán con JavaScript -->
+            </div>
+        </div>
 
+        <!-- Barra de Navegación Inferior -->
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active">
+                <svg><!-- Icono SVG para Inicio --></svg>
+                <span>Inicio</span>
+            </a>
+            <a href="#" class="nav-item">
+                <svg><!-- Icono SVG para Series --></svg>
+                <span>Series</span>
+            </a>
+            <a href="#" class="nav-item">
+                <svg><!-- Icono SVG para Originales --></svg>
+                <span>Originales</span>
+            </a>
+            <a href="#" class="nav-item">
+                <svg><!-- Icono SVG para Yo --></svg>
+                <span>Yo</span>
+            </a>
+        </nav>
+
+    </div> <!-- Fin de app-content -->
+
+    <!-- EL SCRIPT VA AQUÍ: AL FINAL DEL BODY, ANTES DE CERRARLO -->
+    <script src="app.js"></script>
+
+</body>
+</html>
