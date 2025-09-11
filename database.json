@@ -1,80 +1,74 @@
 {
   "series": [
     {
-      "id": "Cariño-me-voy-de-huelga",
+      "id": "carino-huelga",
       "titulo": "Cariño, me voy de huelga",
-      "portada": "https://i.imgur.com/jMWrnPj.jpeg",
-      "descripcion": "Un romance inesperado florece en las sombras, pero un secreto oscuro amenaza con separarlos.",
+      "descripcion": "Descripción detallada de 'Cariño, me voy de huelga'.",
+      "portada": "https://raw.githubusercontent.com/sylenis123/SHINEES/main/images/portada_01.jpg",
       "categoria": "#1 en Romance",
       "destacado": true,
-      "capitulos": [
-        { "numero": 1, "titulo_cap": "Capítulo 1: El Encuentro", "tipo": "pdf", "url": "#" },
-        { "numero": 2, "titulo_cap": "Capítulo 2: La Sospecha", "tipo": "video", "url": "#" }
-      ]
+      "capitulos": []
     },
     {
-      "id": "Elimina-a-tu-marido",
-      "titulo": "Elimina a tu marido",
-      "portada": "https://i.imgur.com/1zq72ZT.jpeg",
-      "descripcion": "Tras ser traicionada, la emperatriz Navier busca rehacer su vida y reclamar su poder, incluso si eso significa casarse con el emperador del reino vecino.",
+      "id": "elimina-exmarido",
+      "titulo": "Elimina a tu exmarido",
+      "descripcion": "Descripción detallada de 'Elimina a tu exmarido'.",
+      "portada": "https://raw.githubusercontent.com/sylenis123/SHINEES/main/images/portada_02.jpg",
       "categoria": "#1 en Fantasía",
+      "destacado": true,
+      "capitulos": []
+    },
+    {
+      "id": "lillien-turin",
+      "titulo": "Lillien de Turín",
+      "descripcion": "Descripción detallada de 'Lillien de Turín'.",
+      "portada": "https://raw.githubusercontent.com/sylenis123/SHINEES/main/images/portada_03.jpg",
+      "categoria": "Drama",
       "destacado": true,
       "capitulos": []
     },
     {
       "id": "aisha",
       "titulo": "Aisha",
-      "portada": "https://i.imgur.com/qrsqST8.png",
-      "descripcion": "Una aventura cósmica llena de humor y personajes extravagantes que deben salvar la galaxia por accidente.",
-      "categoria": "Comedia",
-      "destacado": true,
-      // Busca la serie "aisha" y reemplaza sus capítulos con esto:
-"capitulos": [
-  {
-    "numero": 1,
-    "titulo_cap": "Capítulo 1",
-    "tipo": "vertical-reader",
-    "path": "aisha /capitulo-01", //
-    "total_paginas": 55, // 
-    "formato_paginas": "jpg" //
-  }
-]
-
-    {
-      "id": "alerta-adolescente",
-      "titulo": "Alerta Adolescente",
-      "portada": "https://i.imgur.com/NV7Wahw.jpeg",
-      "descripcion": "Solo él conoce el final del mundo. Cuando la novela que leía se vuelve realidad, Kim Dokja debe usar su conocimiento para sobrevivir.",
-      "categoria": "Tendencias",
+      "descripcion": "Descripción detallada de la serie 'Aisha'.",
+      "portada": "https://raw.githubusercontent.com/sylenis123/SHINEES/main/images/portada_04.jpg",
+      "categoria": "Fantasia",
       "destacado": false,
       "capitulos": [
-        { "numero": 1, "titulo_cap": "Prólogo", "tipo": "pdf", "url": "#" }
+        {
+          "numero": 1,
+          "titulo_cap": "Capítulo 1: El Comienzo",
+          "tipo": "vertical-reader",
+          "path": "Aisha/cap 1",
+          "total_paginas": 100,
+          "formato_paginas": "jpg"
+        }
       ]
     },
     {
-      "id": "Quisiera-poder-engañarte",
-      "titulo": "Quisiera poder engañarte",
-      "portada": "https://i.imgur.com/WJQtrlw.jpeg",
-      "descripcion": "Su-ae intenta sobrevivir en un mundo de intrigas amorosas con la ayuda de un misterioso aliado.",
+      "id": "alerta-adolescente",
+      "titulo": "Alerta Adolescente",
+      "descripcion": "Descripción detallada de 'Alerta Adolescente'.",
+      "portada": "https://raw.githubusercontent.com/sylenis123/SHINEES/main/images/portada_05.jpg",
       "categoria": "Romance",
       "destacado": false,
       "capitulos": []
     },
     {
-      "id": "Lillien-de-turín",
-      "titulo": "Lillien de Turín",
-      "portada": "https://i.imgur.com/EJ0lYEI.jpeg",
-      "descripcion": "Un drama histórico sobre el amor, la pérdida y la redención en un reino convulso.",
-      "categoria": "Drama",
+      "id": "torcer-cuello",
+      "titulo": "Torceré el cuello de ese bastardo",
+      "descripcion": "Descripción detallada de 'Torceré el cuello de ese bastardo'.",
+      "portada": "https://raw.githubusercontent.com/sylenis123/SHINEES/main/images/portada_06.jpg",
+      "categoria": "Venganza",
       "destacado": false,
       "capitulos": []
     },
     {
-      "id": "torcere-el-cuello-de-ese-bastarde",
-      "titulo": "Torcere el cuello de ese bastardo",
-      "portada": "https://i.imgur.com/QE1d1vT.jpeg",
-      "descripcion": "Descubre los secretos de un reino submarino y la magia que se esconde bajo las olas.",
-      "categoria": "Fantasía",
+      "id": "quisiera-enganarte",
+      "titulo": "Quisiera poder engañarte",
+      "descripcion": "Descripción detallada de 'Quisiera poder engañarte'.",
+      "portada": "https://raw.githubusercontent.com/sylenis123/SHINEES/main/images/portada_07.jpg",
+      "categoria": "Drama",
       "destacado": false,
       "capitulos": []
     }
