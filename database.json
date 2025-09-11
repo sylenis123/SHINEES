@@ -1,0 +1,48 @@
+{
+  "series": [
+    {
+      "id": "mordiscos-de-amor",
+      "titulo": "Mordiscos de Amor",
+      "portada": "https://i.imgur.com/portada_mordiscos.jpg",
+      "categoria": "#1 en Romance",
+      "destacado": true,
+      "capitulos": [
+        {
+          "numero": 1,
+          "titulo_cap": "Capítulo 1: El Encuentro",
+          "tipo": "pdf",
+          "url": "https://ruta/a/tu/capitulo1.pdf"
+        },
+        {
+          "numero": 2,
+          "titulo_cap": "Capítulo 2: La Sospecha",
+          "tipo": "video",
+          "url": "https://ruta/a/tu/video_cap2.mp4"
+        }
+      ]
+    },
+    {
+      "id": "lector-omnisciente",
+      "titulo": "Lector Omnisciente",
+      "portada": "https://i.imgur.com/portada_lector.jpg",
+      "categoria": "Tendencias",
+      "destacado": false,
+      "capitulos": [
+        {
+          "numero": 1,
+          "titulo_cap": "Prólogo: Tres maneras de sobrevivir en un mundo en ruinas",
+          "tipo": "pdf",
+          "url": "https://ruta/a/tu/lector_cap1.pdf"
+        }
+      ]
+    },
+    {
+      "id": "la-emperatriz-divorciada",
+      "titulo": "La Emperatriz Divorciada",
+      "portada": "https://i.imgur.com/portada_emperatriz.jpg",
+      "categoria": "#1 en Fantasía",
+      "destacado": true,
+      "capitulos": []
+    }
+  ]
+}
