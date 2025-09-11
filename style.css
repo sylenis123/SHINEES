@@ -103,17 +103,20 @@ h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--text-primary); padding
     align-items: center;
 }
 
-/* El fondo desenfocado */
+/* ANTES */
 .hero-card-background {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    /* ...otros estilos... */
     filter: blur(15px) brightness(0.6);
-    transform: scale(1.2);
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
+    /* ...otros estilos... */
+}
+
+/* DESPUÉS */
+.hero-card-background {
+    /* ...otros estilos... */
+    filter: blur(20px) brightness(0.5); /* <-- MÁS BLUR, MÁS OSCURO */
+    /* ...otros estilos... */
+}
+
 }
 
 /* La portada nítida superpuesta */
@@ -125,18 +128,27 @@ h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--text-primary); padding
     box-shadow: 0 5px 20px rgba(0,0,0,0.5);
 }
 
-/* El texto informativo */
-.hero-card-info { 
-    position: absolute; 
-    bottom: 0; 
-    left: 0; 
-    padding: 1rem; 
-    z-index: 3;
+/* ANTES */
+.series-card img {
     width: 100%;
-    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent 100%);
+    height: 220px;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
 }
-.hero-card-info h3 { font-size: 1.3rem; font-weight: 700; }
-.hero-card-info p { font-size: 0.9rem; opacity: 0.9; }
+
+/* DESPUÉS */
+.series-card img {
+    width: 100%;
+    height: 220px; /* Mantenemos la altura fija */
+    object-fit: cover; /* <-- ESTA ES LA PROPIEDAD CLAVE */
+    object-position: top; /* Enfoca la parte superior de la imagen, bueno para portadas */
+    display: block;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    background-color: var(--surface-color); /* Añade un fondo por si alguna imagen no carga bien */
+}
 
 
 /* ===== NUEVA BARRA DE NAVEGACIÓN ===== */
