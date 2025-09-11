@@ -29,8 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function openVerticalReader(chapter) {
         const readerContent = document.getElementById('reader-content');
         const bottomNav = document.querySelector('.bottom-nav');
-        readerContent.innerHTML = '';
+        readerContent.innerHTML = ''; // Limpiar el lector anterior
 
+        // ===== ¡¡¡LA PARTE QUE FALTABA!!! =====
         // Cargar todas las imágenes del capítulo
         chapter.tiras.forEach(tira => {
             for (let i = 1; i <= tira.paginas; i++) {
@@ -41,21 +42,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 readerContent.appendChild(img);
             }
         });
+        // ===== FIN DE LA PARTE QUE FALTABA =====
 
-        // ===== NUEVA LÓGICA: EL BOTÓN MANUAL =====
-        // 1. Crear el botón de fin de capítulo
+        // Crear el botón de fin de capítulo
         const endButton = document.createElement('button');
         endButton.id = 'show-ad-button';
         endButton.textContent = 'Finalizar Capítulo y Ver Anuncio';
         
-        // 2. Añadir el botón al final del contenido
+        // Añadir el botón al final del contenido
         readerContent.appendChild(endButton);
 
-        // 3. Añadir el evento para que al hacer clic, se muestre el modal
+        // Añadir el evento para que al hacer clic, se muestre el modal
         endButton.addEventListener('click', () => {
             adModal.classList.remove('hidden');
         });
-        // ===== FIN DE LA NUEVA LÓGICA =====
 
         bottomNav.classList.add('hidden');
         navigateTo('reader');
