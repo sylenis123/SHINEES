@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // ... (el resto del código es idéntico, solo cambia la función openVerticalReader)
     const mainView = document.getElementById('main-view');
     const detailView = document.getElementById('series-detail-view');
     const readerView = document.getElementById('vertical-reader');
@@ -14,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const GITHUB_REPO = 'SHINEES';
     const BASE_CONTENT_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/contenido/`;
     let seriesData = [];
-    let currentSeriesId = null; // Variable para recordar en qué serie estamos
+    let currentSeriesId = null;
 
     function navigateTo(view ) {
         mainView.classList.add('hidden');
@@ -41,33 +42,29 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // ===== LÓGICA DEL ANUNCIO CORREGIDA =====
+        // ===== LÓGICA DEL ANUNCIO CORREGIDA (SIN ESTILOS INLINE) =====
         const endOfChapterMarker = document.createElement('div');
-        endOfChapterMarker.id = 'end-of-chapter';
-        endOfChapterMarker.style.height = '1px'; // Lo hacemos muy pequeño
+        endOfChapterMarker.id = 'end-of-chapter'; // Le daremos estilo con CSS
         readerContent.appendChild(endOfChapterMarker);
 
-        // Usamos setTimeout para asegurarnos de que el navegador ha renderizado todo
-        // antes de empezar a observar. ¡ESTA ES LA CLAVE!
         setTimeout(() => {
             const observer = new IntersectionObserver((entries) => {
-                // Solo activar si el marcador ENTRA en la vista, no si ya estaba
                 if (entries[0].isIntersecting) {
                     adModal.classList.remove('hidden');
                     observer.disconnect();
                 }
-            }, { threshold: 1.0 }); // Se activa solo cuando el 100% del marcador es visible
-
+            }, { threshold: 1.0 });
             observer.observe(endOfChapterMarker);
-        }, 500); // Esperamos medio segundo por seguridad
+        }, 500);
         // ===== FIN DE LA CORRECCIÓN =====
 
         bottomNav.classList.add('hidden');
         navigateTo('reader');
     }
 
+    // ... (El resto del código es exactamente el mismo que te pasé antes)
     function buildDetailPage(serie) {
-        currentSeriesId = serie.id; // Guardamos el ID de la serie actual
+        currentSeriesId = serie.id;
         detailView.innerHTML = `<div class="series-detail-container"><header class="detail-header" style="background-image: url('${serie.portada}')"><button class="back-button">‹</button><div class="detail-info"><div class="detail-info-cover"><img src="${serie.portada}" alt="${serie.titulo}"></div><div class="detail-info-text"><h1>${serie.titulo}</h1><p>${serie.categoria}</p></div></div></header><div class="detail-content"><p class="detail-description">${serie.descripcion}</p><h2>Capítulos</h2><ul class="chapter-list" id="detail-chapter-list"></ul></div></div>`;
         const chapterList = detailView.querySelector('#detail-chapter-list');
         if (serie.capitulos && serie.capitulos.length > 0) {
@@ -86,13 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
         detailView.querySelector('.back-button').addEventListener('click', () => navigateTo('main'));
     }
 
-    function showDetailPage(serieId) {
-        const serie = seriesData.find(s => s.id === serieId);
-        if (!serie) return;
-        buildDetailPage(serie);
-        navigateTo('detail');
-    }
-
+    function showDetailPage(serieId) { const serie = seriesData.find(s => s.id === serieId); if (!serie) return; buildDetailPage(serie); navigateTo('detail'); }
     function createSeriesCard(serie, type = 'grid') { const card = document.createElement('a'); card.href = '#'; if (type === 'hero') { card.className = 'hero-card'; card.innerHTML = `<img src="${serie.portada}" class="hero-card-background" alt=""><img src="${serie.portada}" class="hero-card-cover" alt="${serie.titulo}"><div class="hero-card-info"><h3>${serie.titulo}</h3><p>${serie.categoria}</p></div>`; } else { card.className = 'series-card'; card.innerHTML = `<img src="${serie.portada}" alt="${serie.titulo}"><div class="series-card-info"><h3>${serie.titulo}</h3><p>${serie.categoria}</p></div>`; } card.addEventListener('click', (e) => { e.preventDefault(); showDetailPage(serie.id); }); return card; }
     
     async function loadContent() { 
@@ -112,27 +103,17 @@ document.addEventListener('DOMContentLoaded', () => {
         } 
     }
     
-    // Función de cierre para el lector (botón 'X')
     readerView.querySelector('.reader-close-button').addEventListener('click', () => {
         const bottomNav = document.querySelector('.bottom-nav');
         bottomNav.classList.remove('hidden');
-        if (currentSeriesId) {
-            showDetailPage(currentSeriesId); // Volver a la página de detalles correcta
-        } else {
-            navigateTo('main'); // Si algo falla, volver al inicio
-        }
+        if (currentSeriesId) { showDetailPage(currentSeriesId); } else { navigateTo('main'); }
     });
 
-    // Función de cierre para el modal del anuncio
     closeAdModalButton.addEventListener('click', () => {
         adModal.classList.add('hidden');
         const bottomNav = document.querySelector('.bottom-nav');
         bottomNav.classList.remove('hidden');
-        if (currentSeriesId) {
-            showDetailPage(currentSeriesId); // Volver a la página de detalles correcta
-        } else {
-            navigateTo('main'); // Si algo falla, volver al inicio
-        }
+        if (currentSeriesId) { showDetailPage(currentSeriesId); } else { navigateTo('main'); }
     });
 
     themeToggleButton.addEventListener('click', () => { 
