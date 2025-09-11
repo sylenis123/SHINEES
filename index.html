@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shinees - Tus Manhwas Favoritos</title>
+    <!-- En el futuro, aquí enlazaremos el archivo CSS -->
+    <link rel="stylesheet" href="style.css"> 
+    <!-- Para evitar que los motores de búsqueda indexen el sitio -->
+    <meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+
+    <!-- ===== LOADER PERSONALIZADO ===== -->
+    <div id="loader">
+        <div class="spinner"></div>
+        <p>Shinees</p>
+    </div>
+
+    <!-- ===== CONTENIDO PRINCIPAL ===== -->
+    <div id="app-content" style="display:none;">
+        <header class="main-header">
+            <h1>Shinees</h1>
+            <!-- Aquí podríamos agregar un botón para cambiar de tema (claro/oscuro) -->
+        </header>
+
+        <main>
+            <!-- Sección 1: Carrusel de Videos/Series Destacadas -->
+            <section class="carousel-section">
+                <h2>Destacados para ti</h2>
+                <div class="carousel-container" id="featured-carousel">
+                    <!-- El contenido del carrusel se generará con JavaScript -->
+                </div>
+            </section>
+
+            <!-- Sección 2: Series Populares y en Tendencia -->
+            <section class="series-section">
+                <h2>Series Populares</h2>
+                <div class="series-grid" id="popular-series">
+                    <!-- Las tarjetas de las series se generarán con JavaScript -->
+                </div>
+            </section>
+            
+            <!-- Visor de PDF/Video (Modal) -->
+            <div id="viewer-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button">&times;</span>
+                    <div id="viewer-content">
+                        <!-- Aquí se cargará el lector de PDF o el reproductor de video -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- ===== BARRA DE NAVEGACIÓN INFERIOR ===== -->
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active">
+                <svg><!-- Icono SVG para Inicio --></svg>
+                <span>Inicio</span>
+            </a>
+            <a href="#" class="nav-item">
+                <svg><!-- Icono SVG para Series --></svg>
+                <span>Series</span>
+            </a>
+            <!-- El dashboard será un enlace separado y protegido, no público -->
+        </nav>
+    </div>
+
+    <!-- En el futuro, aquí enlazaremos el archivo JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
