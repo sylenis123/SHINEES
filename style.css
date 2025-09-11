@@ -237,3 +237,17 @@ h1, h2, h3 { color: var(--text-color); }
     height: 1px;
     width: 100%;
 }
+#show-ad-button {
+    display: block;
+    width: 80%;
+    max-width: 300px;
+    margin: 40px auto; /* Espacio arriba y abajo, y centrado */
+    padding: 15px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: white;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+}
