@@ -158,3 +158,89 @@ h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--text-primary); padding
 .chapter-list a:hover { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
 .modal-content h2 { color: var(--text-primary); }
 .modal-content hr { border: none; border-top: 1px solid var(--border-color); margin: 1rem 0; }
+/* ===== ESTILOS PARA LA PÁGINA DE DETALLES DE SERIE ===== */
+.page-view.hidden {
+    display: none;
+}
+
+.series-detail-container {
+    padding-bottom: 80px; /* Espacio para el nav inferior */
+}
+
+.detail-header {
+    height: 250px;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+}
+
+.detail-header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, var(--bg-color) 5%, rgba(0,0,0,0.6) 70%, var(--bg-color) 100%);
+}
+
+.detail-info {
+    display: flex;
+    gap: 20px;
+    padding: 0 1.5rem;
+    position: relative;
+    z-index: 2;
+    transform: translateY(40px); /* Mueve la portada hacia arriba */
+}
+
+.detail-info-cover img {
+    width: 120px;
+    height: auto;
+    border-radius: 8px;
+    border: 3px solid var(--bg-color);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+.detail-info-text {
+    padding-top: 50px; /* Alinea el texto con la portada */
+}
+
+.detail-info-text h1 {
+    font-size: 1.8rem;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.detail-info-text p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.detail-content {
+    padding: 60px 1.5rem 1.5rem 1.5rem; /* Padding superior para compensar la portada */
+}
+
+.detail-description {
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.back-button {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 3;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
