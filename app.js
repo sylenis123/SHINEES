@@ -1,97 +1,105 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. OBTENER REFERENCIAS A ELEMENTOS DEL HTML ---
+    // --- 1. OBTENER REFERENCIAS A ELEMENTOS ---
+    const mainView = document.getElementById('main-view');
+    const detailView = document.getElementById('series-detail-view');
+    // ... (el resto de referencias que ya teníamos)
     const featuredCarousel = document.getElementById('featured-carousel');
     const popularSeriesGrid = document.getElementById('popular-series');
     const loader = document.getElementById('loader');
     const appContent = document.getElementById('app-content');
-    const modal = document.getElementById('viewer-modal');
-    const modalContent = document.getElementById('viewer-content');
-    const closeModalButton = document.querySelector('.close-button');
-    const themeToggleButton = document.getElementById('theme-toggle'); // Botón de tema
+    const themeToggleButton = document.getElementById('theme-toggle');
 
     let seriesData = [];
 
-    // --- 2. FUNCIÓN PARA CREAR TARJETAS (AHORA MÁS INTELIGENTE) ---
-    // Recibe la serie y el tipo de tarjeta que debe crear ('hero' o 'grid')
-    function createSeriesCard(serie, type = 'grid') {
-        const card = document.createElement('a');
-        card.dataset.id = serie.id;
-        card.href = '#';
+    // --- NAVEGACIÓN ENTRE VISTAS ---
+    function navigateTo(view) {
+        mainView.classList.add('hidden');
+        detailView.classList.add('hidden');
 
-        if (type === 'hero') {
-            // --- CREA LA TARJETA GRANDE PARA EL CARRUSEL ---
-            card.className = 'hero-card';
-            card.innerHTML = `
-                <img src="${serie.portada}" alt="${serie.titulo}">
-                <div class="hero-card-info">
-                    <h3>${serie.titulo}</h3>
-                    <p>${serie.categoria}</p>
+        if (view === 'main') {
+            mainView.classList.remove('hidden');
+        } else if (view === 'detail') {
+            detailView.classList.remove('hidden');
+        }
+        window.scrollTo(0, 0); // Sube al inicio de la página
+    }
+
+    // --- FUNCIÓN PARA CONSTRUIR LA PÁGINA DE DETALLES ---
+    function buildDetailPage(serie) {
+        detailView.innerHTML = `
+            <div class="series-detail-container">
+                <header class="detail-header" style="background-image: url('${serie.portada}')">
+                    <button class="back-button">‹</button>
+                    <div class="detail-info">
+                        <div class="detail-info-cover">
+                            <img src="${serie.portada}" alt="${serie.titulo}">
+                        </div>
+                        <div class="detail-info-text">
+                            <h1>${serie.titulo}</h1>
+                            <p>${serie.categoria}</p>
+                        </div>
+                    </div>
+                </header>
+                <div class="detail-content">
+                    <p class="detail-description">${serie.descripcion}</p>
+                    <h2>Capítulos</h2>
+                    <ul class="chapter-list" id="detail-chapter-list">
+                        <!-- Los capítulos se insertarán aquí -->
+                    </ul>
                 </div>
-            `;
+            </div>
+        `;
+
+        const chapterList = detailView.querySelector('#detail-chapter-list');
+        if (serie.capitulos && serie.capitulos.length > 0) {
+            serie.capitulos.forEach(cap => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `<a href="#">${cap.numero}: ${cap.titulo_cap}</a>`;
+                chapterList.appendChild(listItem);
+            });
         } else {
-            // --- CREA LA TARJETA PEQUEÑA PARA LA PARRILLA ---
-            card.className = 'series-card';
-            card.innerHTML = `
-                <img src="${serie.portada}" alt="${serie.titulo}">
-                <div class="series-card-info">
-                    <h3>${serie.titulo}</h3>
-                    <p>${serie.categoria}</p>
-                </div>
-            `;
+            chapterList.innerHTML = '<li><p>Aún no hay capítulos disponibles.</p></li>';
         }
 
+        // Añadir evento al botón de volver
+        detailView.querySelector('.back-button').addEventListener('click', () => {
+            navigateTo('main');
+        });
+    }
+
+    // --- FUNCIÓN PARA MOSTRAR LA PÁGINA DE DETALLES ---
+    function showDetailPage(serieId) {
+        const serie = seriesData.find(s => s.id === serieId);
+        if (!serie) return;
+
+        buildDetailPage(serie);
+        navigateTo('detail');
+    }
+
+    // --- FUNCIÓN PARA CREAR TARJETAS (MODIFICADA PARA NAVEGAR) ---
+    function createSeriesCard(serie, type = 'grid') {
+        const card = document.createElement('a');
+        card.href = '#'; // Usamos JS para la navegación
+        
+        if (type === 'hero') {
+            card.className = 'hero-card';
+            card.innerHTML = `<img src="${serie.portada}" alt="${serie.titulo}"><div class="hero-card-info"><h3>${serie.titulo}</h3><p>${serie.categoria}</p></div>`;
+        } else {
+            card.className = 'series-card';
+            card.innerHTML = `<img src="${serie.portada}" alt="${serie.titulo}"><div class="series-card-info"><h3>${serie.titulo}</h3><p>${serie.categoria}</p></div>`;
+        }
+
+        // El evento de clic ahora llama a showDetailPage
         card.addEventListener('click', (e) => {
             e.preventDefault();
-            showChapterList(serie.id);
+            showDetailPage(serie.id);
         });
 
         return card;
     }
 
-    // --- 3. FUNCIÓN PARA MOSTRAR LA LISTA DE CAPÍTULOS ---
-    function showChapterList(serieId) {
-        const serie = seriesData.find(s => s.id === serieId);
-        if (!serie) return;
-
-        modalContent.innerHTML = `<h2>${serie.titulo}</h2><hr>`;
-        
-        const chapterList = document.createElement('ul');
-        chapterList.className = 'chapter-list';
-
-        if (serie.capitulos && serie.capitulos.length > 0) {
-            serie.capitulos.forEach(cap => {
-                const listItem = document.createElement('li');
-                const link = document.createElement('a');
-                link.href = '#';
-                link.textContent = `${cap.numero}: ${cap.titulo_cap}`;
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    openViewer(cap.tipo, cap.url);
-                });
-                listItem.appendChild(link);
-                chapterList.appendChild(listItem);
-            });
-        } else {
-            const noChapters = document.createElement('p');
-            noChapters.textContent = 'Aún no hay capítulos disponibles para esta serie.';
-            chapterList.appendChild(noChapters);
-        }
-
-        modalContent.appendChild(chapterList);
-        modal.style.display = 'block';
-    }
-
-    // --- 4. FUNCIÓN PARA ABRIR EL VISOR ---
-    function openViewer(type, url) {
-        if (type === 'pdf') {
-            modalContent.innerHTML = `<iframe src="${url}" width="100%" height="600px" style="border:none;"></iframe>`;
-        } else if (type === 'video') {
-            modalContent.innerHTML = `<video controls autoplay width="100%"><source src="${url}" type="video/mp4">Tu navegador no soporta videos.</video>`;
-        }
-    }
-
-    // --- 5. FUNCIÓN PRINCIPAL PARA CARGAR EL CONTENIDO ---
+    // --- FUNCIÓN PRINCIPAL PARA CARGAR EL CONTENIDO (sin cambios mayores) ---
     async function loadContent() {
         try {
             const response = await fetch('database.json');
@@ -103,14 +111,11 @@ document.addEventListener('DOMContentLoaded', () => {
             popularSeriesGrid.innerHTML = '';
 
             seriesData.forEach(serie => {
-                // AQUÍ ESTÁ LA LÓGICA CORREGIDA
+                const cardType = serie.destacado ? 'hero' : 'grid';
+                const card = createSeriesCard(serie, cardType);
                 if (serie.destacado) {
-                    // Si es destacada, crea una tarjeta tipo 'hero'
-                    const card = createSeriesCard(serie, 'hero');
                     featuredCarousel.appendChild(card);
                 } else {
-                    // Si no, crea una tarjeta normal tipo 'grid'
-                    const card = createSeriesCard(serie, 'grid');
                     popularSeriesGrid.appendChild(card);
                 }
             });
@@ -120,34 +125,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error("No se pudo cargar el contenido:", error);
-            loader.innerHTML = '<p>Error al cargar el contenido. Intenta refrescar la página.</p>';
+            loader.innerHTML = '<p>Error al cargar el contenido.</p>';
         }
     }
 
-    // --- 6. LÓGICA PARA EL BOTÓN DE CAMBIO DE TEMA ---
+    // --- LÓGICA DEL TEMA (sin cambios) ---
     themeToggleButton.addEventListener('click', () => {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         if (currentTheme === 'dark') {
             document.documentElement.setAttribute('data-theme', 'light');
-            themeToggleButton.textContent = '🌙'; // Cambia el icono a luna
+            themeToggleButton.textContent = '🌙';
         } else {
             document.documentElement.setAttribute('data-theme', 'dark');
-            themeToggleButton.textContent = '☀️'; // Cambia el icono a sol
+            themeToggleButton.textContent = '☀️';
         }
     });
 
-    // --- 7. EVENTOS PARA CERRAR EL MODAL ---
-    closeModalButton.addEventListener('click', () => {
-        modal.style.display = 'none';
-        modalContent.innerHTML = '';
-    });
-    window.addEventListener('click', (event) => {
-        if (event.target == modal) {
-            modal.style.display = 'none';
-            modalContent.innerHTML = '';
-        }
-    });
-
-    // --- 8. INICIAR LA CARGA ---
+    // --- INICIAR LA CARGA ---
     loadContent();
 });
