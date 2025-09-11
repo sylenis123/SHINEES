@@ -41,7 +41,7 @@
           "tipo": "vertical-reader",
           "path": "Aisha/cap-1",
           "total_paginas": 55,
-          "formato_paginas": "jpg"
+          "formato": "jpg"
         }
       ]
     },
