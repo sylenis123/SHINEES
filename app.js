@@ -25,44 +25,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function openVerticalReader(chapter) {
-    const readerContent = document.getElementById('reader-content');
-    const bottomNav = document.querySelector('.bottom-nav');
-    readerContent.innerHTML = '';
+        const readerContent = document.getElementById('reader-content');
+        const bottomNav = document.querySelector('.bottom-nav');
+        readerContent.innerHTML = '';
 
-    // Verificamos si existe la nueva estructura de "tiras"
-    if (chapter.path && chapter.tiras && chapter.tiras.length > 0) {
-        
-        // BUCLE 1: Recorre cada TIRA (1, 2, 3)
-        chapter.tiras.forEach(tira => {
-            
-            // BUCLE 2: Recorre cada PARTE dentro de la tira (de 1 a 20, de 1 a 21, etc.)
-            for (let i = 1; i <= tira.partes; i++) {
-                const numeroTira = tira.numero_tira;
-                const numeroParte = i.toString().padStart(2, '0');
-                
-                // CONSTRUYE LA URL FINAL Y CORRECTA
-                // Ejemplo: .../Aisha/cap-1/1_01.jpg
-                // Ejemplo: .../Aisha/cap-1/2_21.jpg
-                // Ejemplo: .../Aisha/cap-1/3_14.jpg
-                const imageUrl = `${BASE_CONTENT_URL}${chapter.path}/${numeroTira}_${numeroParte}.${chapter.formato}`;
-                
-                const img = document.createElement('img');
-                img.src = imageUrl;
-                readerContent.appendChild(img);
-            }
-        });
-
-    } else {
-        readerContent.innerHTML = '<p style="color:white; text-align:center; margin-top: 50px;">Este capítulo no tiene un formato de tiras válido.</p>';
-    }
-    
-    bottomNav.classList.add('hidden');
-    navigateTo('reader');
-}
-            }
+        if (chapter.path && chapter.tiras && chapter.tiras.length > 0) {
+            chapter.tiras.forEach(tira => {
+                for (let i = 1; i <= tira.partes; i++) {
+                    const numeroTira = tira.numero_tira;
+                    const numeroParte = i.toString().padStart(2, '0');
+                    const imageUrl = `${BASE_CONTENT_URL}${chapter.path}/${numeroTira}_${numeroParte}.${chapter.formato}`;
+                    const img = document.createElement('img');
+                    img.src = imageUrl;
+                    readerContent.appendChild(img);
+                }
+            });
         } else {
-            readerContent.innerHTML = '<p style="color:white; text-align:center; margin-top: 50px;">Este capítulo no tiene páginas.</p>';
+            readerContent.innerHTML = '<p style="color:white; text-align:center; margin-top: 50px;">Este capítulo no tiene un formato de tiras válido.</p>';
         }
+        
         bottomNav.classList.add('hidden');
         navigateTo('reader');
     }
@@ -76,7 +57,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 const link = document.createElement('a');
                 link.href = '#';
                 link.textContent = `${cap.numero}: ${cap.titulo_cap}`;
-                link.addEventListener('click', (e) => { e.preventDefault(); if (cap.tipo === 'vertical-reader') { openVerticalReader(cap); } else { alert('Este tipo de capítulo no es compatible.'); } });
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (cap.tipo === 'vertical-reader') {
+                        openVerticalReader(cap);
+                    } else {
+                        alert('Este tipo de capítulo no es compatible.');
+                    }
+                });
                 listItem.appendChild(link);
                 chapterList.appendChild(listItem);
             });
@@ -86,24 +74,53 @@ document.addEventListener('DOMContentLoaded', () => {
         detailView.querySelector('.back-button').addEventListener('click', () => navigateTo('main'));
     }
 
-    function showDetailPage(serieId) { const serie = seriesData.find(s => s.id === serieId); if (!serie) return; buildDetailPage(serie); navigateTo('detail'); }
-    function createSeriesCard(serie, type = 'grid') { const card = document.createElement('a'); card.href = '#'; if (type === 'hero') { card.className = 'hero-card'; card.innerHTML = `<img src="${serie.portada}" class="hero-card-background" alt=""><img src="${serie.portada}" class="hero-card-cover" alt="${serie.titulo}"><div class="hero-card-info"><h3>${serie.titulo}</h3><p>${serie.categoria}</p></div>`; } else { card.className = 'series-card'; card.innerHTML = `<img src="${serie.portada}" alt="${serie.titulo}"><div class="series-card-info"><h3>${serie.titulo}</h3><p>${serie.categoria}</p></div>`; } card.addEventListener('click', (e) => { e.preventDefault(); showDetailPage(serie.id); }); return card; }
+    function showDetailPage(serieId) {
+        const serie = seriesData.find(s => s.id === serieId);
+        if (!serie) return;
+        buildDetailPage(serie);
+        navigateTo('detail');
+    }
+
+    function createSeriesCard(serie, type = 'grid') {
+        const card = document.createElement('a');
+        card.href = '#';
+        if (type === 'hero') {
+            card.className = 'hero-card';
+            card.innerHTML = `<img src="${serie.portada}" class="hero-card-background" alt=""><img src="${serie.portada}" class="hero-card-cover" alt="${serie.titulo}"><div class="hero-card-info"><h3>${serie.titulo}</h3><p>${serie.categoria}</p></div>`;
+        } else {
+            card.className = 'series-card';
+            card.innerHTML = `<img src="${serie.portada}" alt="${serie.titulo}"><div class="series-card-info"><h3>${serie.titulo}</h3><p>${serie.categoria}</p></div>`;
+        }
+        card.addEventListener('click', (e) => {
+            e.preventDefault();
+            showDetailPage(serie.id);
+        });
+        return card;
+    }
     
-    async function loadContent() { 
-        try { 
-            const response = await fetch('database.json'); 
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`); 
-            const data = await response.json(); 
-            seriesData = data.series; 
-            featuredCarousel.innerHTML = ''; 
-            popularSeriesGrid.innerHTML = ''; 
-            seriesData.forEach(serie => { const cardType = serie.destacado ? 'hero' : 'grid'; const card = createSeriesCard(serie, cardType); if (serie.destacado) { featuredCarousel.appendChild(card); } else { popularSeriesGrid.appendChild(card); } }); 
-            loader.style.display = 'none'; 
-            appContent.style.display = 'block'; 
-        } catch (error) { 
-            console.error("No se pudo cargar el contenido:", error); 
-            loader.innerHTML = '<p>Error al cargar el contenido. Revisa el archivo database.json y la consola.</p>'; 
-        } 
+    async function loadContent() {
+        try {
+            const response = await fetch('database.json');
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
+            seriesData = data.series;
+            featuredCarousel.innerHTML = '';
+            popularSeriesGrid.innerHTML = '';
+            seriesData.forEach(serie => {
+                const cardType = serie.destacado ? 'hero' : 'grid';
+                const card = createSeriesCard(serie, cardType);
+                if (serie.destacado) {
+                    featuredCarousel.appendChild(card);
+                } else {
+                    popularSeriesGrid.appendChild(card);
+                }
+            });
+            loader.style.display = 'none';
+            appContent.style.display = 'block';
+        } catch (error) {
+            console.error("No se pudo cargar el contenido:", error);
+            loader.innerHTML = '<p>Error al cargar el contenido. Revisa el archivo database.json y la consola.</p>';
+        }
     }
     
     readerView.querySelector('.reader-close-button').addEventListener('click', () => {
@@ -112,15 +129,15 @@ document.addEventListener('DOMContentLoaded', () => {
         navigateTo('detail');
     });
 
-    themeToggleButton.addEventListener('click', () => { 
-        const currentTheme = document.documentElement.getAttribute('data-theme'); 
-        if (currentTheme === 'dark') { 
-            document.documentElement.setAttribute('data-theme', 'light'); 
-            themeToggleButton.textContent = '🌙'; 
-        } else { 
-            document.documentElement.setAttribute('data-theme', 'dark'); 
-            themeToggleButton.textContent = '☀️'; 
-        } 
+    themeToggleButton.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        if (currentTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'light');
+            themeToggleButton.textContent = '🌙';
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeToggleButton.textContent = '☀️';
+        }
     });
 
     loadContent();
