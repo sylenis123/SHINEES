@@ -82,12 +82,32 @@ document.addEventListener('DOMContentLoaded', () => {
         const card = document.createElement('a');
         card.href = '#'; // Usamos JS para la navegación
         
-        if (type === 'hero') {
+                if (type === 'hero') {
+            // --- CREA LA TARJETA GRANDE PARA EL CARRUSEL (NUEVA ESTRUCTURA) ---
             card.className = 'hero-card';
-            card.innerHTML = `<img src="${serie.portada}" alt="${serie.titulo}"><div class="hero-card-info"><h3>${serie.titulo}</h3><p>${serie.categoria}</p></div>`;
+            card.innerHTML = `
+                <!-- Fondo desenfocado -->
+                <img src="${serie.portada}" class="hero-card-background" alt="">
+                
+                <!-- Portada nítida superpuesta -->
+                <img src="${serie.portada}" class="hero-card-cover" alt="${serie.titulo}">
+
+                <!-- Información de la serie -->
+                <div class="hero-card-info">
+                    <h3>${serie.titulo}</h3>
+                    <p>${serie.categoria}</p>
+                </div>
+            `;
         } else {
+            // --- CREA LA TARJETA PEQUEÑA PARA LA PARRILLA (SIN CAMBIOS) ---
             card.className = 'series-card';
-            card.innerHTML = `<img src="${serie.portada}" alt="${serie.titulo}"><div class="series-card-info"><h3>${serie.titulo}</h3><p>${serie.categoria}</p></div>`;
+            card.innerHTML = `
+                <img src="${serie.portada}" alt="${serie.titulo}">
+                <div class="series-card-info">
+                    <h3>${serie.titulo}</h3>
+                    <p>${serie.categoria}</p>
+                </div>
+            `;
         }
 
         // El evento de clic ahora llama a showDetailPage
