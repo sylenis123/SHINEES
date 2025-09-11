@@ -128,3 +128,21 @@ main h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--text-primary); pa
 .nav-item.active { color: var(--primary-color); }
 .nav-item svg { width: 28px; height: 28px; fill: currentColor; }
 .nav-item span { font-size: 0.7rem; margin-top: 2px; }
+/* --- Estilos del Lector Vertical --- */
+
+/* Contenedor de las imágenes del capítulo */
+#reader-content {
+    background-color: #000; /* Fondo negro para el lector */
+    width: 100%;
+    max-width: 800px; /* Ancho máximo para una lectura cómoda en pantallas grandes */
+    margin: 0 auto; /* Centra el contenido del lector */
+}
+
+/* Estilo para CADA imagen dentro del lector */
+#reader-content img {
+    display: block; /* ¡LA LÍNEA MÁGICA! Elimina el espacio inferior */
+    width: 100%;    /* Asegura que todas las partes tengan el mismo ancho */
+    margin: 0;      /* Elimina cualquier margen */
+    padding: 0;     /* Elimina cualquier relleno */
+    border: none;   /* Elimina cualquier borde */
+}
