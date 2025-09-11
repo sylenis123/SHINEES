@@ -74,8 +74,11 @@ body {
 main { padding: 1rem 0 80px 0; }
 h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--text-primary); padding: 0 1.5rem; }
 
-/* ===== NUEVO CARRUSEL HÉROE ===== */
-.hero-carousel-section { margin-bottom: 2.5rem; }
+/* ===== CARRUSEL HÉROE MEJORADO PARA PORTADAS VERTICALES ===== */
+.hero-carousel-section { 
+    margin-bottom: 2.5rem; 
+}
+
 .carousel-container {
     display: flex;
     overflow-x: auto;
@@ -95,38 +98,46 @@ h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--text-primary); padding
     border-radius: 12px;
     overflow: hidden;
     color: white;
+    display: flex; /* Usamos flexbox para centrar */
+    justify-content: center;
+    align-items: center;
 }
-.hero-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.hero-card::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent 60%); }
-.hero-card-info { position: absolute; bottom: 0; left: 0; padding: 1rem; z-index: 2; }
+
+/* El fondo desenfocado */
+.hero-card-background {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Mantenemos cover para el fondo para que no queden espacios */
+    filter: blur(15px) brightness(0.6); /* Desenfoque y oscurecimiento */
+    transform: scale(1.2); /* Un pequeño zoom para que el blur no deje bordes */
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+/* La portada nítida superpuesta */
+.hero-card-cover {
+    height: 90%; /* La portada ocupará el 90% de la altura del carrusel */
+    z-index: 2;
+    position: relative;
+    border-radius: 6px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+}
+
+/* El texto informativo */
+.hero-card-info { 
+    position: absolute; 
+    bottom: 0; 
+    left: 0; 
+    padding: 1rem; 
+    z-index: 3; /* El texto va por encima de todo */
+    width: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent 100%);
+}
 .hero-card-info h3 { font-size: 1.3rem; font-weight: 700; }
 .hero-card-info p { font-size: 0.9rem; opacity: 0.9; }
 
-/* ===== NUEVA PARRILLA DE SERIES ===== */
-.series-section { margin-bottom: 2.5rem; }
-.series-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 20px 15px;
-    padding: 0 1.5rem;
-}
-.series-card {
-    background-color: transparent;
-    text-decoration: none;
-    color: var(--text-primary);
-    transition: transform 0.2s ease-in-out;
-}
-.series-card:hover { transform: translateY(-5px); }
-.series-card img {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
-    display: block;
-    border-radius: 8px;
-    margin-bottom: 0.5rem;
-}
-.series-card-info h3 { font-size: 1rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.series-card-info p { font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px; }
 
 /* ===== NUEVA BARRA DE NAVEGACIÓN ===== */
 .bottom-nav {
