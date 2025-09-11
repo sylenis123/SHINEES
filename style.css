@@ -146,3 +146,34 @@ main h2 { font-size: 1.4rem; margin-bottom: 1rem; color: var(--text-primary); pa
     padding: 0;     /* Elimina cualquier relleno */
     border: none;   /* Elimina cualquier borde */
 }
+/* --- Estilos de Publicidad --- */
+.ad-container {
+    padding: 20px 15px;
+}
+
+.ad-placeholder {
+    display: block;
+    position: relative; /* Necesario para posicionar la etiqueta "Publicidad" */
+    border-radius: 12px;
+    overflow: hidden; /* Asegura que la imagen no se salga del borde redondeado */
+    background-color: var(--card-bg);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.ad-placeholder img {
+    width: 100%;
+    display: block;
+}
+
+.ad-label {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 2px 6px;
+    font-size: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    pointer-events: none; /* Evita que la etiqueta interfiera con el clic en el anuncio */
+}
