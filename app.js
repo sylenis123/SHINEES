@@ -1,9 +1,5 @@
-// Espera a que todo el documento HTML esté completamente cargado y listo.
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. OBTENER REFERENCIAS A ELEMENTOS HTML ---
-    // Movemos todas las búsquedas de elementos DENTRO del evento 'DOMContentLoaded'.
-    // Esto garantiza que los elementos existen antes de que intentemos usarlos.
     const mainView = document.getElementById('main-view');
     const detailView = document.getElementById('series-detail-view');
     const readerView = document.getElementById('vertical-reader');
@@ -13,16 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const appContent = document.getElementById('app-content');
     const themeToggleButton = document.getElementById('theme-toggle');
 
-    // --- 2. CONFIGURACIÓN Y VARIABLES ---
-const GITHUB_USER = 'sylenis123';
-const GITHUB_REPO = 'SHINEES';
-const BASE_CONTENT_URL = `https://github.com/${GITHUB_USER}/${GITHUB_REPO}/blob/main/contenido/`;
-let seriesData = [];
-    
+    const GITHUB_USER = 'sylenis123';
+    const GITHUB_REPO = 'SHINEES';
+    const BASE_CONTENT_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/contenido/`;
+    let seriesData = [];
 
-    // --- 3. FUNCIONES PRINCIPALES (sin cambios en su lógica interna ) ---
-
-    function navigateTo(view) {
+    function navigateTo(view ) {
         mainView.classList.add('hidden');
         detailView.classList.add('hidden');
         readerView.classList.add('hidden');
@@ -39,7 +31,8 @@ let seriesData = [];
         if (chapter.path && chapter.total_paginas > 0) {
             for (let i = 1; i <= chapter.total_paginas; i++) {
                 const pageNumber = i.toString().padStart(2, '0');
-                const imageUrl = `${BASE_CONTENT_URL}${encodedPath}/${pageNumber}.${chapter.formato_paginas}?raw=true`;
+                // La URL simple y correcta, asumiendo que no hay espacios en los nombres de las carpetas
+                const imageUrl = `${BASE_CONTENT_URL}${chapter.path}/${pageNumber}.${chapter.formato_paginas}`;
                 const img = document.createElement('img');
                 img.src = imageUrl;
                 readerContent.appendChild(img);
@@ -89,18 +82,13 @@ let seriesData = [];
             loader.innerHTML = '<p>Error al cargar el contenido. Revisa el archivo database.json y la consola.</p>'; 
         } 
     }
-
-    // --- 4. ASIGNACIÓN DE EVENTOS E INICIO ---
     
-    // Asignamos el evento al botón de cerrar el lector.
-    // Ahora estamos 100% seguros de que 'readerView' existe.
     readerView.querySelector('.reader-close-button').addEventListener('click', () => {
         const bottomNav = document.querySelector('.bottom-nav');
         bottomNav.classList.remove('hidden');
         navigateTo('detail');
     });
 
-    // Asignamos el evento al botón de tema.
     themeToggleButton.addEventListener('click', () => { 
         const currentTheme = document.documentElement.getAttribute('data-theme'); 
         if (currentTheme === 'dark') { 
@@ -112,6 +100,5 @@ let seriesData = [];
         } 
     });
 
-    // Finalmente, iniciamos la carga del contenido.
     loadContent();
 });
