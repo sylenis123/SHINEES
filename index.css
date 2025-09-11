@@ -1,0 +1,252 @@
+/* ===== CONFIGURACIÓN GLOBAL Y VARIABLES DE COLOR ===== */
+:root {
+    /* Tema Oscuro (Default) */
+    --color-bg-dark: #121212;
+    --color-surface-dark: #1e1e1e;
+    --color-primary-dark: #6200ee; /* Un morado vibrante como en la app */
+    --color-secondary-dark: #03dac6; /* Turquesa para acentos */
+    --color-text-primary-dark: #ffffff;
+    --color-text-secondary-dark: #b3b3b3;
+    --color-pink-accent-dark: #ff007f;
+
+    /* Tema Claro */
+    --color-bg-light: #f5f5f5;
+    --color-surface-light: #ffffff;
+    --color-primary-light: #3f51b5; /* Un azul más suave para modo claro */
+    --color-secondary-light: #009688; /* Turquesa/verde azulado */
+    --color-text-primary-light: #000000;
+    --color-text-secondary-light: #5f5f5f;
+    --color-pink-accent-light: #e91e63;
+}
+
+/* Aplicar temas */
+html[data-theme='dark'] {
+    --bg-color: var(--color-bg-dark);
+    --surface-color: var(--color-surface-dark);
+    --primary-color: var(--color-primary-dark);
+    --secondary-color: var(--color-secondary-dark);
+    --text-primary: var(--color-text-primary-dark);
+    --text-secondary: var(--color-text-secondary-dark);
+    --pink-accent: var(--color-pink-accent-dark);
+}
+
+html[data-theme='light'] {
+    --bg-color: var(--color-bg-light);
+    --surface-color: var(--color-surface-light);
+    --primary-color: var(--color-primary-light);
+    --secondary-color: var(--color-secondary-light);
+    --text-primary: var(--color-text-primary-light);
+    --text-secondary: var(--color-text-secondary-light);
+    --pink-accent: var(--color-pink-accent-light);
+}
+
+/* Estilos base y reseteo */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* ===== LOADER PERSONALIZADO ===== */
+#loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid var(--surface-color);
+    border-top-color: var(--secondary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+#loader p {
+    margin-top: 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text-secondary);
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ===== ESTRUCTURA PRINCIPAL ===== */
+.main-header {
+    padding: 1rem 1.5rem;
+    background-color: var(--surface-color);
+    border-bottom: 1px solid #333;
+}
+
+.main-header h1 {
+    font-size: 1.8rem;
+    color: var(--text-primary);
+}
+
+main {
+    padding: 1rem 1.5rem 80px 1.5rem; /* Padding inferior para no solapar con nav */
+}
+
+h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+/* ===== CARRUSEL Y TARJETAS DE SERIES ===== */
+.carousel-section, .series-section {
+    margin-bottom: 2.5rem;
+}
+
+.carousel-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 15px;
+    padding-bottom: 15px; /* Espacio para la barra de scroll */
+}
+
+/* Ocultar barra de scroll pero mantener funcionalidad */
+.carousel-container::-webkit-scrollbar {
+    display: none;
+}
+
+.series-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.series-card {
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: transform 0.2s ease-in-out;
+    scroll-snap-align: start;
+}
+
+.series-card:hover {
+    transform: translateY(-5px);
+}
+
+.series-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+}
+
+.series-card-info {
+    padding: 10px;
+}
+
+.series-card-info h3 {
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.series-card-info p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+/* ===== BARRA DE NAVEGACIÓN INFERIOR ===== */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 65px;
+    background-color: var(--surface-color);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid #333;
+    z-index: 100;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-secondary);
+}
+
+.nav-item.active {
+    color: var(--secondary-color);
+}
+
+.nav-item svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
+.nav-item span {
+    font-size: 0.7rem;
+    margin-top: 4px;
+}
+
+/* ===== VISOR MODAL (PARA PDF/VIDEO) ===== */
+.modal {
+    display: none; /* Se mostrará con JS */
+    position: fixed;
+    z-index: 200;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-content {
+    background-color: var(--bg-color);
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 800px;
+    position: relative;
+}
+
+.close-button {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: var(--text-primary);
+}
