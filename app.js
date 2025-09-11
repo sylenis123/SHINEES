@@ -25,17 +25,40 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function openVerticalReader(chapter) {
-        const readerContent = document.getElementById('reader-content');
-        const bottomNav = document.querySelector('.bottom-nav');
-        readerContent.innerHTML = '';
-        if (chapter.path && chapter.total_paginas > 0) {
-            for (let i = 1; i <= chapter.total_paginas; i++) {
-                const pageNumber = i.toString().padStart(2, '0');
-                // La URL simple y correcta, asumiendo que no hay espacios en los nombres de las carpetas
-              const imageUrl = `${BASE_CONTENT_URL}${chapter.path}/${i}_${pageNumber}.${chapter.formato}`;
+    const readerContent = document.getElementById('reader-content');
+    const bottomNav = document.querySelector('.bottom-nav');
+    readerContent.innerHTML = '';
+
+    // Verificamos si existe la nueva estructura de "tiras"
+    if (chapter.path && chapter.tiras && chapter.tiras.length > 0) {
+        
+        // BUCLE 1: Recorre cada TIRA (1, 2, 3)
+        chapter.tiras.forEach(tira => {
+            
+            // BUCLE 2: Recorre cada PARTE dentro de la tira (de 1 a 20, de 1 a 21, etc.)
+            for (let i = 1; i <= tira.partes; i++) {
+                const numeroTira = tira.numero_tira;
+                const numeroParte = i.toString().padStart(2, '0');
+                
+                // CONSTRUYE LA URL FINAL Y CORRECTA
+                // Ejemplo: .../Aisha/cap-1/1_01.jpg
+                // Ejemplo: .../Aisha/cap-1/2_21.jpg
+                // Ejemplo: .../Aisha/cap-1/3_14.jpg
+                const imageUrl = `${BASE_CONTENT_URL}${chapter.path}/${numeroTira}_${numeroParte}.${chapter.formato}`;
+                
                 const img = document.createElement('img');
                 img.src = imageUrl;
                 readerContent.appendChild(img);
+            }
+        });
+
+    } else {
+        readerContent.innerHTML = '<p style="color:white; text-align:center; margin-top: 50px;">Este capítulo no tiene un formato de tiras válido.</p>';
+    }
+    
+    bottomNav.classList.add('hidden');
+    navigateTo('reader');
+}
             }
         } else {
             readerContent.innerHTML = '<p style="color:white; text-align:center; margin-top: 50px;">Este capítulo no tiene páginas.</p>';
