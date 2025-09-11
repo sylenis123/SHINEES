@@ -2,46 +2,70 @@
   "series": [
     {
       "id": "Cariño-me-voy-de-huelga",
-      "titulo": "Cariño, me voy de huelga",
+      "titulo": "Mordiscos de Amor",
       "portada": "https://i.imgur.com/jMWrnPj.jpeg",
+      "descripcion": "Un romance inesperado florece en las sombras, pero un secreto oscuro amenaza con separarlos.",
       "categoria": "#1 en Romance",
       "destacado": true,
       "capitulos": [
-        {
-          "numero": 1,
-          "titulo_cap": "Capítulo 1: El Encuentro",
-          "tipo": "pdf",
-          "url": "https://ruta/a/tu/capitulo1.pdf"
-        },
-        {
-          "numero": 2,
-          "titulo_cap": "Capítulo 2: La Sospecha",
-          "tipo": "video",
-          "url": "https://ruta/a/tu/video_cap2.mp4"
-        }
+        { "numero": 1, "titulo_cap": "Capítulo 1: El Encuentro", "tipo": "pdf", "url": "#" },
+        { "numero": 2, "titulo_cap": "Capítulo 2: La Sospecha", "tipo": "video", "url": "#" }
       ]
     },
     {
-      "id": "lector-omnisciente",
-      "titulo": "Lector Omnisciente",
-      "portada": "https://i.imgur.com/portada_lector.jpg",
+      "id": "Elimina-a-tu-marido",
+      "titulo": "Elimina a tu marido",
+      "portada": "https://i.imgur.com/1zq72ZT.jpeg",
+      "descripcion": "Tras ser traicionada, la emperatriz Navier busca rehacer su vida y reclamar su poder, incluso si eso significa casarse con el emperador del reino vecino.",
+      "categoria": "#1 en Fantasía",
+      "destacado": true,
+      "capitulos": []
+    },
+    {
+      "id": "aisha",
+      "titulo": "Aisha",
+      "portada": "https://i.imgur.com/qrsqST8.png",
+      "descripcion": "Una aventura cósmica llena de humor y personajes extravagantes que deben salvar la galaxia por accidente.",
+      "categoria": "Comedia",
+      "destacado": true,
+      "capitulos": []
+    },
+    {
+      "id": "alerta-adolescente",
+      "titulo": "Alerta Adolescente",
+      "portada": "https://i.imgur.com/NV7Wahw.jpeg",
+      "descripcion": "Solo él conoce el final del mundo. Cuando la novela que leía se vuelve realidad, Kim Dokja debe usar su conocimiento para sobrevivir.",
       "categoria": "Tendencias",
       "destacado": false,
       "capitulos": [
-        {
-          "numero": 1,
-          "titulo_cap": "Prólogo: Tres maneras de sobrevivir en un mundo en ruinas",
-          "tipo": "pdf",
-          "url": "https://ruta/a/tu/lector_cap1.pdf"
-        }
+        { "numero": 1, "titulo_cap": "Prólogo", "tipo": "pdf", "url": "#" }
       ]
     },
     {
-      "id": "la-emperatriz-divorciada",
-      "titulo": "La Emperatriz Divorciada",
-      "portada": "https://i.imgur.com/portada_emperatriz.jpg",
-      "categoria": "#1 en Fantasía",
-      "destacado": true,
+      "id": "Quisiera-poder-engañarte",
+      "titulo": "Quisiera poder engañarte",
+      "portada": "https://i.imgur.com/WJQtrlw.jpeg",
+      "descripcion": "Su-ae intenta sobrevivir en un mundo de intrigas amorosas con la ayuda de un misterioso aliado.",
+      "categoria": "Romance",
+      "destacado": false,
+      "capitulos": []
+    },
+    {
+      "id": "Lillien-de-turín",
+      "titulo": "Lillien de Turín",
+      "portada": "https://i.imgur.com/WJQtrlw.jpeg",
+      "descripcion": "Un drama histórico sobre el amor, la pérdida y la redención en un reino convulso.",
+      "categoria": "Drama",
+      "destacado": false,
+      "capitulos": []
+    },
+    {
+      "id": "torcere-el-cuello-de-ese-bastarde",
+      "titulo": "Torcere el cuello de ese bastardo",
+      "portada": "https://i.imgur.com/QE1d1vT.jpeg",
+      "descripcion": "Descubre los secretos de un reino submarino y la magia que se esconde bajo las olas.",
+      "categoria": "Fantasía",
+      "destacado": false,
       "capitulos": []
     }
   ]
