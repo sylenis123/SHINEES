@@ -1,16 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // =================================================================
-    // 1. CONFIGURACIÓN Y SELECTORES GLOBALES
-    // =================================================================
     const firebaseConfig = {
-        apiKey: "AIzaSyDsv2keytFIEeS4QT4_chwOHMgyWpV8gP4",
-        authDomain: "shinees.firebaseapp.com",
-        projectId: "shinees",
-        storageBucket: "shinees.appspot.com",
-        messagingSenderId: "109623976622",
-        appId: "1:109623976622:web:c9ab5a1c345f502b71833f",
-        measurementId: "G-Z0HSJ2WDZQ"
+        apiKey: "AIzaSyDsv2keytFIEeS4QT4_chwOHMgyWpV8gP4", authDomain: "shinees.firebaseapp.com", projectId: "shinees",
+        storageBucket: "shinees.appspot.com", messagingSenderId: "109623976622", appId: "1:109623976622:web:c9ab5a1c345f502b71833f",
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
@@ -19,9 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainView = document.getElementById('main-view');
     const detailView = document.getElementById('series-detail-view');
     const readerView = document.getElementById('vertical-reader');
+    const interactionView = document.getElementById('chapter-interaction-section');
     const profileView = document.getElementById('profile-view');
-    const featuredCarousel = document.getElementById('featured-carousel');
-    const popularSeriesGrid = document.getElementById('popular-series');
     const loader = document.getElementById('loader');
     const appContent = document.getElementById('app-content');
     const themeToggleButton = document.getElementById('theme-toggle');
@@ -32,24 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentSerieId = null;
     let currentChapterId = null;
 
-    // =================================================================
-    // 2. LÓGICA DE AUTENTICACIÓN Y PERFIL DE USUARIO
-    // =================================================================
     const registroModalOverlay = document.getElementById('registro-modal-overlay');
-    const registroForm = document.getElementById('registro-form');
-    const registroError = document.getElementById('registro-error');
-    const mostrarRegistroBtn = document.getElementById('mostrar-registro-btn');
-    const cerrarRegistroModalBtn = document.getElementById('cerrar-modal-btn');
     const loginModalOverlay = document.getElementById('login-modal-overlay');
-    const loginForm = document.getElementById('login-form');
-    const loginError = document.getElementById('login-error');
-    const cerrarLoginModalBtn = document.getElementById('cerrar-login-modal-btn');
-    const forgotPasswordLink = document.getElementById('forgot-password-link');
-    const saveProfileBtn = document.getElementById('save-profile-btn');
-    const displayNameInput = document.getElementById('display-name-input');
-    const logoutBtnProfile = document.getElementById('logout-btn-profile');
-    const avatarUploadInput = document.getElementById('avatar-upload-input');
-
     const headerActions = document.querySelector('.header-actions');
     const botonLogin = document.createElement('button');
     botonLogin.id = 'mostrar-login-btn';
@@ -69,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     auth.onAuthStateChanged(user => {
+        const mostrarRegistroBtn = document.getElementById('mostrar-registro-btn');
         if (user) {
             mostrarRegistroBtn.classList.add('hidden');
             botonLogin.classList.add('hidden');
@@ -86,95 +62,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    if (mostrarRegistroBtn) mostrarRegistroBtn.addEventListener('click', () => abrirModal(registroModalOverlay));
-    if (cerrarRegistroModalBtn) cerrarRegistroModalBtn.addEventListener('click', () => cerrarModal(registroModalOverlay, registroError));
-    if (registroModalOverlay) registroModalOverlay.addEventListener('click', (e) => { if (e.target === registroModalOverlay) cerrarModal(registroModalOverlay, registroError); });
-    if (botonLogin) botonLogin.addEventListener('click', () => abrirModal(loginModalOverlay));
-    if (cerrarLoginModalBtn) cerrarLoginModalBtn.addEventListener('click', () => cerrarModal(loginModalOverlay, loginError));
-    if (loginModalOverlay) loginModalOverlay.addEventListener('click', (e) => { if (e.target === loginModalOverlay) cerrarModal(loginModalOverlay, loginError); });
-
-    if (registroForm) {
-        registroForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('registro-email').value;
-            const password = document.getElementById('registro-password').value;
-            registroError.textContent = '';
-            auth.createUserWithEmailAndPassword(email, password)
-                .then(uc => { uc.user.sendEmailVerification(); alert('¡Registro exitoso! Se ha enviado un correo de verificación.'); cerrarModal(registroModalOverlay, registroError); })
-                .catch(err => {
-                    if (err.code === 'auth/email-already-in-use') registroError.textContent = 'Este correo ya está en uso.';
-                    else if (err.code === 'auth/weak-password') registroError.textContent = 'La contraseña es muy débil.';
-                    else registroError.textContent = 'Ocurrió un error.';
-                });
-        });
-    }
-    if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            loginError.textContent = '';
-            auth.signInWithEmailAndPassword(email, password).then(() => cerrarModal(loginModalOverlay, loginError)).catch(() => loginError.textContent = "Email o contraseña incorrectos.");
-        });
-    }
-    if (forgotPasswordLink) {
-        forgotPasswordLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            if (!email) { alert("Introduce tu email en el campo de arriba primero."); return; }
-            auth.sendPasswordResetEmail(email).then(() => { alert("Correo de recuperación enviado."); cerrarModal(loginModalOverlay, loginError); }).catch(() => alert("Error al enviar el correo."));
-        });
-    }
-    if (saveProfileBtn) {
-        saveProfileBtn.addEventListener('click', () => {
-            const newDisplayName = displayNameInput.value;
-            const user = auth.currentUser;
-            if (user && newDisplayName) {
-                user.updateProfile({ displayName: newDisplayName }).then(() => {
-                    alert("Nombre actualizado.");
-                    document.getElementById('profile-display-name').textContent = newDisplayName;
-                    const nombreUsuarioSpan = document.querySelector('.nombre-usuario');
-                    if (nombreUsuarioSpan) nombreUsuarioSpan.textContent = `Hola, ${newDisplayName}`;
-                    displayNameInput.value = '';
-                }).catch(() => alert("Error al guardar."));
-            }
-        });
-    }
-    if (logoutBtnProfile) logoutBtnProfile.addEventListener('click', () => auth.signOut());
-    if (avatarUploadInput) {
-        avatarUploadInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const CLOUD_NAME = 'dhmhfplfc'; const UPLOAD_PRESET = 'bjm8b3s4';
-            const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
-            const formData = new FormData( );
-            formData.append('file', file); formData.append('upload_preset', UPLOAD_PRESET);
-            alert("Subiendo imagen...");
-            fetch(url, { method: 'POST', body: formData }).then(res => res.json()).then(data => {
-                if (data.secure_url) {
-                    const user = auth.currentUser;
-                    if (user) {
-                        user.updateProfile({ photoURL: data.secure_url }).then(() => {
-                            alert("Imagen de perfil actualizada.");
-                            document.getElementById('profile-avatar-img').src = data.secure_url;
-                        }).catch(() => alert("Error al guardar la imagen."));
-                    }
-                }
-            }).catch(() => alert("Error al subir la imagen."));
-        });
-    }
-
-    // =================================================================
-    // 3. FUNCIONES PRINCIPALES DE LA APLICACIÓN
-    // =================================================================
     function navigateTo(view) {
         mainView.classList.add('hidden');
         detailView.classList.add('hidden');
         readerView.classList.add('hidden');
+        interactionView.classList.add('hidden');
         profileView.classList.add('hidden');
         if (view === 'main') mainView.classList.remove('hidden');
         else if (view === 'detail') detailView.classList.remove('hidden');
-        else if (view === 'reader') readerView.classList.remove('hidden');
+        else if (view === 'reader') {
+            readerView.classList.remove('hidden');
+            interactionView.classList.remove('hidden');
+        }
         else if (view === 'profile') profileView.classList.remove('hidden');
         window.scrollTo(0, 0);
     }
@@ -187,28 +86,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!reactionBtn || !commentsList) return;
         const chapterRef = db.collection('series').doc(serieId).collection('capitulos').doc(chapterId);
         chapterRef.get().then(doc => {
-            const likes = (doc.data() && doc.data().likes) || 0;
-            reactionCount.textContent = likes;
+            reactionCount.textContent = (doc.data() && doc.data().likes) || 0;
         });
         if (user) {
             chapterRef.collection('reacciones').doc(user.uid).get().then(doc => {
-                if (doc.exists) reactionBtn.classList.add('liked');
-                else reactionBtn.classList.remove('liked');
+                reactionBtn.classList.toggle('liked', doc.exists);
             });
         } else {
             reactionBtn.classList.remove('liked');
         }
         commentsList.innerHTML = '';
-        chapterRef.collection('comentarios').orderBy('fecha', 'desc').get().then(querySnapshot => {
-            if (querySnapshot.empty) { commentsList.innerHTML = '<p>Aún no hay comentarios. ¡Sé el primero!</p>'; return; }
-            querySnapshot.forEach(doc => {
-                const commentData = doc.data();
-                const commentElement = document.createElement('div');
-                commentElement.className = 'comment';
-                const avatar = commentData.userAvatar || 'https://i.imgur.com/SYJ2s1k.png';
-                const author = commentData.userName || 'Anónimo';
-                commentElement.innerHTML = `<img src="${avatar}" alt="Avatar" class="comment-avatar"><div class="comment-body"><p class="comment-author">${author}</p><p class="comment-text">${commentData.texto}</p></div>`;
-                commentsList.appendChild(commentElement );
+        chapterRef.collection('comentarios').orderBy('fecha', 'desc').get().then(snap => {
+            if (snap.empty) { commentsList.innerHTML = '<p>Aún no hay comentarios. ¡Sé el primero!</p>'; return; }
+            snap.forEach(doc => {
+                const data = doc.data();
+                const el = document.createElement('div');
+                el.className = 'comment';
+                el.innerHTML = `<img src="${data.userAvatar || 'https://i.imgur.com/SYJ2s1k.png'}" class="comment-avatar"><div class="comment-body"><p class="comment-author">${data.userName || 'Anónimo'}</p><p class="comment-text">${data.texto}</p></div>`;
+                commentsList.appendChild(el );
             });
         });
     }
@@ -217,72 +112,45 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const user = auth.currentUser;
         const commentInput = document.getElementById('comment-input');
-        if (!commentInput) return;
         const commentText = commentInput.value.trim();
         if (!user) { alert("Debes iniciar sesión para comentar."); abrirModal(loginModalOverlay); return; }
         if (!commentText || !currentSerieId || !currentChapterId) return;
-        
         const chapterRef = db.collection('series').doc(currentSerieId).collection('capitulos').doc(currentChapterId);
-        
-        db.runTransaction(async (transaction) => {
-            const chapterDoc = await transaction.get(chapterRef);
+        db.runTransaction(async t => {
+            const chapterDoc = await t.get(chapterRef);
             const commentsCount = (chapterDoc.data() && chapterDoc.data().commentsCount) || 0;
-            
             const newCommentRef = chapterRef.collection('comentarios').doc();
-            transaction.set(newCommentRef, {
-                texto: commentText,
-                userId: user.uid,
-                userName: user.displayName || user.email.split('@')[0],
-                userAvatar: user.photoURL,
-                fecha: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            transaction.update(chapterRef, { commentsCount: commentsCount + 1 });
+            t.set(newCommentRef, { texto: commentText, userId: user.uid, userName: user.displayName || user.email.split('@')[0], userAvatar: user.photoURL, fecha: firebase.firestore.FieldValue.serverTimestamp() });
+            t.update(chapterRef, { commentsCount: commentsCount + 1 });
         }).then(() => {
             commentInput.value = '';
             displayChapterInteractions(currentSerieId, currentChapterId);
-        }).catch(err => {
-            console.error("Error al publicar comentario: ", err);
-            alert("Hubo un error al publicar tu comentario.");
-        });
+        }).catch(err => console.error("Error al publicar comentario: ", err));
     }
 
     function handleReaction() {
         const user = auth.currentUser;
         if (!user) { alert("Debes iniciar sesión para reaccionar."); abrirModal(loginModalOverlay); return; }
         if (!currentSerieId || !currentChapterId) return;
-        
         const chapterRef = db.collection('series').doc(currentSerieId).collection('capitulos').doc(currentChapterId);
         const reactionRef = chapterRef.collection('reacciones').doc(user.uid);
-
-        db.runTransaction(async (transaction) => {
-            const chapterDoc = await transaction.get(chapterRef);
-            const reactionDoc = await transaction.get(reactionRef);
-            
+        db.runTransaction(async t => {
+            const chapterDoc = await t.get(chapterRef);
+            const reactionDoc = await t.get(reactionRef);
             const currentLikes = (chapterDoc.data() && chapterDoc.data().likes) || 0;
-
             if (reactionDoc.exists) {
-                transaction.delete(reactionRef);
-                transaction.update(chapterRef, { likes: currentLikes - 1 });
+                t.delete(reactionRef);
+                t.update(chapterRef, { likes: currentLikes - 1 });
                 return { liked: false, newCount: currentLikes - 1 };
             } else {
-                transaction.set(reactionRef, { likedAt: firebase.firestore.FieldValue.serverTimestamp() });
-                transaction.update(chapterRef, { likes: currentLikes + 1 });
+                t.set(reactionRef, { likedAt: firebase.firestore.FieldValue.serverTimestamp() });
+                t.update(chapterRef, { likes: currentLikes + 1 });
                 return { liked: true, newCount: currentLikes + 1 };
             }
         }).then(({ liked, newCount }) => {
-            const reactionBtn = document.getElementById('chapter-reaction-btn');
-            const countSpan = document.getElementById('chapter-reaction-count');
-            if (liked) {
-                reactionBtn.classList.add('liked');
-            } else {
-                reactionBtn.classList.remove('liked');
-            }
-            countSpan.textContent = newCount < 0 ? 0 : newCount;
-        }).catch(err => {
-            console.error("Error en la transacción de reacción: ", err);
-            alert("Hubo un error al procesar tu reacción.");
-        });
+            document.getElementById('chapter-reaction-btn').classList.toggle('liked', liked);
+            document.getElementById('chapter-reaction-count').textContent = newCount < 0 ? 0 : newCount;
+        }).catch(err => console.error("Error en la transacción de reacción: ", err));
     }
 
     function openVerticalReader(serieId, chapter) {
@@ -290,16 +158,12 @@ document.addEventListener('DOMContentLoaded', () => {
         currentChapterId = chapter.id;
         const readerContent = document.getElementById('reader-content');
         readerContent.innerHTML = '';
-        if (chapter && chapter.tiras && chapter.tiras.length > 0) {
-            const formatoGeneral = chapter.formato;
+        if (chapter.tiras && chapter.tiras.length > 0) {
             chapter.tiras.forEach(tira => {
-                const tiraNumero = parseInt(tira.id) + 1;
                 for (let i = 1; i <= tira.paginas; i++) {
-                    const pageNumber = i.toString().padStart(2, '0');
-                    const imageUrl = `https://raw.githubusercontent.com/sylenis123/SHINEES/main/contenido/${chapter.path}/${tiraNumero}_${pageNumber}.${formatoGeneral}`;
-                    const img = document.createElement('img' );
+                    const imageUrl = `https://raw.githubusercontent.com/sylenis123/SHINEES/main/contenido/${chapter.path}/${parseInt(tira.id ) + 1}_${i.toString().padStart(2, '0')}.${chapter.formato}`;
+                    const img = document.createElement('img');
                     img.src = imageUrl;
-                    img.className = 'reader-page-image';
                     readerContent.appendChild(img);
                 }
             });
@@ -307,7 +171,6 @@ document.addEventListener('DOMContentLoaded', () => {
             readerContent.innerHTML = '<p style="color:white; text-align:center; margin-top: 50px;">Este capítulo no tiene páginas.</p>';
         }
         displayChapterInteractions(serieId, chapter.id);
-        
         document.querySelector('.bottom-nav').classList.add('hidden');
         navigateTo('reader');
     }
@@ -320,19 +183,13 @@ document.addEventListener('DOMContentLoaded', () => {
             serie.capitulos.forEach(cap => {
                 const listItem = document.createElement('li');
                 listItem.className = 'chapter-list-item';
-                
                 const link = document.createElement('a');
                 link.href = '#';
                 link.textContent = `${cap.numero === 0 ? 'Prólogo' : `Cap. ${cap.numero}`}: ${cap.titulo_cap || ''}`;
                 link.addEventListener('click', (e) => { e.preventDefault(); openVerticalReader(serieId, cap); });
-                
                 const statsContainer = document.createElement('div');
                 statsContainer.className = 'chapter-stats';
-                statsContainer.innerHTML = `
-                    <span><span class="icon">❤️</span> ${cap.likes || 0}</span>
-                    <span><span class="icon">💬</span> ${cap.commentsCount || 0}</span>
-                `;
-                
+                statsContainer.innerHTML = `<span><span class="icon">❤️</span> ${cap.likes || 0}</span><span><span class="icon">💬</span> ${cap.commentsCount || 0}</span>`;
                 listItem.appendChild(link);
                 listItem.appendChild(statsContainer);
                 chapterList.appendChild(listItem);
@@ -342,95 +199,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function showDetailPage(serieId) {
-        const serie = seriesData.find(s => s.id === serieId);
-        if (!serie) return;
-        buildDetailPage(serie);
-        navigateTo('detail');
-    }
-
     async function loadContent() {
         try {
-            const seriesCollection = await db.collection('series').get();
-            seriesData = seriesCollection.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            featuredCarousel.innerHTML = '';
-            popularSeriesGrid.innerHTML = '';
-            seriesData.forEach(serie => {
-                const cardType = serie.destacado ? 'hero' : 'grid';
-                const card = createSeriesCard(serie, cardType);
-                if (serie.destacado) featuredCarousel.appendChild(card);
-                else popularSeriesGrid.appendChild(card);
-            });
-            loader.style.display = 'none';
-            appContent.style.display = 'block';
-        } catch (error) {
-            console.error("Error al cargar contenido:", error);
-            loader.innerHTML = '<p>Error al conectar con la base de datos.</p>';
-        }
-    }
-
-    function createSeriesCard(serie, type = 'grid') {
-        const card = document.createElement('a');
-        card.href = '#';
-        card.addEventListener('click', (e) => { e.preventDefault(); showDetailPage(serie.id); });
-        if (type === 'hero') {
-            card.className = 'hero-card';
-            card.innerHTML = `<div class="hero-card-bg" style="background-image: url('${serie.portada}')"></div><img src="${serie.portada}" class="hero-card-cover" alt="${serie.titulo}"><div class="hero-card-info"><h3>${serie.titulo}</h3><p>${serie.categoria || ''}</p></div>`;
-        } else {
-            card.className = 'series-card';
-            card.innerHTML = `<img src="${serie.portada}" alt="${serie.titulo}"><div class="series-card-info"><h3>${serie.titulo}</h3></div>`;
-        }
-        return card;
-    }
-
-    // =================================================================
-    // 4. EVENT LISTENERS GENERALES Y DELEGACIÓN DE EVENTOS
-    // =================================================================
-    
-    if (navHomeButton) navHomeButton.addEventListener('click', (e) => { e.preventDefault(); navigateTo('main'); });
-    if (navProfileButton) navProfileButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (auth.currentUser) {
-            navigateTo('profile');
-        } else {
-            abrirModal(loginModalOverlay);
-        }
-    });
-    
-    readerView.querySelector('.reader-close-button').addEventListener('click', () => {
-        navigateTo('detail');
-        document.querySelector('.bottom-nav').classList.remove('hidden');
-    });
-    document.getElementById('ad-modal-close').addEventListener('click', () => document.getElementById('ad-modal').classList.add('hidden'));
-    
-    themeToggleButton.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        if (currentTheme === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'light');
-            themeToggleButton.textContent = '🌙';
-        } else {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            themeToggleButton.textContent = '☀️';
-        }
-    });
-
-    // **CORRECCIÓN CLAVE: Usar Delegación de Eventos**
-    document.addEventListener('click', (e) => {
-        if (e.target.matches('#chapter-reaction-btn') || e.target.closest('#chapter-reaction-btn')) {
-            handleReaction();
-        }
-        if (e.target.matches('.back-button')) {
-            navigateTo('main');
-        }
-    });
-
-    document.addEventListener('submit', (e) => {
-        if (e.target.matches('#add-comment-form')) {
-            // **LA CORRECCIÓN MÁGICA**
-            handlePostComment(e); 
-        }
-    });
-    
-    // Carga inicial del contenido
-    loadContent();
-});
+            const seriesCollection
