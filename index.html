@@ -21,11 +21,10 @@
         <main id="main-view" class="page-view">
             <header class="main-header">
                 <h1>Shinees</h1>
-                <!-- El div .header-actions ahora solo contiene botones -->
                 <div class="header-actions">
                     <button id="theme-toggle">☀️</button>
                     <button id="mostrar-registro-btn">Registrarse</button>
-                    <!-- El botón de Login se creará y añadirá aquí con JavaScript -->
+                    <!-- El botón de Login y el perfil de usuario se crearán y añadirán aquí con JavaScript -->
                 </div>
             </header>
             <section id="featured-carousel" class="hero-carousel"></section>
@@ -60,7 +59,7 @@
     </div>
 
     <!-- ======================================================= -->
-    <!-- MODALES (VENTANAS EMERGENTES ) - ¡AQUÍ ES DONDE DEBEN ESTAR! -->
+    <!-- MODALES (VENTANAS EMERGENTES ) -->
     <!-- ======================================================= -->
 
     <!-- Modal de Publicidad -->
@@ -95,7 +94,7 @@
         </div>
     </div>
 
-    <!-- Modal de Login (MOVIDO AQUÍ, AL LUGAR CORRECTO ) -->
+    <!-- Modal de Login -->
     <div id="login-modal-overlay" class="modal-overlay hidden">
         <div id="login-modal-content" class="modal-content">
             <button id="cerrar-login-modal-btn" class="modal-close-button">&times;</button>
@@ -109,23 +108,22 @@
                     <label for="login-password">Contraseña:</label>
                     <input type="password" id="login-password" required />
                 </div>
+                <!-- ENLACE AÑADIDO AQUÍ -->
+                <a href="#" id="forgot-password-link" class="forgot-password">¿Olvidaste tu contraseña?</a>
+                
                 <button type="submit">Entrar</button>
                 <p id="login-error" class="error-message"></p>
             </form>
         </div>
     </div>
 
-
     <!-- ======================================================= -->
-    <!-- SCRIPTS (AL FINAL DEL BODY) -->
+    <!-- SCRIPTS (AL FINAL DEL BODY ) -->
     <!-- ======================================================= -->
 
-    <!-- Scripts de Firebase -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-
-    <!-- Tu script principal -->
     <script src="app.js"></script>
 
 </body>
