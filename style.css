@@ -62,7 +62,7 @@ h1, h2, h3 { color: var(--text-color); }
     scroll-snap-type: x mandatory;
     gap: 15px;
     padding: 0 15px 15px;
-    -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
+    -webkit-overflow-scrolling: touch;
 }
 .hero-card {
     flex: 0 0 85%;
@@ -189,405 +189,111 @@ h1, h2, h3 { color: var(--text-color); }
     color: var(--text-color); font-size: 0.7rem;
 }
 .nav-item.active { color: var(--primary-color); }
-/* --- Estilos del Modal de Anuncio Post-Capítulo --- */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1001; /* Por encima del lector */
-}
 
+/* --- Estilos de Modales --- */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 1001;
+}
 .modal-content {
     background-color: var(--card-bg);
-    padding: 20px;
-    border-radius: 12px;
-    text-align: center;
-    width: 90%;
-    max-width: 400px;
-    position: relative;
+    padding: 30px; border-radius: 12px;
+    width: 90%; max-width: 400px; position: relative;
 }
-
-.modal-content p {
-    margin-bottom: 15px;
-    font-size: 1.1rem;
+.modal-close-button {
+    position: absolute; top: 10px; right: 15px;
+    background: none; border: none; font-size: 24px;
+    color: var(--text-color); cursor: pointer;
 }
-
-.ad-placeholder-modal img {
-    width: 100%;
-    border-radius: 8px;
+.modal-content form div { margin-bottom: 15px; }
+.modal-content form label { display: block; margin-bottom: 5px; }
+.modal-content form input {
+    width: 100%; padding: 10px; border-radius: 4px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-color); color: var(--text-color);
 }
-
-#close-ad-modal-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
+.modal-content form button {
+    width: 100%; padding: 12px; border: none; border-radius: 4px;
+    background-color: var(--primary-color); color: white;
+    font-size: 16px; cursor: pointer;
 }
-#end-of-chapter {
-    height: 1px;
-    width: 100%;
-}
-#show-ad-button {
-    display: block;
-    width: 80%;
-    max-width: 300px;
-    margin: 40px auto; /* Espacio arriba y abajo, y centrado */
-    padding: 15px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: white;
-    background-color: var(--primary-color);
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-}
-/* Estilos para el Modal de Registro */
-
-/* El fondo oscuro que cubre toda la pantalla */
-#modal-overlay {
-  position: fixed; /* Se queda fijo en la pantalla */
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7); /* Negro semitransparente */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000; /* Se asegura de que esté por encima de todo */
-}
-
-/* La ventana del formulario */
-#registro-modal {
-  background-color: #2c2c2c; /* Un color de fondo oscuro */
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-  width: 90%;
-  max-width: 400px; /* Ancho máximo del formulario */
-  position: relative;
-  color: #fff; /* Texto blanco */
-}
-
-/* Clase para ocultar el modal */
-.hidden {
-  display: none !important;
-}
-
-/* Botón para cerrar el modal */
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  background: none;
-  border: none;
-  font-size: 24px;
-  color: #fff;
-  cursor: pointer;
-}
-
-/* Estilos para el formulario dentro del modal */
-#registro-form div {
-  margin-bottom: 15px;
-}
-#registro-form label {
-  display: block;
-  margin-bottom: 5px;
-}
-#registro-form input {
-  width: 100%;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #555;
-  background-color: #444;
-  color: #fff;
-}
-#registro-form button {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  border-radius: 4px;
-  background-color: #007bff; /* Un color azul para el botón */
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-}
-#registro-form button:hover {
-  background-color: #0056b3;
-}
-.error-message {
-  color: #ff4d4d;
-  margin-top: 10px;
-}
+.error-message { color: #ff4d4d; margin-top: 10px; }
 .forgot-password {
-  display: block; /* Para que ocupe su propia línea */
-  text-align: right; /* Lo alinea a la derecha */
-  font-size: 12px;
-  color: #00aaff; /* Un color azulado */
-  margin-top: -10px; /* Lo acerca al campo de contraseña */
-  margin-bottom: 15px;
-  text-decoration: none;
+    display: block; text-align: right; font-size: 12px;
+    color: #00aaff; margin-top: -10px; margin-bottom: 15px;
+    text-decoration: none;
 }
+.forgot-password:hover { text-decoration: underline; }
 
-.forgot-password:hover {
-  text-decoration: underline;
-}
-/* Estilos para la Página de Perfil */
-.profile-content {
-    padding: 20px;
-}
-
+/* --- Estilos de Perfil --- */
+.profile-content { padding: 20px; }
 .profile-card {
-    background-color: var(--card-bg-color );
-    border-radius: 12px;
-    padding: 24px;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
+    background-color: var(--card-bg); border-radius: 12px;
+    padding: 24px; text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px;
 }
-
 .profile-avatar-container {
-    position: relative;
-    width: 120px;
-    height: 120px;
+    position: relative; width: 120px; height: 120px;
     margin: 0 auto 20px;
 }
-
 #profile-avatar-img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid var(--primary-color);
+    width: 100%; height: 100%; border-radius: 50%;
+    object-fit: cover; border: 3px solid var(--primary-color);
 }
-
 .avatar-edit-button {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    background-color: var(--primary-color);
-    color: white;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 16px;
-    border: 2px solid var(--bg-color);
+    position: absolute; bottom: 5px; right: 5px;
+    background-color: var(--primary-color); color: white;
+    border-radius: 50%; width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 16px; border: 2px solid var(--bg-color);
 }
-
-#profile-display-name {
-    margin: 0;
-    font-size: 24px;
-}
-
-#profile-email {
-    color: #888;
-    margin-top: 5px;
-    margin-bottom: 20px;
-    font-size: 14px;
-}
-
-#edit-profile-section input {
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin-top: 5px;
-    margin-bottom: 10px;
-}
-
-#edit-profile-section button {
-    width: 100%;
-    padding: 12px;
-}
-
+#profile-display-name { margin: 0; font-size: 24px; }
+#profile-email { color: #888; margin-top: 5px; margin-bottom: 20px; font-size: 14px; }
+#edit-profile-section input { width: calc(100% - 20px); padding: 10px; margin-top: 5px; margin-bottom: 10px; }
+#edit-profile-section button { width: 100%; padding: 12px; }
 .profile-actions .logout-button {
-    width: 100%;
-    padding: 12px;
-    background-color: #dc3545; /* Un color rojo para cerrar sesión */
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-/* ===================================== */
-/* ESTILOS PARA COMENTARIOS Y REACCIONES */
-/* ===================================== */
-
-/* --- Contenedor de Comentarios --- */
-.comments-container {
-    padding: 0 20px 20px 20px;
-    margin-top: 20px;
-    border-top: 1px solid var(--border-color);
+    width: 100%; padding: 12px; background-color: #dc3545;
+    color: white; border: none; border-radius: 8px; cursor: pointer;
 }
 
-#add-comment-form-container {
-    margin-bottom: 20px;
+/* --- Estilos de Interacción en Lector --- */
+.interaction-container { padding: 20px; background-color: var(--bg-color); }
+.reactions-container { display: flex; justify-content: center; margin-bottom: 30px; }
+.reaction-button {
+    background: var(--card-bg); border: 1px solid var(--border-color);
+    border-radius: 20px; padding: 8px 16px; cursor: pointer;
+    display: flex; align-items: center; font-size: 16px;
+    color: var(--text-color); transition: transform 0.2s ease, background-color 0.2s;
 }
-
+.reaction-button:hover { transform: scale(1.05); }
+.reaction-button.liked { background-color: #e53935; color: white; border-color: #e53935; }
+.reaction-button .icon { margin-right: 8px; font-size: 20px; }
+.comments-container h2 { margin-top: 0; }
 #add-comment-form textarea {
-    width: 100%;
-    min-height: 80px;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    background-color: var(--card-bg-color);
-    color: var(--text-color);
-    font-family: 'Roboto', sans-serif;
-    resize: vertical;
+    width: 100%; min-height: 80px; padding: 10px;
+    border-radius: 8px; border: 1px solid var(--border-color);
+    background-color: var(--bg-color); color: var(--text-color);
 }
-
 #add-comment-form button {
-    display: block;
-    width: auto;
-    margin-top: 10px;
-    margin-left: auto;
-    padding: 10px 20px;
+    display: block; width: auto; margin-top: 10px;
+    margin-left: auto; padding: 10px 20px;
 }
-
-/* --- Estilo de un Comentario Individual --- */
 .comment {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid var(--border-color);
+    display: flex; align-items: flex-start; margin-top: 20px;
+    padding-top: 15px; border-top: 1px solid var(--border-color);
 }
-.comment:last-child { border-bottom: none; }
-
-.comment-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 15px;
-    object-fit: cover;
-}
-
+.comment:first-of-type { border-top: none; padding-top: 0; }
+.comment-avatar { width: 40px; height: 40px; border-radius: 50%; margin-right: 15px; object-fit: cover; }
 .comment-body { flex: 1; }
 .comment-author { font-weight: 700; margin: 0 0 5px 0; }
 .comment-text { margin: 0; white-space: pre-wrap; }
 
-/* ================================================= */
-/* ESTILOS PARA INTERACCIÓN DENTRO DEL CAPÍTULO */
-/* ================================================= */
-
-.interaction-container {
-    padding: 20px;
-    background-color: var(--bg-color); /* Fondo sólido para separar de las imágenes */
-}
-
-/* --- Reacciones del Capítulo --- */
-.interaction-container .reactions-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 30px;
-}
-
-.interaction-container .reaction-button {
-    background: var(--card-bg-color);
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
-    padding: 8px 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    font-size: 16px;
-    color: var(--text-color);
-    transition: transform 0.2s ease, background-color 0.2s;
-}
-
-.interaction-container .reaction-button:hover {
-    transform: scale(1.05);
-}
-
-.interaction-container .reaction-button.liked {
-    background-color: #e53935; /* Rojo para el corazón */
-    color: white;
-    border-color: #e53935;
-}
-
-.interaction-container .reaction-button .icon {
-    margin-right: 8px;
-    font-size: 20px;
-}
-
-/* --- Comentarios del Capítulo --- */
-.comments-container h2 {
-    margin-top: 0;
-}
-
-#add-comment-form textarea {
-    width: 100%;
-    min-height: 80px;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    background-color: var(--bg-color);
-    color: var(--text-color);
-}
-
-#add-comment-form button {
-    display: block;
-    width: auto;
-    margin-top: 10px;
-    margin-left: auto;
-    padding: 10px 20px;
-}
-
-.comment {
-    display: flex;
-    align-items: flex-start;
-    margin-top: 20px;
-    padding-top: 15px;
-    border-top: 1px solid var(--border-color);
-}
-.comment:first-of-type {
-    border-top: none;
-    padding-top: 0;
-}
-
-.comment-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 15px;
-    object-fit: cover;
-}
-
-.comment-body { flex: 1; }
-.comment-author { font-weight: 700; margin: 0 0 5px 0; }
-.comment-text { margin: 0; white-space: pre-wrap; }
-/* Estilos para contadores en la lista de capítulos */
+/* --- Estilos para contadores en la lista de capítulos --- */
 .chapter-list-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: flex; justify-content: space-between; align-items: center;
 }
-
-.chapter-stats {
-    display: flex;
-    align-items: center;
-    font-size: 14px;
-    color: #888;
-}
-
-.chapter-stats span {
-    display: flex;
-    align-items: center;
-    margin-left: 15px;
-}
-
-.chapter-stats .icon {
-    margin-right: 5px;
-}
+.chapter-stats { display: flex; align-items: center; font-size: 14px; color: #888; }
+.chapter-stats span { display: flex; align-items: center; margin-left: 15px; }
+.chapter-stats .icon { margin-right: 5px; }
