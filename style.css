@@ -329,4 +329,17 @@ h1, h2, h3 { color: var(--text-color); }
   color: #ff4d4d;
   margin-top: 10px;
 }
+.forgot-password {
+  display: block; /* Para que ocupe su propia línea */
+  text-align: right; /* Lo alinea a la derecha */
+  font-size: 12px;
+  color: #00aaff; /* Un color azulado */
+  margin-top: -10px; /* Lo acerca al campo de contraseña */
+  margin-bottom: 15px;
+  text-decoration: none;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
 
