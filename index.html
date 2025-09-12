@@ -11,6 +11,7 @@
 </head>
 <body>
 
+    <!-- Contenido principal de la aplicación -->
     <div id="loader">
         <div class="spinner"></div>
         <p>Shinees</p>
@@ -20,7 +21,11 @@
         <main id="main-view" class="page-view">
             <header class="main-header">
                 <h1>Shinees</h1>
-                <button id="theme-toggle">☀️</button>
+                <div class="header-actions">
+                    <button id="theme-toggle">☀️</button>
+                    <!-- BOTÓN DE REGISTRO MOVIDO AQUÍ -->
+                    <button id="mostrar-registro-btn">Registrarse</button>
+                </div>
             </header>
             <section id="featured-carousel" class="hero-carousel"></section>
             <section class="ad-container">
@@ -35,6 +40,7 @@
             </section>
         </main>
 
+        <!-- Vistas de página que se ocultan/muestran -->
         <div id="series-detail-view" class="page-view hidden"></div>
         <div id="vertical-reader" class="page-view hidden">
             <header class="reader-header">
@@ -43,6 +49,7 @@
             <div id="reader-content"></div>
         </div>
 
+        <!-- Barra de navegación inferior -->
         <nav class="bottom-nav">
             <a href="#" class="nav-item active"><span>Inicio</span></a>
             <a href="#" class="nav-item"><span>Series</span></a>
@@ -51,6 +58,11 @@
         </nav>
     </div>
 
+    <!-- ======================================================= -->
+    <!-- MODALES (VENTANAS EMERGENTES ) -->
+    <!-- ======================================================= -->
+
+    <!-- Modal de Publicidad (ya lo tenías) -->
     <div id="ad-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <span id="ad-modal-close" class="modal-close-button">&times;</span>
@@ -62,58 +74,38 @@
         </div>
     </div>
 
-    <!-- ===== LOS SCRIPTS VAN AQUÍ, AL FINAL DEL BODY ===== -->
-    <!-- Scripts de Firebase (VERSIÓN 8 - LA CORRECTA ) -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-
-    <!-- En alguna parte de tu <body> en index.html -->
-
-<div id="registro-view" style="display: none;"> <!-- Lo ponemos oculto por defecto -->
-  <h2>Crear una cuenta en Shinees</h2>
-  <form id="registro-form">
-    <div>
-      <label>Correo Electrónico:</label>
-      <input type="email" id="registro-email" required />
+    <!-- Modal de Registro (ESTRUCTURA CORREGIDA ) -->
+    <div id="registro-modal-overlay" class="modal-overlay hidden">
+        <div id="registro-modal-content" class="modal-content">
+            <button id="cerrar-modal-btn" class="modal-close-button">&times;</button>
+            <h2>Crear una cuenta en Shinees</h2>
+            <form id="registro-form">
+                <div>
+                    <label for="registro-email">Correo Electrónico:</label>
+                    <input type="email" id="registro-email" required />
+                </div>
+                <div>
+                    <label for="registro-password">Contraseña:</label>
+                    <input type="password" id="registro-password" required minlength="6" />
+                </div>
+                <button type="submit">Confirmar Registro</button>
+                <p id="registro-error" class="error-message"></p>
+            </form>
+        </div>
     </div>
-    <div>
-      <label>Contraseña:</label>
-      <input type="password" id="registro-password" required minlength="6" />
-    </div>
-    <button type="submit">Registrarse</button>
-    <p id="registro-error" style="color: red;"></p>
-  </form>
-</div>
 
-<!-- También necesitarás un botón para mostrar este formulario -->
-<button id="mostrar-registro-btn">Registrarse</button>
 
-    <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+    <!-- ======================================================= -->
+    <!-- SCRIPTS (AL FINAL DEL BODY) -->
+    <!-- ======================================================= -->
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyDsv2keytFIEeS4QT4_chwOHMgyWpV8gP4",
-    authDomain: "shinees.firebaseapp.com",
-    projectId: "shinees",
-    storageBucket: "shinees.firebasestorage.app",
-    messagingSenderId: "109623976622",
-    appId: "1:109623976622:web:c9ab5a1c345f502b71833f",
-    measurementId: "G-Z0HSJ2WDZQ"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
+    <!-- Scripts de Firebase (Versión 8 - compatible con tu app.js) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
     <!-- Tu script principal -->
     <script src="app.js"></script>
+
 </body>
 </html>
