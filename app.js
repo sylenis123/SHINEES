@@ -281,6 +281,13 @@ document.addEventListener('DOMContentLoaded', () => {
             readerContent.innerHTML = '<p style="color:white; text-align:center; margin-top: 50px;">Este capítulo no tiene páginas.</p>';
         }
         displayChapterInteractions(serieId, chapter.id);
+        
+        // **CORRECCIÓN CLAVE:** Asignar los listeners DESPUÉS de que la vista del lector se ha creado.
+        const chapterReactionBtn = document.getElementById('chapter-reaction-btn');
+        if (chapterReactionBtn) chapterReactionBtn.addEventListener('click', handleReaction);
+        const commentFormInReader = document.getElementById('add-comment-form');
+        if (commentFormInReader) commentFormInReader.addEventListener('submit', handlePostComment);
+
         document.querySelector('.bottom-nav').classList.add('hidden');
         navigateTo('reader');
     }
@@ -293,11 +300,22 @@ document.addEventListener('DOMContentLoaded', () => {
             serie.capitulos.forEach(cap => {
                 const listItem = document.createElement('li');
                 listItem.className = 'chapter-list-item';
+                
                 const link = document.createElement('a');
                 link.href = '#';
                 link.textContent = `${cap.numero === 0 ? 'Prólogo' : `Cap. ${cap.numero}`}: ${cap.titulo_cap || ''}`;
                 link.addEventListener('click', (e) => { e.preventDefault(); openVerticalReader(serieId, cap); });
+                
+                // **NUEVA MEJORA:** Contenedor para las estadísticas
+                const statsContainer = document.createElement('div');
+                statsContainer.className = 'chapter-stats';
+                statsContainer.innerHTML = `
+                    <span><span class="icon">❤️</span> ${cap.likes || 0}</span>
+                    <span><span class="icon">💬</span> ${cap.commentsCount || 0}</span>
+                `;
+                
                 listItem.appendChild(link);
+                listItem.appendChild(statsContainer); // Añadimos las estadísticas al item
                 chapterList.appendChild(listItem);
             });
         } else {
@@ -370,12 +388,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    const chapterReactionBtn = document.getElementById('chapter-reaction-btn');
-    if (chapterReactionBtn) chapterReactionBtn.addEventListener('click', handleReaction);
-
-    const commentFormInReader = document.getElementById('add-comment-form');
-    if (commentFormInReader) commentFormInReader.addEventListener('submit', handlePostComment);
-
     // Carga inicial del contenido
     loadContent();
 });
