@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Shinees</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,108 +11,64 @@
 </head>
 <body>
 
-    <!-- Pantalla de Carga Inicial -->
     <div id="loader">
         <div class="spinner"></div>
         <p>Shinees</p>
     </div>
 
-    <!-- Contenido Principal de la Aplicación (inicialmente oculto ) -->
     <div id="app-content" style="display: none;">
-        
-        <!-- Vista Principal (Home) -->
         <main id="main-view" class="page-view">
             <header class="main-header">
                 <h1>Shinees</h1>
                 <button id="theme-toggle">☀️</button>
             </header>
-            
-            <section id="featured-carousel" class="hero-carousel">
-                <!-- El carrusel se generará con JavaScript -->
+            <section id="featured-carousel" class="hero-carousel"></section>
+            <section class="ad-container">
+                <div class="ad-placeholder">
+                    <span class="ad-label">Publicidad</span>
+                    <img src="https://i.imgur.com/K71g2k6.png" alt="Anuncio de ejemplo">
+                </div>
             </section>
-            
-           </section> <!-- Fin del carrusel -->
-            
-<!-- ===== INICIO DEL ESPACIO PUBLICITARIO ===== -->
-<section class="ad-container">
-    <div class="ad-placeholder">
-        <span class="ad-label">Publicidad</span>
-        <img src="https://i.imgur.com/K71g2k6.png" alt="Anuncio de ejemplo">
-    </div>
-</section>
-<!-- ===== FIN DEL ESPACIO PUBLICITARIO ===== -->
-            
-<section class="series-grid-container"> <!-- Inicio de la parrilla -->
-            
             <section class="series-grid-container">
                 <h2>Series Populares</h2>
-                <div id="popular-series" class="series-grid">
-                    <!-- Las tarjetas de series se generarán con JavaScript -->
-                </div>
+                <div id="popular-series" class="series-grid"></div>
             </section>
         </main>
 
-        <!-- Vista de Detalles de Serie (inicialmente oculta ) -->
-        <div id="series-detail-view" class="page-view hidden">
-            <!-- El contenido de esta vista se generará con JavaScript -->
-        </div>
-
-        <!-- Lector Vertical (inicialmente oculto) -->
+        <div id="series-detail-view" class="page-view hidden"></div>
         <div id="vertical-reader" class="page-view hidden">
             <header class="reader-header">
                 <button class="reader-close-button">X</button>
             </header>
-            <div id="reader-content">
-                <!-- Las imágenes del capítulo se generarán con JavaScript -->
-            </div>
+            <div id="reader-content"></div>
         </div>
 
-        <!-- Barra de Navegación Inferior -->
         <nav class="bottom-nav">
-            <a href="#" class="nav-item active">
-                <span>Inicio</span>
-            </a>
-            <a href="#" class="nav-item">
-                <span>Series</span>
-            </a>
-            <a href="#" class="nav-item">
-                <span>Originales</span>
-            </a>
-            <a href="#" class="nav-item">
-                <span>Yo</span>
-            </a>
+            <a href="#" class="nav-item active"><span>Inicio</span></a>
+            <a href="#" class="nav-item"><span>Series</span></a>
+            <a href="#" class="nav-item"><span>Originales</span></a>
+            <a href="#" class="nav-item"><span>Yo</span></a>
         </nav>
+    </div>
 
-    </div> <!-- Fin de app-content -->
-    </div> <!-- Fin de app-content -->
-
-    <!-- ===== INICIO DEL MODAL DE ANUNCIO POST-CAPÍTULO ===== -->
-    <div id="post-chapter-ad-modal" class="modal-overlay hidden">
+    <div id="ad-modal" class="modal-overlay hidden">
         <div class="modal-content">
+            <span id="ad-modal-close" class="modal-close-button">&times;</span>
             <span class="ad-label">Publicidad</span>
             <p>¡Gracias por leer!</p>
             <div class="ad-placeholder-modal">
-                <!-- Aquí iría el código del anuncio real -->
                 <img src="https://i.imgur.com/gswg3gC.png" alt="Anuncio de ejemplo post-capítulo">
             </div>
-            <button id="close-ad-modal-button">Cerrar y volver a la serie</button>
         </div>
     </div>
-    <!-- ===== FIN DEL MODAL DE ANUNCIO POST-CAPÍTULO ===== -->
 
+    <!-- ===== LOS SCRIPTS VAN AQUÍ, AL FINAL DEL BODY ===== -->
+    <!-- Scripts de Firebase (VERSIÓN 8 - LA CORRECTA ) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+    <!-- Tu script principal -->
     <script src="app.js"></script>
-</body>
-</html>
-<!-- Scripts de Firebase -->
-<!-- Scripts de Firebase (VERSIÓN 8 - LA CORRECTA) -->
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-
-<!-- Tu script principal -->
-<script src="app.js"></script>
-
-    <script src="app.js"></script>
-
 </body>
 </html>
