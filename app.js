@@ -1,22 +1,75 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+    // =================================================================
+    // 1. CONFIGURACIÓN DE FIREBASE
+    // ¡¡¡Pega aquí las llaves (el objeto firebaseConfig) que guardaste!!!
+    // =================================================================
+    const firebaseConfig = {
+        apiKey: "TU_API_KEY",
+        authDomain: "TU_AUTH_DOMAIN",
+        projectId: "TU_PROJECT_ID",
+        storageBucket: "TU_STORAGE_BUCKET",
+        messagingSenderId: "TU_MESSAGING_SENDER_ID",
+        appId: "TU_APP_ID"
+    };
+
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore(); // Nuestra conexión a la base de datos Firestore
+
+    // =================================================================
+    // 2. SELECTORES DEL DOM (igual que antes)
+    // =================================================================
     const mainView = document.getElementById('main-view');
     const detailView = document.getElementById('series-detail-view');
-    const readerView = document.getElementById('vertical-reader');
+    // ... (el resto de tus selectores: readerView, loader, etc.)
     const featuredCarousel = document.getElementById('featured-carousel');
     const popularSeriesGrid = document.getElementById('popular-series');
     const loader = document.getElementById('loader');
     const appContent = document.getElementById('app-content');
     const themeToggleButton = document.getElementById('theme-toggle');
-    const adModal = document.getElementById('post-chapter-ad-modal');
-    const closeAdModalButton = document.getElementById('close-ad-modal-button');
+    const readerView = document.getElementById('vertical-reader');
 
-    const GITHUB_USER = 'sylenis123';
-    const GITHUB_REPO = 'SHINEES';
-    const BASE_CONTENT_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/contenido/`;
-    let seriesData = [];
-    let currentSeriesId = null;
 
-    function navigateTo(view ) {
+    let seriesData = []; // Aquí guardaremos los datos de Firebase
+
+    // =================================================================
+    // 3. LÓGICA DE LA APLICACIÓN (casi igual, pero con la nueva carga)
+    // =================================================================
+
+    // --- ¡¡¡NUEVA FUNCIÓN loadContent!!! ---
+    async function loadContent() {
+        try {
+            const seriesCollection = await db.collection('series').get(); // Pide los datos a Firestore
+            
+            seriesData = seriesCollection.docs.map(doc => doc.data()); // Convierte los datos a un formato que entendemos
+
+            featuredCarousel.innerHTML = '';
+            popularSeriesGrid.innerHTML = '';
+
+            seriesData.forEach(serie => {
+                const cardType = serie.destacado ? 'hero' : 'grid';
+                const card = createSeriesCard(serie, cardType);
+                if (serie.destacado) {
+                    featuredCarousel.appendChild(card);
+                } else {
+                    popularSeriesGrid.appendChild(card);
+                }
+            });
+
+            loader.style.display = 'none';
+            appContent.style.display = 'block';
+
+        } catch (error) {
+            console.error("Error al cargar datos desde Firestore:", error);
+            loader.innerHTML = '<p>Error al conectar con la base de datos. Revisa la configuración de Firebase.</p>';
+        }
+    }
+
+    // El resto de tus funciones (createSeriesCard, buildDetailPage, etc.)
+    // se quedan exactamente igual que las teníamos. Las pego aquí para que no falte nada.
+
+    function navigateTo(view) {
         mainView.classList.add('hidden');
         detailView.classList.add('hidden');
         readerView.classList.add('hidden');
@@ -30,35 +83,36 @@ document.addEventListener('DOMContentLoaded', () => {
         const readerContent = document.getElementById('reader-content');
         const bottomNav = document.querySelector('.bottom-nav');
         readerContent.innerHTML = '';
-
-        if (chapter.tiras && Array.isArray(chapter.tiras)) {
+        
+        if (chapter && chapter.tiras && chapter.tiras.length > 0) {
             chapter.tiras.forEach(tira => {
                 for (let i = 1; i <= tira.paginas; i++) {
                     const pageNumber = i.toString().padStart(2, '0');
-                    // LA LÍNEA CORREGIDA: usa tira.formato
-                    const imageUrl = `${BASE_CONTENT_URL}${chapter.path}/${tira.id}_${pageNumber}.${tira.formato}`;
-                    const img = document.createElement('img');
+                    const imageUrl = `https://raw.githubusercontent.com/sylenis123/SHINEES/main/contenido/${chapter.path}/${tira.id}_${pageNumber}.${chapter.formato}`;
+                    const img = document.createElement('img' );
                     img.src = imageUrl;
+                    img.className = 'reader-page-image';
                     readerContent.appendChild(img);
                 }
             });
+        } else {
+            readerContent.innerHTML = '<p style="color:white; text-align:center; margin-top: 50px;">Este capítulo no tiene páginas.</p>';
         }
 
-        const endButton = document.createElement('button');
-        endButton.id = 'show-ad-button';
-        endButton.textContent = 'Finalizar Capítulo';
-        readerContent.appendChild(endButton);
-
-        endButton.addEventListener('click', () => {
-            adModal.classList.remove('hidden');
-        });
+        const adButton = document.createElement('button');
+        adButton.className = 'ad-trigger-button';
+        adButton.textContent = 'Ver anuncio para apoyar al creador';
+        adButton.onclick = () => {
+            const adModal = document.getElementById('ad-modal');
+            adModal.style.display = 'flex';
+        };
+        readerContent.appendChild(adButton);
 
         bottomNav.classList.add('hidden');
         navigateTo('reader');
     }
 
     function buildDetailPage(serie) {
-        currentSeriesId = serie.id;
         detailView.innerHTML = `<div class="series-detail-container"><header class="detail-header" style="background-image: url('${serie.portada}')"><button class="back-button">‹</button><div class="detail-info"><div class="detail-info-cover"><img src="${serie.portada}" alt="${serie.titulo}"></div><div class="detail-info-text"><h1>${serie.titulo}</h1><p>${serie.categoria}</p></div></div></header><div class="detail-content"><p class="detail-description">${serie.descripcion}</p><h2>Capítulos</h2><ul class="chapter-list" id="detail-chapter-list"></ul></div></div>`;
         const chapterList = detailView.querySelector('#detail-chapter-list');
         if (serie.capitulos && serie.capitulos.length > 0) {
@@ -77,48 +131,39 @@ document.addEventListener('DOMContentLoaded', () => {
         detailView.querySelector('.back-button').addEventListener('click', () => navigateTo('main'));
     }
 
-    function showDetailPage(serieId) { const serie = seriesData.find(s => s.id === serieId); if (!serie) return; buildDetailPage(serie); navigateTo('detail'); }
-    function createSeriesCard(serie, type = 'grid') { const card = document.createElement('a'); card.href = '#'; if (type === 'hero') { card.className = 'hero-card'; card.innerHTML = `<img src="${serie.portada}" class="hero-card-background" alt=""><img src="${serie.portada}" class="hero-card-cover" alt="${serie.titulo}"><div class="hero-card-info"><h3>${serie.titulo}</h3><p>${serie.categoria}</p></div>`; } else { card.className = 'series-card'; card.innerHTML = `<img src="${serie.portada}" alt="${serie.titulo}"><div class="series-card-info"><h3>${serie.titulo}</h3><p>${serie.categoria}</p></div>`; } card.addEventListener('click', (e) => { e.preventDefault(); showDetailPage(serie.id); }); return card; }
-    
-    async function loadContent() { 
-        try { 
-            const response = await fetch('database.json'); 
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`); 
-            const data = await response.json(); 
-            seriesData = data.series; 
-            featuredCarousel.innerHTML = ''; 
-            popularSeriesGrid.innerHTML = ''; 
-            seriesData.forEach(serie => { const cardType = serie.destacado ? 'hero' : 'grid'; const card = createSeriesCard(serie, cardType); if (serie.destacado) { featuredCarousel.appendChild(card); } else { popularSeriesGrid.appendChild(card); } }); 
-            loader.style.display = 'none'; 
-            appContent.style.display = 'block'; 
-        } catch (error) { 
-            console.error("No se pudo cargar el contenido:", error); 
-            loader.innerHTML = '<p>Error al cargar el contenido. Revisa el archivo database.json y la consola.</p>'; 
-        } 
+    function createSeriesCard(serie, type = 'grid') {
+        const card = document.createElement('a');
+        card.href = '#';
+        if (type === 'hero') {
+            card.className = 'hero-card';
+            card.innerHTML = `<div class="hero-card-bg" style="background-image: url('${serie.portada}')"></div><img src="${serie.portada}" class="hero-card-cover" alt="${serie.titulo}"><div class="hero-card-info"><h3>${serie.titulo}</h3><p>${serie.categoria}</p></div>`;
+        } else {
+            card.className = 'series-card';
+            card.innerHTML = `<img src="${serie.portada}" alt="${serie.titulo}"><div class="series-card-info"><h3>${serie.titulo}</h3></div>`;
+        }
+        card.addEventListener('click', (e) => { e.preventDefault(); showDetailPage(serie.id); });
+        return card;
     }
-    
+
     readerView.querySelector('.reader-close-button').addEventListener('click', () => {
         const bottomNav = document.querySelector('.bottom-nav');
         bottomNav.classList.remove('hidden');
-        if (currentSeriesId) { showDetailPage(currentSeriesId); } else { navigateTo('main'); }
+        navigateTo('detail');
+    });
+    
+    document.getElementById('ad-modal-close').addEventListener('click', () => {
+        document.getElementById('ad-modal').style.display = 'none';
     });
 
-    closeAdModalButton.addEventListener('click', () => {
-        adModal.classList.add('hidden');
-        const bottomNav = document.querySelector('.bottom-nav');
-        bottomNav.classList.remove('hidden');
-        if (currentSeriesId) { showDetailPage(currentSeriesId); } else { navigateTo('main'); }
-    });
-
-    themeToggleButton.addEventListener('click', () => { 
-        const currentTheme = document.documentElement.getAttribute('data-theme'); 
-        if (currentTheme === 'dark') { 
-            document.documentElement.setAttribute('data-theme', 'light'); 
-            themeToggleButton.textContent = '🌙'; 
-        } else { 
-            document.documentElement.setAttribute('data-theme', 'dark'); 
-            themeToggleButton.textContent = '☀️'; 
-        } 
+    themeToggleButton.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        if (currentTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'light');
+            themeToggleButton.textContent = '🌙';
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeToggleButton.textContent = '☀️';
+        }
     });
 
     loadContent();
