@@ -79,12 +79,10 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('profile-display-name').textContent = nombreUsuario;
             document.getElementById('profile-email').textContent = user.email;
             document.getElementById('profile-avatar-img').src = user.photoURL || 'https://i.imgur.com/SYJ2s1k.png';
-            if (navProfileButton ) navProfileButton.addEventListener('click', (e) => { e.preventDefault(); navigateTo('profile'); });
         } else {
-            mostrarRegistroBtn.classList.remove('hidden');
+            mostrarRegistroBtn.classList.remove('hidden' );
             botonLogin.classList.remove('hidden');
             divPerfilUsuario.classList.add('hidden');
-            if (navProfileButton) navProfileButton.addEventListener('click', (e) => { e.preventDefault(); abrirModal(loginModalOverlay); });
         }
     });
 
@@ -213,8 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function handlePostComment(e) {
-        e.preventDefault();
+    function handlePostComment() {
         const user = auth.currentUser;
         const commentInput = document.getElementById('comment-input');
         const commentText = commentInput.value.trim();
@@ -307,11 +304,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         displayChapterInteractions(serieId, chapter.id);
         
-        const chapterReactionBtn = document.getElementById('chapter-reaction-btn');
-        if (chapterReactionBtn) chapterReactionBtn.addEventListener('click', handleReaction);
-        const commentFormInReader = document.getElementById('add-comment-form');
-        if (commentFormInReader) commentFormInReader.addEventListener('submit', handlePostComment);
-
         document.querySelector('.bottom-nav').classList.add('hidden');
         navigateTo('reader');
     }
@@ -344,7 +336,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             chapterList.innerHTML = '<li><p>Aún no hay capítulos.</p></li>';
         }
-        detailView.querySelector('.back-button').addEventListener('click', () => navigateTo('main'));
     }
 
     function showDetailPage(serieId) {
@@ -389,17 +380,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =================================================================
-    // 4. EVENT LISTENERS GENERALES
+    // 4. EVENT LISTENERS GENERALES Y DELEGACIÓN DE EVENTOS
     // =================================================================
+    
+    // --- Navegación principal ---
     if (navHomeButton) navHomeButton.addEventListener('click', (e) => { e.preventDefault(); navigateTo('main'); });
     
+    // --- Cierre de modales y lector ---
     readerView.querySelector('.reader-close-button').addEventListener('click', () => {
         navigateTo('detail');
         document.querySelector('.bottom-nav').classList.remove('hidden');
     });
-    
     document.getElementById('ad-modal-close').addEventListener('click', () => document.getElementById('ad-modal').classList.add('hidden'));
     
+    // --- Cambio de tema ---
     themeToggleButton.addEventListener('click', () => {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         if (currentTheme === 'dark') {
@@ -408,6 +402,26 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             document.documentElement.setAttribute('data-theme', 'dark');
             themeToggleButton.textContent = '☀️';
+        }
+    });
+
+    // **CORRECCIÓN CLAVE: Usar Delegación de Eventos**
+    document.addEventListener('click', (e) => {
+        // Vigilar clics en el botón de "like"
+        if (e.target.matches('#chapter-reaction-btn') || e.target.closest('#chapter-reaction-btn')) {
+            handleReaction();
+        }
+        // Vigilar clics en el botón de "Atrás" en la vista de detalle
+        if (e.target.matches('.back-button')) {
+            navigateTo('main');
+        }
+    });
+
+    document.addEventListener('submit', (e) => {
+        // Vigilar envíos del formulario de comentarios
+        if (e.target.matches('#add-comment-form')) {
+            e.preventDefault();
+            handlePostComment();
         }
     });
     
