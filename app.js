@@ -195,6 +195,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (doc.exists) reactionBtn.classList.add('liked');
                 else reactionBtn.classList.remove('liked');
             });
+        } else {
+            reactionBtn.classList.remove('liked');
         }
         commentsList.innerHTML = '';
         chapterRef.collection('comentarios').orderBy('fecha', 'desc').get().then(querySnapshot => {
@@ -211,9 +213,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function handlePostComment() {
+    function handlePostComment(e) {
+        e.preventDefault();
         const user = auth.currentUser;
         const commentInput = document.getElementById('comment-input');
+        if (!commentInput) return;
         const commentText = commentInput.value.trim();
         if (!user) { alert("Debes iniciar sesión para comentar."); abrirModal(loginModalOverlay); return; }
         if (!commentText || !currentSerieId || !currentChapterId) return;
@@ -383,17 +387,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4. EVENT LISTENERS GENERALES Y DELEGACIÓN DE EVENTOS
     // =================================================================
     
-    // --- Navegación principal ---
     if (navHomeButton) navHomeButton.addEventListener('click', (e) => { e.preventDefault(); navigateTo('main'); });
+    if (navProfileButton) navProfileButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (auth.currentUser) {
+            navigateTo('profile');
+        } else {
+            abrirModal(loginModalOverlay);
+        }
+    });
     
-    // --- Cierre de modales y lector ---
     readerView.querySelector('.reader-close-button').addEventListener('click', () => {
         navigateTo('detail');
         document.querySelector('.bottom-nav').classList.remove('hidden');
     });
     document.getElementById('ad-modal-close').addEventListener('click', () => document.getElementById('ad-modal').classList.add('hidden'));
     
-    // --- Cambio de tema ---
     themeToggleButton.addEventListener('click', () => {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         if (currentTheme === 'dark') {
@@ -407,21 +416,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // **CORRECCIÓN CLAVE: Usar Delegación de Eventos**
     document.addEventListener('click', (e) => {
-        // Vigilar clics en el botón de "like"
         if (e.target.matches('#chapter-reaction-btn') || e.target.closest('#chapter-reaction-btn')) {
             handleReaction();
         }
-        // Vigilar clics en el botón de "Atrás" en la vista de detalle
         if (e.target.matches('.back-button')) {
             navigateTo('main');
         }
     });
 
     document.addEventListener('submit', (e) => {
-        // Vigilar envíos del formulario de comentarios
         if (e.target.matches('#add-comment-form')) {
-            e.preventDefault();
-            handlePostComment();
+            // **LA CORRECCIÓN MÁGICA**
+            handlePostComment(e); 
         }
     });
     
