@@ -26,6 +26,15 @@ body { font-family: 'Roboto', sans-serif; background-color: var(--bg-color); col
 .series-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; padding: 0 15px; }
 .series-card { background-color: var(--card-bg); border-radius: 8px; overflow: hidden; }
 .series-card img { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; }
+.detail-header { position: relative; height: 300px; background-size: cover; background-position: center; }
+.detail-header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, var(--bg-color) 0%, transparent 100%); }
+.back-button { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.5rem; cursor: pointer; }
+.detail-info { position: absolute; bottom: 15px; left: 15px; right: 15px; display: flex; align-items: flex-end; gap: 15px; }
+.detail-info-cover img { height: 150px; border-radius: 8px; }
+.detail-info-text h1 { color: white; text-shadow: 1px 1px 3px #000; }
+.detail-content { padding: 15px; }
+.chapter-list { list-style: none; }
+.chapter-list li a { display: block; padding: 15px; border-bottom: 1px solid var(--border-color); color: var(--text-color); }
 .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-around; background-color: var(--nav-bg); border-top: 1px solid var(--border-color); padding: 5px 0; }
 .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-color); font-size: 0.7rem; text-decoration: none; }
 .nav-item.active { color: var(--primary-color); }
@@ -36,3 +45,11 @@ body { font-family: 'Roboto', sans-serif; background-color: var(--bg-color); col
 .modal-content form label { display: block; margin-bottom: 5px; }
 .modal-content form input { width: 100%; padding: 10px; border-radius: 4px; border: 1px solid var(--border-color); background-color: var(--bg-color); color: var(--text-color); }
 .modal-content form button { width: 100%; padding: 12px; border: none; border-radius: 4px; background-color: var(--primary-color); color: white; font-size: 16px; cursor: pointer; }
+.profile-content { padding: 20px; }
+.profile-card { background-color: var(--card-bg); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 20px; }
+.profile-avatar-container { position: relative; width: 120px; height: 120px; margin: 0 auto 20px; }
+#profile-avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-color); }
+.avatar-edit-button { position: absolute; bottom: 5px; right: 5px; background-color: var(--primary-color); color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; border: 2px solid var(--bg-color); }
+#profile-display-name { margin: 0; font-size: 24px; }
+#profile-email { color: #888; margin-top: 5px; margin-bottom: 20px; font-size: 14px; }
+.profile-actions .logout-button { width: 100%; padding: 12px; background-color: #dc3545; color: white; border: none; border-radius: 8px; cursor: pointer; }
