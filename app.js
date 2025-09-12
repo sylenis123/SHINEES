@@ -2,44 +2,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // =================================================================
     // 1. CONFIGURACIÓN DE FIREBASE
-    // ¡¡¡Pega aquí las llaves (el objeto firebaseConfig) que guardaste!!!
+    // ESTA ES LA FORMA CORRECTA DE PONER TUS LLAVES
     // =================================================================
     const firebaseConfig = {
-        <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyDsv2keytFIEeS4QT4_chwOHMgyWpV8gP4",
-    authDomain: "shinees.firebaseapp.com",
-    projectId: "shinees",
-    storageBucket: "shinees.firebasestorage.app",
-    messagingSenderId: "109623976622",
-    appId: "1:109623976622:web:c9ab5a1c345f502b71833f",
-    measurementId: "G-Z0HSJ2WDZQ"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
+        apiKey: "AIzaSyDsv2keytFIEeS4QT4_chwOHMgyWpV8gP4",
+        authDomain: "shinees.firebaseapp.com",
+        projectId: "shinees",
+        storageBucket: "shinees.appspot.com", // CORREGIDO: suele ser .appspot.com
+        messagingSenderId: "109623976622",
+        appId: "1:109623976622:web:c9ab5a1c345f502b71833f",
+        measurementId: "G-Z0HSJ2WDZQ"
     };
 
     // Inicializar Firebase
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore(); // Nuestra conexión a la base de datos Firestore
+    const db = firebase.firestore();
 
     // =================================================================
-    // 2. SELECTORES DEL DOM (igual que antes)
+    // 2. SELECTORES DEL DOM
     // =================================================================
     const mainView = document.getElementById('main-view');
     const detailView = document.getElementById('series-detail-view');
-    // ... (el resto de tus selectores: readerView, loader, etc.)
     const featuredCarousel = document.getElementById('featured-carousel');
     const popularSeriesGrid = document.getElementById('popular-series');
     const loader = document.getElementById('loader');
@@ -47,19 +30,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeToggleButton = document.getElementById('theme-toggle');
     const readerView = document.getElementById('vertical-reader');
 
-
-    let seriesData = []; // Aquí guardaremos los datos de Firebase
+    let seriesData = [];
 
     // =================================================================
-    // 3. LÓGICA DE LA APLICACIÓN (casi igual, pero con la nueva carga)
+    // 3. LÓGICA DE LA APLICACIÓN
     // =================================================================
 
-    // --- ¡¡¡NUEVA FUNCIÓN loadContent!!! ---
     async function loadContent() {
         try {
-            const seriesCollection = await db.collection('series').get(); // Pide los datos a Firestore
-            
-            seriesData = seriesCollection.docs.map(doc => doc.data()); // Convierte los datos a un formato que entendemos
+            const seriesCollection = await db.collection('series').get();
+            seriesData = seriesCollection.docs.map(doc => doc.data());
 
             featuredCarousel.innerHTML = '';
             popularSeriesGrid.innerHTML = '';
@@ -79,12 +59,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error("Error al cargar datos desde Firestore:", error);
-            loader.innerHTML = '<p>Error al conectar con la base de datos. Revisa la configuración de Firebase.</p>';
+            loader.innerHTML = '<p>Error al conectar con la base de datos. Revisa la configuración de Firebase y las reglas de seguridad.</p>';
         }
     }
 
-    // El resto de tus funciones (createSeriesCard, buildDetailPage, etc.)
-    // se quedan exactamente igual que las teníamos. Las pego aquí para que no falte nada.
+    function showDetailPage(serieId) {
+        const serie = seriesData.find(s => s.id === serieId);
+        if (!serie) return;
+        buildDetailPage(serie);
+        navigateTo('detail');
+    }
+
+    function createSeriesCard(serie, type = 'grid') {
+        const card = document.createElement('a');
+        card.href = '#';
+        card.addEventListener('click', (e) => { e.preventDefault(); showDetailPage(serie.id); });
+
+        if (type === 'hero') {
+            card.className = 'hero-card';
+            card.innerHTML = `<div class="hero-card-bg" style="background-image: url('${serie.portada}')"></div><img src="${serie.portada}" class="hero-card-cover" alt="${serie.titulo}"><div class="hero-card-info"><h3>${serie.titulo}</h3><p>${serie.categoria}</p></div>`;
+        } else {
+            card.className = 'series-card';
+            card.innerHTML = `<img src="${serie.portada}" alt="${serie.titulo}"><div class="series-card-info"><h3>${serie.titulo}</h3></div>`;
+        }
+        return card;
+    }
+    
+    // ... (El resto de las funciones: buildDetailPage, openVerticalReader, etc. se quedan igual que en mi mensaje anterior)
+    // Las pego aquí para asegurar que no haya errores.
 
     function navigateTo(view) {
         mainView.classList.add('hidden');
@@ -105,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
             chapter.tiras.forEach(tira => {
                 for (let i = 1; i <= tira.paginas; i++) {
                     const pageNumber = i.toString().padStart(2, '0');
-                    const imageUrl = `https://raw.githubusercontent.com/sylenis123/SHINEES/main/contenido/${chapter.path}/${tira.id}_${pageNumber}.${chapter.formato}`;
+                    const imageUrl = `https://raw.githubusercontent.com/sylenis123/SHINEES/main/contenido/${chapter.path}/${tira.id}_${pageNumber}.${tira.formato}`;
                     const img = document.createElement('img' );
                     img.src = imageUrl;
                     img.className = 'reader-page-image';
@@ -120,8 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
         adButton.className = 'ad-trigger-button';
         adButton.textContent = 'Ver anuncio para apoyar al creador';
         adButton.onclick = () => {
-            const adModal = document.getElementById('ad-modal');
-            adModal.style.display = 'flex';
+            document.getElementById('ad-modal').style.display = 'flex';
         };
         readerContent.appendChild(adButton);
 
@@ -146,20 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
             chapterList.innerHTML = '<li><p>Aún no hay capítulos disponibles.</p></li>';
         }
         detailView.querySelector('.back-button').addEventListener('click', () => navigateTo('main'));
-    }
-
-    function createSeriesCard(serie, type = 'grid') {
-        const card = document.createElement('a');
-        card.href = '#';
-        if (type === 'hero') {
-            card.className = 'hero-card';
-            card.innerHTML = `<div class="hero-card-bg" style="background-image: url('${serie.portada}')"></div><img src="${serie.portada}" class="hero-card-cover" alt="${serie.titulo}"><div class="hero-card-info"><h3>${serie.titulo}</h3><p>${serie.categoria}</p></div>`;
-        } else {
-            card.className = 'series-card';
-            card.innerHTML = `<img src="${serie.portada}" alt="${serie.titulo}"><div class="series-card-info"><h3>${serie.titulo}</h3></div>`;
-        }
-        card.addEventListener('click', (e) => { e.preventDefault(); showDetailPage(serie.id); });
-        return card;
     }
 
     readerView.querySelector('.reader-close-button').addEventListener('click', () => {
