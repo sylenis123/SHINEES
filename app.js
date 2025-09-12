@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeToggleButton = document.getElementById('theme-toggle');
     const navHomeButton = document.getElementById('nav-home');
     const navProfileButton = document.getElementById('nav-profile');
+    const avatarUploadInput = document.getElementById('avatar-upload-input');
     
     let seriesData = [];
 
@@ -84,9 +85,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             document.getElementById('profile-display-name').textContent = nombreUsuario;
             document.getElementById('profile-email').textContent = user.email;
-            if (user.photoURL) document.getElementById('profile-avatar-img').src = user.photoURL;
+            if (user.photoURL) {
+                document.getElementById('profile-avatar-img').src = user.photoURL;
+            } else {
+                document.getElementById('profile-avatar-img').src = 'https://i.imgur.com/SYJ2s1k.png'; // Imagen por defecto
+            }
 
-            if (navProfileButton) navProfileButton.addEventListener('click', (e) => { e.preventDefault(); navigateTo('profile'); });
+            if (navProfileButton ) navProfileButton.addEventListener('click', (e) => { e.preventDefault(); navigateTo('profile'); });
 
         } else {
             console.log("Nadie conectado.");
@@ -171,6 +176,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (logoutBtnProfile) logoutBtnProfile.addEventListener('click', () => auth.signOut());
 
+    if (avatarUploadInput) {
+        avatarUploadInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const CLOUD_NAME = 'dhmhfplfc';
+            const UPLOAD_PRESET = 'bjm8b3s4';
+            const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
+
+            const formData = new FormData( );
+            formData.append('file', file);
+            formData.append('upload_preset', UPLOAD_PRESET);
+
+            alert("Subiendo nueva imagen de perfil... Esto puede tardar un momento.");
+
+            fetch(url, { method: 'POST', body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.secure_url) {
+                        const imageUrl = data.secure_url;
+                        const user = auth.currentUser;
+                        if (user) {
+                            user.updateProfile({ photoURL: imageUrl })
+                                .then(() => {
+                                    alert("¡Imagen de perfil actualizada!");
+                                    document.getElementById('profile-avatar-img').src = imageUrl;
+                                })
+                                .catch(error => alert("Hubo un error al guardar la nueva imagen."));
+                        }
+                    }
+                })
+                .catch(error => alert("Hubo un error al subir la imagen."));
+        });
+    }
+
     // =================================================================
     // 3. FUNCIONES PRINCIPALES DE LA APLICACIÓN
     // =================================================================
@@ -187,12 +227,10 @@ document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo(0, 0);
     }
 
-    // ESTAS FUNCIONES ESTABAN MAL UBICADAS, AHORA ESTÁN EN EL LUGAR CORRECTO
     function openVerticalReader(chapter) {
         const readerContent = document.getElementById('reader-content');
         const bottomNav = document.querySelector('.bottom-nav');
         readerContent.innerHTML = '';
-        
         if (chapter && chapter.tiras && chapter.tiras.length > 0) {
             const formatoGeneral = chapter.formato; 
             chapter.tiras.forEach(tira => {
@@ -209,7 +247,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             readerContent.innerHTML = '<p style="color:white; text-align:center; margin-top: 50px;">Este capítulo no tiene páginas.</p>';
         }
-
         const adButton = document.createElement('button');
         adButton.className = 'ad-trigger-button';
         adButton.textContent = 'Ver anuncio para apoyar al creador';
@@ -218,7 +255,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (adModal) adModal.classList.remove('hidden');
         };
         readerContent.appendChild(adButton);
-
         bottomNav.classList.add('hidden');
         navigateTo('reader');
     }
@@ -231,10 +267,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const listItem = document.createElement('li');
                 const link = document.createElement('a');
                 link.href = '#';
-                
                 const chapterLabel = cap.numero === 0 ? 'Prólogo' : `Capítulo ${cap.numero}`;
                 link.textContent = `${chapterLabel}: ${cap.titulo_cap || ''}`;
-                
                 link.addEventListener('click', (e) => { e.preventDefault(); openVerticalReader(cap); });
                 listItem.appendChild(link);
                 chapterList.appendChild(listItem);
@@ -307,6 +341,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Carga inicial del contenido
     loadContent();
 });
