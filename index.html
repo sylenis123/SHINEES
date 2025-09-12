@@ -19,16 +19,10 @@
                 <h1>Shinees</h1>
                 <div class="header-actions">
                     <button id="theme-toggle">☀️</button>
-                    <button id="mostrar-registro-btn">Registrarse</button>
+                    <!-- Los botones de login/registro se añadirán aquí -->
                 </div>
             </header>
             <section id="featured-carousel" class="hero-carousel"></section>
-            <section class="ad-container">
-                <div class="ad-placeholder">
-                    <span class="ad-label">Publicidad</span>
-                    <img src="https://i.imgur.com/K71g2k6.png" alt="Anuncio">
-                </div>
-            </section>
             <section class="series-grid-container">
                 <h2>Series Populares</h2>
                 <div id="popular-series" class="series-grid"></div>
@@ -36,91 +30,18 @@
         </main>
 
         <div id="series-detail-view" class="page-view hidden"></div>
-
-        <!-- VISTA DEL LECTOR (SOLO IMÁGENES ) -->
-        <div id="vertical-reader" class="page-view hidden">
-            <header class="reader-header">
-                <button class="reader-close-button">X</button>
-            </header>
-            <div id="reader-content"></div>
-            <!-- LA SECCIÓN DE INTERACCIÓN SE HA MOVIDO FUERA -->
-        </div>
-
-        <!-- SECCIÓN DE INTERACCIÓN (AHORA ES INDEPENDIENTE) -->
-        <div id="chapter-interaction-section" class="interaction-container hidden">
-            <div class="reactions-container">
-                <button id="chapter-reaction-btn" class="reaction-button">
-                    <span class="icon">❤️</span>
-                    <span id="chapter-reaction-count" class="count">0</span>
-                </button>
-            </div>
-            <div id="comments-section" class="comments-container">
-                <h2>Comentarios del Capítulo</h2>
-                <div id="add-comment-form-container">
-                    <form id="add-comment-form">
-                        <textarea id="comment-input" placeholder="Escribe tu comentario..." required></textarea>
-                        <button type="submit">Publicar</button>
-                    </form>
-                </div>
-                <div id="comments-list"></div>
-            </div>
-        </div>
-
-        <div id="profile-view" class="page-view hidden">
-            <header class="main-header"><h1>Mi Perfil</h1></header>
-            <div class="profile-content">
-                <div class="profile-card">
-                    <div class="profile-avatar-container">
-                        <img id="profile-avatar-img" src="https://i.imgur.com/SYJ2s1k.png" alt="Avatar">
-                        <label for="avatar-upload-input" class="avatar-edit-button" title="Cambiar avatar">✏️</label>
-                        <input type="file" id="avatar-upload-input" accept="image/*" style="display: none;">
-                    </div>
-                    <h2 id="profile-display-name">Cargando...</h2>
-                    <p id="profile-email">cargando@email.com</p>
-                    <div id="edit-profile-section">
-                        <label for="display-name-input">Cambiar nombre:</label>
-                        <input type="text" id="display-name-input" placeholder="Nuevo nombre">
-                        <button id="save-profile-btn">Guardar Cambios</button>
-                    </div>
-                </div>
-                <div class="profile-actions"><button id="logout-btn-profile" class="logout-button">Cerrar Sesión</button></div>
-            </div>
-        </div>
+        <div id="vertical-reader" class="page-view hidden"></div>
+        <div id="profile-view" class="page-view hidden"></div>
 
         <nav class="bottom-nav">
             <a href="#" id="nav-home" class="nav-item active"><span>Inicio</span></a>
-            <a href="#" id="nav-series" class="nav-item"><span>Series</span></a>
-            <a href="#" id="nav-originals" class="nav-item"><span>Originales</span></a>
             <a href="#" id="nav-profile" class="nav-item"><span>Yo</span></a>
         </nav>
     </div>
 
-    <!-- MODALES -->
-    <div id="registro-modal-overlay" class="modal-overlay hidden">
-        <div class="modal-content">
-            <button id="cerrar-modal-btn" class="modal-close-button">&times;</button>
-            <h2>Crear una cuenta</h2>
-            <form id="registro-form">
-                <div><label for="registro-email">Email:</label><input type="email" id="registro-email" required /></div>
-                <div><label for="registro-password">Contraseña:</label><input type="password" id="registro-password" required minlength="6" /></div>
-                <button type="submit">Confirmar</button>
-                <p id="registro-error" class="error-message"></p>
-            </form>
-        </div>
-    </div>
-    <div id="login-modal-overlay" class="modal-overlay hidden">
-        <div class="modal-content">
-            <button id="cerrar-login-modal-btn" class="modal-close-button">&times;</button>
-            <h2>Iniciar Sesión</h2>
-            <form id="login-form">
-                <div><label for="login-email">Email:</label><input type="email" id="login-email" required /></div>
-                <div><label for="login-password">Contraseña:</label><input type="password" id="login-password" required /></div>
-                <a href="#" id="forgot-password-link" class="forgot-password">¿Olvidaste tu contraseña?</a>
-                <button type="submit">Entrar</button>
-                <p id="login-error" class="error-message"></p>
-            </form>
-        </div>
-    </div>
+    <!-- Modales -->
+    <div id="registro-modal-overlay" class="modal-overlay hidden"></div>
+    <div id="login-modal-overlay" class="modal-overlay hidden"></div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
