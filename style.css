@@ -568,4 +568,26 @@ h1, h2, h3 { color: var(--text-color); }
 .comment-body { flex: 1; }
 .comment-author { font-weight: 700; margin: 0 0 5px 0; }
 .comment-text { margin: 0; white-space: pre-wrap; }
+/* Estilos para contadores en la lista de capítulos */
+.chapter-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
+.chapter-stats {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #888;
+}
+
+.chapter-stats span {
+    display: flex;
+    align-items: center;
+    margin-left: 15px;
+}
+
+.chapter-stats .icon {
+    margin-right: 5px;
+}
