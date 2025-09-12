@@ -11,11 +11,7 @@
 </head>
 <body>
 
-    <!-- Contenido principal de la aplicación -->
-    <div id="loader">
-        <div class="spinner"></div>
-        <p>Shinees</p>
-    </div>
+    <div id="loader"><div class="spinner"></div><p>Shinees</p></div>
 
     <div id="app-content" style="display: none;">
         <main id="main-view" class="page-view">
@@ -24,14 +20,13 @@
                 <div class="header-actions">
                     <button id="theme-toggle">☀️</button>
                     <button id="mostrar-registro-btn">Registrarse</button>
-                    <!-- El botón de Login y el perfil de usuario se crearán aquí con JS -->
                 </div>
             </header>
             <section id="featured-carousel" class="hero-carousel"></section>
             <section class="ad-container">
                 <div class="ad-placeholder">
                     <span class="ad-label">Publicidad</span>
-                    <img src="https://i.imgur.com/K71g2k6.png" alt="Anuncio de ejemplo">
+                    <img src="https://i.imgur.com/K71g2k6.png" alt="Anuncio">
                 </div>
             </section>
             <section class="series-grid-container">
@@ -40,34 +35,34 @@
             </section>
         </main>
 
-        <div id="series-detail-view" class="page-view hidden">
-            <!-- El contenido se genera con JS -->
-        </div>
+        <div id="series-detail-view" class="page-view hidden"></div>
 
+        <!-- VISTA DEL LECTOR (SOLO IMÁGENES ) -->
         <div id="vertical-reader" class="page-view hidden">
             <header class="reader-header">
                 <button class="reader-close-button">X</button>
             </header>
-            <div id="reader-content">
-                <!-- Las imágenes del capítulo se cargarán aquí -->
+            <div id="reader-content"></div>
+            <!-- LA SECCIÓN DE INTERACCIÓN SE HA MOVIDO FUERA -->
+        </div>
+
+        <!-- SECCIÓN DE INTERACCIÓN (AHORA ES INDEPENDIENTE) -->
+        <div id="chapter-interaction-section" class="interaction-container hidden">
+            <div class="reactions-container">
+                <button id="chapter-reaction-btn" class="reaction-button">
+                    <span class="icon">❤️</span>
+                    <span id="chapter-reaction-count" class="count">0</span>
+                </button>
             </div>
-            <div id="chapter-interaction-section" class="interaction-container">
-                <div class="reactions-container">
-                    <button id="chapter-reaction-btn" class="reaction-button">
-                        <span class="icon">❤️</span>
-                        <span id="chapter-reaction-count" class="count">0</span>
-                    </button>
+            <div id="comments-section" class="comments-container">
+                <h2>Comentarios del Capítulo</h2>
+                <div id="add-comment-form-container">
+                    <form id="add-comment-form">
+                        <textarea id="comment-input" placeholder="Escribe tu comentario..." required></textarea>
+                        <button type="submit">Publicar</button>
+                    </form>
                 </div>
-                <div id="comments-section" class="comments-container">
-                    <h2>Comentarios del Capítulo</h2>
-                    <div id="add-comment-form-container">
-                        <form id="add-comment-form">
-                            <textarea id="comment-input" placeholder="Escribe tu comentario..." required></textarea>
-                            <button type="submit">Publicar</button>
-                        </form>
-                    </div>
-                    <div id="comments-list"></div>
-                </div>
+                <div id="comments-list"></div>
             </div>
         </div>
 
@@ -101,12 +96,6 @@
     </div>
 
     <!-- MODALES -->
-    <div id="ad-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <span id="ad-modal-close" class="modal-close-button">&times;</span>
-            <div class="ad-placeholder-modal"><img src="https://i.imgur.com/gswg3gC.png" alt="Anuncio"></div>
-        </div>
-    </div>
     <div id="registro-modal-overlay" class="modal-overlay hidden">
         <div class="modal-content">
             <button id="cerrar-modal-btn" class="modal-close-button">&times;</button>
@@ -133,7 +122,6 @@
         </div>
     </div>
 
-    <!-- SCRIPTS -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
