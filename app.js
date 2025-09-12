@@ -1,6 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Configuración de Firebase (esto está bien)
+    // =================================================================
+    // CONFIGURACIÓN Y SELECTORES GLOBALES
+    // =================================================================
+
+    // Configuración de Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyDsv2keytFIEeS4QT4_chwOHMgyWpV8gP4",
         authDomain: "shinees.firebaseapp.com",
@@ -12,74 +16,106 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    const auth = firebase.auth(); // Obtenemos el servicio de autenticación
 
-    // Selectores del DOM (esto está bien)
+    // Selectores del DOM para las vistas principales
     const mainView = document.getElementById('main-view');
     const detailView = document.getElementById('series-detail-view');
+    const readerView = document.getElementById('vertical-reader');
     const featuredCarousel = document.getElementById('featured-carousel');
     const popularSeriesGrid = document.getElementById('popular-series');
     const loader = document.getElementById('loader');
     const appContent = document.getElementById('app-content');
     const themeToggleButton = document.getElementById('theme-toggle');
-    const readerView = document.getElementById('vertical-reader');
+    
     let seriesData = [];
-const auth = firebase.auth(); // Obtenemos el servicio de autenticación
 
-// Selectores para el nuevo formulario
-const registroView = document.getElementById('registro-view');
-const registroForm = document.getElementById('registro-form');
-const registroEmailInput = document.getElementById('registro-email');
-const registroPasswordInput = document.getElementById('registro-password');
-const registroError = document.getElementById('registro-error');
-const mostrarRegistroBtn = document.getElementById('mostrar-registro-btn');
-
-// Evento para mostrar el formulario de registro
-mostrarRegistroBtn.addEventListener('click', () => {
-  registroView.style.display = 'block'; // Muestra el formulario
-  // Aquí podrías ocultar otras vistas si es necesario
-});
-
-// Evento para manejar el envío del formulario
-registroForm.addEventListener('submit', (e) => {
-  e.preventDefault(); // Evita que la página se recargue
-
-  const email = registroEmailInput.value;
-  const password = registroPasswordInput.value;
-  registroError.textContent = ''; // Limpia errores anteriores
-
-  // Usamos la función de Firebase para crear el usuario
-  auth.createUserWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-      // ¡Registro exitoso!
-      console.log('¡Usuario registrado!', userCredential.user);
-      alert('¡Te has registrado con éxito!');
-      registroView.style.display = 'none'; // Oculta el formulario de nuevo
-    })
-    .catch((error) => {
-      // Hubo un error
-      console.error('Error en el registro:', error.message);
-      registroError.textContent = error.message; // Muestra el error al usuario
-    });
-});
     // =================================================================
-    // FUNCIÓN openVerticalReader CORREGIDA
+    // LÓGICA DE AUTENTICACIÓN Y MODAL DE REGISTRO (CÓDIGO MODIFICADO)
     // =================================================================
+
+    // Selectores para el modal y el formulario de registro
+    const registroModalOverlay = document.getElementById('registro-modal-overlay');
+    const registroForm = document.getElementById('registro-form');
+    const registroError = document.getElementById('registro-error');
+    const mostrarRegistroBtn = document.getElementById('mostrar-registro-btn');
+    const cerrarModalBtn = document.getElementById('cerrar-modal-btn');
+
+    // --- Funciones para controlar el modal ---
+    function abrirModalRegistro() {
+      if (registroModalOverlay) registroModalOverlay.classList.remove('hidden');
+    }
+
+    function cerrarModalRegistro() {
+      if (registroModalOverlay) registroModalOverlay.classList.add('hidden');
+      if (registroError) registroError.textContent = ''; // Limpia cualquier error al cerrar
+    }
+
+    // --- Event Listeners para el modal ---
+
+    // 1. Abrir el modal al hacer clic en "Registrarse"
+    if (mostrarRegistroBtn) {
+      mostrarRegistroBtn.addEventListener('click', abrirModalRegistro);
+    }
+
+    // 2. Cerrar el modal con el botón de la 'X'
+    if (cerrarModalBtn) {
+      cerrarModalBtn.addEventListener('click', cerrarModalRegistro);
+    }
+
+    // 3. Cerrar el modal si se hace clic en el fondo oscuro
+    if (registroModalOverlay) {
+      registroModalOverlay.addEventListener('click', (event) => {
+        if (event.target === registroModalOverlay) { // Solo si se hace clic en el overlay, no en el contenido
+          cerrarModalRegistro();
+        }
+      });
+    }
+
+    // 4. Manejar el envío del formulario de registro
+    if (registroForm) {
+      registroForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById('registro-email').value;
+        const password = document.getElementById('registro-password').value;
+        registroError.textContent = '';
+
+        auth.createUserWithEmailAndPassword(email, password)
+          .then((userCredential) => {
+            console.log('¡Usuario registrado!', userCredential.user);
+            alert('¡Registro exitoso!');
+            cerrarModalRegistro(); // Cierra el modal después del registro exitoso
+          })
+          .catch((error) => {
+            console.error('Error en el registro:', error.message);
+            // Traducimos algunos errores comunes para el usuario
+            if (error.code === 'auth/email-already-in-use') {
+              registroError.textContent = 'Este correo electrónico ya está en uso.';
+            } else if (error.code === 'auth/weak-password') {
+              registroError.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+            } else {
+              registroError.textContent = 'Ocurrió un error. Inténtalo de nuevo.';
+            }
+          });
+      });
+    }
+
+    // =================================================================
+    // FUNCIONES PRINCIPALES DE LA APLICACIÓN (TU CÓDIGO ORIGINAL)
+    // =================================================================
+
     function openVerticalReader(chapter) {
         const readerContent = document.getElementById('reader-content');
         const bottomNav = document.querySelector('.bottom-nav');
         readerContent.innerHTML = '';
         
         if (chapter && chapter.tiras && chapter.tiras.length > 0) {
-            // CORRECCIÓN 1: Leemos el formato del objeto principal del capítulo
             const formatoGeneral = chapter.formato; 
-
             chapter.tiras.forEach(tira => {
-                // CORRECCIÓN 2: Convertimos el ID de la tira a número y le sumamos 1
                 const tiraNumero = parseInt(tira.id) + 1;
-
                 for (let i = 1; i <= tira.paginas; i++) {
                     const pageNumber = i.toString().padStart(2, '0');
-                    // CORRECCIÓN 3: Usamos las variables corregidas para construir la URL
                     const imageUrl = `https://raw.githubusercontent.com/sylenis123/SHINEES/main/contenido/${chapter.path}/${tiraNumero}_${pageNumber}.${formatoGeneral}`;
                     const img = document.createElement('img' );
                     img.src = imageUrl;
@@ -95,7 +131,7 @@ registroForm.addEventListener('submit', (e) => {
         adButton.className = 'ad-trigger-button';
         adButton.textContent = 'Ver anuncio para apoyar al creador';
         adButton.onclick = () => {
-            document.getElementById('ad-modal').style.display = 'flex';
+            document.getElementById('ad-modal').classList.remove('hidden');
         };
         readerContent.appendChild(adButton);
 
@@ -103,9 +139,6 @@ registroForm.addEventListener('submit', (e) => {
         navigateTo('reader');
     }
 
-    // =================================================================
-    // FUNCIÓN buildDetailPage CORREGIDA
-    // =================================================================
     function buildDetailPage(serie) {
         detailView.innerHTML = `<div class="series-detail-container"><header class="detail-header" style="background-image: url('${serie.portada}')"><button class="back-button">‹</button><div class="detail-info"><div class="detail-info-cover"><img src="${serie.portada}" alt="${serie.titulo}"></div><div class="detail-info-text"><h1>${serie.titulo}</h1><p>${serie.categoria || ''}</p></div></div></header><div class="detail-content"><p class="detail-description">${serie.descripcion}</p><h2>Capítulos</h2><ul class="chapter-list" id="detail-chapter-list"></ul></div></div>`;
         const chapterList = detailView.querySelector('#detail-chapter-list');
@@ -128,7 +161,6 @@ registroForm.addEventListener('submit', (e) => {
         detailView.querySelector('.back-button').addEventListener('click', () => navigateTo('main'));
     }
 
-    // El resto de funciones se quedan igual
     async function loadContent() {
         try {
             const seriesCollection = await db.collection('series').get();
@@ -183,6 +215,10 @@ registroForm.addEventListener('submit', (e) => {
         window.scrollTo(0, 0);
     }
 
+    // =================================================================
+    // EVENT LISTENERS GENERALES
+    // =================================================================
+
     readerView.querySelector('.reader-close-button').addEventListener('click', () => {
         const bottomNav = document.querySelector('.bottom-nav');
         bottomNav.classList.remove('hidden');
@@ -190,7 +226,7 @@ registroForm.addEventListener('submit', (e) => {
     });
     
     document.getElementById('ad-modal-close').addEventListener('click', () => {
-        document.getElementById('ad-modal').style.display = 'none';
+        document.getElementById('ad-modal').classList.add('hidden');
     });
 
     themeToggleButton.addEventListener('click', () => {
@@ -204,5 +240,6 @@ registroForm.addEventListener('submit', (e) => {
         }
     });
 
+    // Carga inicial del contenido
     loadContent();
 });
