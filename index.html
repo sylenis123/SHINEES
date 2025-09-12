@@ -21,28 +21,11 @@
         <main id="main-view" class="page-view">
             <header class="main-header">
                 <h1>Shinees</h1>
+                <!-- El div .header-actions ahora solo contiene botones -->
                 <div class="header-actions">
                     <button id="theme-toggle">☀️</button>
-                    <!-- BOTÓN DE REGISTRO MOVIDO AQUÍ -->
                     <button id="mostrar-registro-btn">Registrarse</button>
-                    <!-- Modal de Login -->
-<div id="login-modal-overlay" class="modal-overlay hidden">
-    <div id="login-modal-content" class="modal-content">
-        <button id="cerrar-login-modal-btn" class="modal-close-button">&times;</button>
-        <h2>Iniciar Sesión</h2>
-        <form id="login-form">
-            <div>
-                <label for="login-email">Correo Electrónico:</label>
-                <input type="email" id="login-email" required />
-            </div>
-            <div>
-                <label for="login-password">Contraseña:</label>
-                <input type="password" id="login-password" required />
-            </div>
-            <button type="submit">Entrar</button>
-            <p id="login-error" class="error-message"></p>
-        </form>
-    </div>
+                    <!-- El botón de Login se creará y añadirá aquí con JavaScript -->
                 </div>
             </header>
             <section id="featured-carousel" class="hero-carousel"></section>
@@ -77,10 +60,10 @@
     </div>
 
     <!-- ======================================================= -->
-    <!-- MODALES (VENTANAS EMERGENTES ) -->
+    <!-- MODALES (VENTANAS EMERGENTES ) - ¡AQUÍ ES DONDE DEBEN ESTAR! -->
     <!-- ======================================================= -->
 
-    <!-- Modal de Publicidad (ya lo tenías) -->
+    <!-- Modal de Publicidad -->
     <div id="ad-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <span id="ad-modal-close" class="modal-close-button">&times;</span>
@@ -92,7 +75,7 @@
         </div>
     </div>
 
-    <!-- Modal de Registro (ESTRUCTURA CORREGIDA ) -->
+    <!-- Modal de Registro -->
     <div id="registro-modal-overlay" class="modal-overlay hidden">
         <div id="registro-modal-content" class="modal-content">
             <button id="cerrar-modal-btn" class="modal-close-button">&times;</button>
@@ -112,12 +95,32 @@
         </div>
     </div>
 
+    <!-- Modal de Login (MOVIDO AQUÍ, AL LUGAR CORRECTO ) -->
+    <div id="login-modal-overlay" class="modal-overlay hidden">
+        <div id="login-modal-content" class="modal-content">
+            <button id="cerrar-login-modal-btn" class="modal-close-button">&times;</button>
+            <h2>Iniciar Sesión</h2>
+            <form id="login-form">
+                <div>
+                    <label for="login-email">Correo Electrónico:</label>
+                    <input type="email" id="login-email" required />
+                </div>
+                <div>
+                    <label for="login-password">Contraseña:</label>
+                    <input type="password" id="login-password" required />
+                </div>
+                <button type="submit">Entrar</button>
+                <p id="login-error" class="error-message"></p>
+            </form>
+        </div>
+    </div>
+
 
     <!-- ======================================================= -->
     <!-- SCRIPTS (AL FINAL DEL BODY) -->
     <!-- ======================================================= -->
 
-    <!-- Scripts de Firebase (Versión 8 - compatible con tu app.js) -->
+    <!-- Scripts de Firebase -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
