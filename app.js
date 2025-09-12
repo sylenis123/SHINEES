@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // =================================================================
+    // 1. CONFIGURACIÓN Y SELECTORES GLOBALES
+    // =================================================================
     const firebaseConfig = {
         apiKey: "AIzaSyDsv2keytFIEeS4QT4_chwOHMgyWpV8gP4", authDomain: "shinees.firebaseapp.com", projectId: "shinees",
         storageBucket: "shinees.appspot.com", messagingSenderId: "109623976622", appId: "1:109623976622:web:c9ab5a1c345f502b71833f",
@@ -23,6 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentSerieId = null;
     let currentChapterId = null;
 
+    // =================================================================
+    // 2. LÓGICA DE AUTENTICACIÓN Y PERFIL
+    // =================================================================
     const registroModalOverlay = document.getElementById('registro-modal-overlay');
     const loginModalOverlay = document.getElementById('login-modal-overlay');
     const headerActions = document.querySelector('.header-actions');
@@ -38,10 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function abrirModal(modalOverlay) { if (modalOverlay) modalOverlay.classList.remove('hidden'); }
-    function cerrarModal(modalOverlay, errorElement) {
-        if (modalOverlay) modalOverlay.classList.add('hidden');
-        if (errorElement) errorElement.textContent = '';
-    }
+    function cerrarModal(modalOverlay) { if (modalOverlay) modalOverlay.classList.add('hidden'); }
 
     auth.onAuthStateChanged(user => {
         const mostrarRegistroBtn = document.getElementById('mostrar-registro-btn');
@@ -78,6 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo(0, 0);
     }
 
+    // =================================================================
+    // 3. FUNCIONES DE INTERACCIÓN (COMENTARIOS Y LIKES)
+    // =================================================================
     function displayChapterInteractions(serieId, chapterId) {
         const user = auth.currentUser;
         const reactionBtn = document.getElementById('chapter-reaction-btn');
@@ -153,6 +159,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }).catch(err => console.error("Error en la transacción de reacción: ", err));
     }
 
+    // =================================================================
+    // 4. FUNCIONES DE NAVEGACIÓN Y RENDERIZADO
+    // =================================================================
     function openVerticalReader(serieId, chapter) {
         currentSerieId = serieId;
         currentChapterId = chapter.id;
@@ -201,4 +210,111 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadContent() {
         try {
-            const seriesCollection
+            const seriesCollection = await db.collection('series').get();
+            seriesData = seriesCollection.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const featuredCarousel = document.getElementById('featured-carousel');
+            const popularSeriesGrid = document.getElementById('popular-series');
+            featuredCarousel.innerHTML = '';
+            popularSeriesGrid.innerHTML = '';
+            seriesData.forEach(serie => {
+                const card = document.createElement('a');
+                card.href = '#';
+                card.addEventListener('click', (e) => { e.preventDefault(); buildDetailPage(serie); navigateTo('detail'); });
+                if (serie.destacado) {
+                    card.className = 'hero-card';
+                    card.innerHTML = `<div class="hero-card-bg" style="background-image: url('${serie.portada}')"></div><img src="${serie.portada}" class="hero-card-cover" alt="${serie.titulo}"><div class="hero-card-info"><h3>${serie.titulo}</h3><p>${serie.categoria || ''}</p></div>`;
+                    featuredCarousel.appendChild(card);
+                } else {
+                    card.className = 'series-card';
+                    card.innerHTML = `<img src="${serie.portada}" alt="${serie.titulo}"><div class="series-card-info"><h3>${serie.titulo}</h3></div>`;
+                    popularSeriesGrid.appendChild(card);
+                }
+            });
+            loader.style.display = 'none';
+            appContent.style.display = 'block';
+        } catch (error) {
+            console.error("Error al cargar contenido:", error);
+            loader.innerHTML = '<p>Error al conectar con la base de datos.</p>';
+        }
+    }
+
+    // =================================================================
+    // 5. EVENT LISTENERS GENERALES Y DELEGACIÓN
+    // =================================================================
+    document.addEventListener('click', (e) => {
+        if (e.target.matches('#mostrar-registro-btn')) abrirModal(registroModalOverlay);
+        if (e.target.matches('#cerrar-modal-btn')) cerrarModal(registroModalOverlay);
+        if (e.target === registroModalOverlay) cerrarModal(registroModalOverlay);
+        if (e.target.matches('#mostrar-login-btn')) abrirModal(loginModalOverlay);
+        if (e.target.matches('#cerrar-login-modal-btn')) cerrarModal(loginModalOverlay);
+        if (e.target === loginModalOverlay) cerrarModal(loginModalOverlay);
+        if (e.target.matches('#forgot-password-link')) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            if (!email) { alert("Introduce tu email."); return; }
+            auth.sendPasswordResetEmail(email).then(() => alert("Correo de recuperación enviado.")).catch(() => alert("Error al enviar correo."));
+        }
+        if (e.target.matches('#save-profile-btn')) {
+            const newDisplayName = document.getElementById('display-name-input').value;
+            const user = auth.currentUser;
+            if (user && newDisplayName) {
+                user.updateProfile({ displayName: newDisplayName }).then(() => alert("Nombre actualizado."));
+            }
+        }
+        if (e.target.matches('#logout-btn-profile')) auth.signOut();
+        if (e.target.matches('#nav-home')) { e.preventDefault(); navigateTo('main'); }
+        if (e.target.matches('#nav-profile')) {
+            e.preventDefault();
+            if (auth.currentUser) navigateTo('profile');
+            else abrirModal(loginModalOverlay);
+        }
+        if (e.target.matches('.reader-close-button')) {
+            navigateTo('detail');
+            document.querySelector('.bottom-nav').classList.remove('hidden');
+        }
+        if (e.target.matches('.back-button')) navigateTo('main');
+        if (e.target.matches('#chapter-reaction-btn') || e.target.closest('#chapter-reaction-btn')) handleReaction();
+    });
+
+    document.addEventListener('submit', (e) => {
+        if (e.target.matches('#registro-form')) {
+            e.preventDefault();
+            const email = document.getElementById('registro-email').value;
+            const password = document.getElementById('registro-password').value;
+            auth.createUserWithEmailAndPassword(email, password)
+                .then(uc => { uc.user.sendEmailVerification(); alert('¡Registro exitoso!'); cerrarModal(registroModalOverlay); })
+                .catch(err => console.error(err));
+        }
+        if (e.target.matches('#login-form')) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            auth.signInWithEmailAndPassword(email, password).then(() => cerrarModal(loginModalOverlay)).catch(() => alert("Error de login."));
+        }
+        if (e.target.matches('#add-comment-form')) handlePostComment(e);
+    });
+
+    document.getElementById('avatar-upload-input').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const CLOUD_NAME = 'dhmhfplfc'; const UPLOAD_PRESET = 'bjm8b3s4';
+        const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
+        const formData = new FormData( );
+        formData.append('file', file); formData.append('upload_preset', UPLOAD_PRESET);
+        fetch(url, { method: 'POST', body: formData }).then(res => res.json()).then(data => {
+            if (data.secure_url && auth.currentUser) {
+                auth.currentUser.updateProfile({ photoURL: data.secure_url }).then(() => {
+                    document.getElementById('profile-avatar-img').src = data.secure_url;
+                });
+            }
+        });
+    });
+
+    themeToggleButton.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        document.documentElement.setAttribute('data-theme', currentTheme === 'dark' ? 'light' : 'dark');
+        themeToggleButton.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+    });
+
+    loadContent();
+});
