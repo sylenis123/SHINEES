@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // =================================================================
-    // CONFIGURACIÓN Y SELECTORES GLOBALES
+    // 1. CONFIGURACIÓN Y SELECTORES GLOBALES
     // =================================================================
 
     // Configuración de Firebase
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    const auth = firebase.auth(); // Obtenemos el servicio de autenticación
+    const auth = firebase.auth();
 
     // Selectores del DOM para las vistas principales
     const mainView = document.getElementById('main-view');
@@ -31,142 +31,138 @@ document.addEventListener('DOMContentLoaded', () => {
     let seriesData = [];
 
     // =================================================================
-    // LÓGICA DE AUTENTICACIÓN Y MODAL DE REGISTRO (CÓDIGO MODIFICADO)
+    // 2. LÓGICA DE AUTENTICACIÓN (REGISTRO, LOGIN Y GESTIÓN DE SESIÓN)
     // =================================================================
 
-    // Selectores para el modal y el formulario de registro
+    // --- Selectores para los modales de autenticación ---
     const registroModalOverlay = document.getElementById('registro-modal-overlay');
     const registroForm = document.getElementById('registro-form');
     const registroError = document.getElementById('registro-error');
     const mostrarRegistroBtn = document.getElementById('mostrar-registro-btn');
-    const cerrarModalBtn = document.getElementById('cerrar-modal-btn');
+    const cerrarRegistroModalBtn = document.getElementById('cerrar-modal-btn');
 
-    // --- Funciones para controlar el modal ---
-    function abrirModalRegistro() {
-      if (registroModalOverlay) registroModalOverlay.classList.remove('hidden');
+    const loginModalOverlay = document.getElementById('login-modal-overlay');
+    const loginForm = document.getElementById('login-form');
+    const loginError = document.getElementById('login-error');
+    const cerrarLoginModalBtn = document.getElementById('cerrar-login-modal-btn');
+
+    // --- Creación dinámica de botones de Login y Perfil ---
+    const headerActions = document.querySelector('.header-actions');
+    const botonLogin = document.createElement('button');
+    botonLogin.id = 'mostrar-login-btn';
+    botonLogin.textContent = 'Iniciar Sesión';
+
+    const divPerfilUsuario = document.createElement('div');
+    divPerfilUsuario.id = 'perfil-usuario';
+    divPerfilUsuario.classList.add('hidden');
+
+    if (headerActions) {
+        headerActions.appendChild(botonLogin);
+        headerActions.appendChild(divPerfilUsuario);
     }
 
-    function cerrarModalRegistro() {
-      if (registroModalOverlay) registroModalOverlay.classList.add('hidden');
-      if (registroError) registroError.textContent = ''; // Limpia cualquier error al cerrar
+    // --- Funciones para controlar los modales ---
+    function abrirModal(modalOverlay) {
+        if (modalOverlay) modalOverlay.classList.remove('hidden');
     }
-// =================================================================
-// GESTIÓN DE LA SESIÓN DE USUARIO
-// =================================================================
 
-const botonRegistro = document.getElementById('mostrar-registro-btn');
-const botonLogin = document.createElement('button'); // Creamos un botón de Login
-botonLogin.id = 'mostrar-login-btn';
-botonLogin.textContent = 'Iniciar Sesión';
+    function cerrarModal(modalOverlay, errorElement) {
+        if (modalOverlay) modalOverlay.classList.add('hidden');
+        if (errorElement) errorElement.textContent = '';
+    }
 
-const divPerfilUsuario = document.createElement('div'); // Creamos un div para el perfil
-divPerfilUsuario.id = 'perfil-usuario';
-divPerfilUsuario.classList.add('hidden'); // Oculto por defecto
+    // --- El "Vigilante" de Firebase: Gestiona la sesión del usuario ---
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            // ----- USUARIO CON SESIÓN INICIADA -----
+            console.log("Usuario conectado:", user.email);
+            mostrarRegistroBtn.classList.add('hidden');
+            botonLogin.classList.add('hidden');
+            divPerfilUsuario.classList.remove('hidden');
+            
+            const nombreUsuario = user.displayName || user.email.split('@')[0];
+            divPerfilUsuario.innerHTML = `
+                <span class="nombre-usuario">Hola, ${nombreUsuario}</span>
+                <button id="logout-btn">Cerrar Sesión</button>
+            `;
 
-// Lo insertamos en el header
-const headerActions = document.querySelector('.header-actions');
-if (headerActions) {
-    headerActions.appendChild(botonLogin);
-    headerActions.appendChild(divPerfilUsuario);
-}
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                auth.signOut().then(() => console.log("Sesión cerrada."));
+            });
 
-// El "Vigilante" de Firebase
-auth.onAuthStateChanged(user => {
-    if (user) {
-        // ----- EL USUARIO TIENE SESIÓN INICIADA -----
-        console.log("Usuario conectado:", user.email);
-
-        // 1. Ocultamos los botones de "Registrarse" e "Iniciar Sesión"
-        botonRegistro.classList.add('hidden');
-        botonLogin.classList.add('hidden');
-
-        // 2. Mostramos la sección de perfil
-        divPerfilUsuario.classList.remove('hidden');
-        
-        // 3. Creamos el contenido del perfil
-        // Si el usuario tiene un nombre guardado, lo usamos. Si no, usamos el email.
-        const nombreUsuario = user.displayName || user.email.split('@')[0];
-        
-        divPerfilUsuario.innerHTML = `
-            <span class="nombre-usuario">Hola, ${nombreUsuario}</span>
-            <button id="logout-btn">Cerrar Sesión</button>
-        `;
-
-        // 4. Añadimos el evento para cerrar sesión
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            auth.signOut(); // La función mágica para cerrar sesión
-        });
-
-        // 5. Personalizamos la barra de navegación inferior
-        const navYo = document.querySelector('.bottom-nav a[href="#"] span:last-child');
-        if (navYo && navYo.textContent === 'Yo') {
-            // Aquí podrías cambiar "Yo" por el avatar del usuario, por ejemplo
+        } else {
+            // ----- USUARIO INVITADO (SIN SESIÓN) -----
+            console.log("Nadie conectado.");
+            mostrarRegistroBtn.classList.remove('hidden');
+            botonLogin.classList.remove('hidden');
+            divPerfilUsuario.classList.add('hidden');
         }
+    });
 
-    } else {
-        // ----- EL USUARIO NO TIENE SESIÓN INICIADA (ES INVITADO) -----
-        console.log("Nadie conectado.");
+    // --- Event Listeners para los modales ---
 
-        // 1. Mostramos los botones de "Registrarse" e "Iniciar Sesión"
-        botonRegistro.classList.remove('hidden');
-        botonLogin.classList.remove('hidden');
+    // Modal de Registro
+    if (mostrarRegistroBtn) mostrarRegistroBtn.addEventListener('click', () => abrirModal(registroModalOverlay));
+    if (cerrarRegistroModalBtn) cerrarRegistroModalBtn.addEventListener('click', () => cerrarModal(registroModalOverlay, registroError));
+    if (registroModalOverlay) registroModalOverlay.addEventListener('click', (e) => {
+        if (e.target === registroModalOverlay) cerrarModal(registroModalOverlay, registroError);
+    });
 
-        // 2. Ocultamos la sección de perfil
-        divPerfilUsuario.classList.add('hidden');
-    }
-});
-    // --- Event Listeners para el modal ---
+    // Modal de Login
+    if (botonLogin) botonLogin.addEventListener('click', () => abrirModal(loginModalOverlay));
+    if (cerrarLoginModalBtn) cerrarLoginModalBtn.addEventListener('click', () => cerrarModal(loginModalOverlay, loginError));
+    if (loginModalOverlay) loginModalOverlay.addEventListener('click', (e) => {
+        if (e.target === loginModalOverlay) cerrarModal(loginModalOverlay, loginError);
+    });
 
-    // 1. Abrir el modal al hacer clic en "Registrarse"
-    if (mostrarRegistroBtn) {
-      mostrarRegistroBtn.addEventListener('click', abrirModalRegistro);
-    }
+    // --- Lógica de envío de formularios ---
 
-    // 2. Cerrar el modal con el botón de la 'X'
-    if (cerrarModalBtn) {
-      cerrarModalBtn.addEventListener('click', cerrarModalRegistro);
-    }
-
-    // 3. Cerrar el modal si se hace clic en el fondo oscuro
-    if (registroModalOverlay) {
-      registroModalOverlay.addEventListener('click', (event) => {
-        if (event.target === registroModalOverlay) { // Solo si se hace clic en el overlay, no en el contenido
-          cerrarModalRegistro();
-        }
-      });
-    }
-
-    // 4. Manejar el envío del formulario de registro
+    // Formulario de Registro
     if (registroForm) {
-      registroForm.addEventListener('submit', (e) => {
-        e.preventDefault();
+        registroForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('registro-email').value;
+            const password = document.getElementById('registro-password').value;
+            registroError.textContent = '';
 
-        const email = document.getElementById('registro-email').value;
-        const password = document.getElementById('registro-password').value;
-        registroError.textContent = '';
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    console.log('¡Usuario registrado!', userCredential.user);
+                    userCredential.user.sendEmailVerification(); // Envía correo de verificación
+                    alert('¡Registro exitoso! Se ha enviado un correo de verificación a tu email.');
+                    cerrarModal(registroModalOverlay, registroError);
+                })
+                .catch((error) => {
+                    console.error('Error en el registro:', error.message);
+                    if (error.code === 'auth/email-already-in-use') registroError.textContent = 'Este correo electrónico ya está en uso.';
+                    else if (error.code === 'auth/weak-password') registroError.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+                    else registroError.textContent = 'Ocurrió un error. Inténtalo de nuevo.';
+                });
+        });
+    }
 
-        auth.createUserWithEmailAndPassword(email, password)
-          .then((userCredential) => {
-            console.log('¡Usuario registrado!', userCredential.user);
-            alert('¡Registro exitoso!');
-            cerrarModalRegistro(); // Cierra el modal después del registro exitoso
-          })
-          .catch((error) => {
-            console.error('Error en el registro:', error.message);
-            // Traducimos algunos errores comunes para el usuario
-            if (error.code === 'auth/email-already-in-use') {
-              registroError.textContent = 'Este correo electrónico ya está en uso.';
-            } else if (error.code === 'auth/weak-password') {
-              registroError.textContent = 'La contraseña debe tener al menos 6 caracteres.';
-            } else {
-              registroError.textContent = 'Ocurrió un error. Inténtalo de nuevo.';
-            }
-          });
-      });
+    // Formulario de Login
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            loginError.textContent = '';
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    console.log("Login exitoso:", userCredential.user);
+                    cerrarModal(loginModalOverlay, loginError);
+                })
+                .catch((error) => {
+                    console.error("Error de login:", error.message);
+                    loginError.textContent = "Email o contraseña incorrectos.";
+                });
+        });
     }
 
     // =================================================================
-    // FUNCIONES PRINCIPALES DE LA APLICACIÓN (TU CÓDIGO ORIGINAL)
+    // 3. FUNCIONES PRINCIPALES DE LA APLICACIÓN
     // =================================================================
 
     function openVerticalReader(chapter) {
@@ -195,7 +191,8 @@ auth.onAuthStateChanged(user => {
         adButton.className = 'ad-trigger-button';
         adButton.textContent = 'Ver anuncio para apoyar al creador';
         adButton.onclick = () => {
-            document.getElementById('ad-modal').classList.remove('hidden');
+            const adModal = document.getElementById('ad-modal');
+            if (adModal) adModal.classList.remove('hidden');
         };
         readerContent.appendChild(adButton);
 
@@ -280,7 +277,7 @@ auth.onAuthStateChanged(user => {
     }
 
     // =================================================================
-    // EVENT LISTENERS GENERALES
+    // 4. EVENT LISTENERS GENERALES
     // =================================================================
 
     readerView.querySelector('.reader-close-button').addEventListener('click', () => {
@@ -290,7 +287,8 @@ auth.onAuthStateChanged(user => {
     });
     
     document.getElementById('ad-modal-close').addEventListener('click', () => {
-        document.getElementById('ad-modal').classList.add('hidden');
+        const adModal = document.getElementById('ad-modal');
+        if (adModal) adModal.classList.add('hidden');
     });
 
     themeToggleButton.addEventListener('click', () => {
