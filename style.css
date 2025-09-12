@@ -251,3 +251,82 @@ h1, h2, h3 { color: var(--text-color); }
     border-radius: 12px;
     cursor: pointer;
 }
+/* Estilos para el Modal de Registro */
+
+/* El fondo oscuro que cubre toda la pantalla */
+#modal-overlay {
+  position: fixed; /* Se queda fijo en la pantalla */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Negro semitransparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Se asegura de que esté por encima de todo */
+}
+
+/* La ventana del formulario */
+#registro-modal {
+  background-color: #2c2c2c; /* Un color de fondo oscuro */
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+  width: 90%;
+  max-width: 400px; /* Ancho máximo del formulario */
+  position: relative;
+  color: #fff; /* Texto blanco */
+}
+
+/* Clase para ocultar el modal */
+.hidden {
+  display: none !important;
+}
+
+/* Botón para cerrar el modal */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Estilos para el formulario dentro del modal */
+#registro-form div {
+  margin-bottom: 15px;
+}
+#registro-form label {
+  display: block;
+  margin-bottom: 5px;
+}
+#registro-form input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #555;
+  background-color: #444;
+  color: #fff;
+}
+#registro-form button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff; /* Un color azul para el botón */
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+#registro-form button:hover {
+  background-color: #0056b3;
+}
+.error-message {
+  color: #ff4d4d;
+  margin-top: 10px;
+}
+
