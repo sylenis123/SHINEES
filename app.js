@@ -1,26 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // =================================================================
-    // 1. CONFIGURACIÓN DE FIREBASE
-    // ESTA ES LA FORMA CORRECTA DE PONER TUS LLAVES
-    // =================================================================
+    // Configuración de Firebase (esto está bien)
     const firebaseConfig = {
         apiKey: "AIzaSyDsv2keytFIEeS4QT4_chwOHMgyWpV8gP4",
         authDomain: "shinees.firebaseapp.com",
         projectId: "shinees",
-        storageBucket: "shinees.appspot.com", // CORREGIDO: suele ser .appspot.com
+        storageBucket: "shinees.appspot.com",
         messagingSenderId: "109623976622",
         appId: "1:109623976622:web:c9ab5a1c345f502b71833f",
         measurementId: "G-Z0HSJ2WDZQ"
     };
-
-    // Inicializar Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // =================================================================
-    // 2. SELECTORES DEL DOM
-    // =================================================================
+    // Selectores del DOM (esto está bien)
     const mainView = document.getElementById('main-view');
     const detailView = document.getElementById('series-detail-view');
     const featuredCarousel = document.getElementById('featured-carousel');
@@ -29,85 +22,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const appContent = document.getElementById('app-content');
     const themeToggleButton = document.getElementById('theme-toggle');
     const readerView = document.getElementById('vertical-reader');
-
     let seriesData = [];
 
     // =================================================================
-    // 3. LÓGICA DE LA APLICACIÓN
+    // FUNCIÓN openVerticalReader CORREGIDA
     // =================================================================
-
-    async function loadContent() {
-        try {
-            const seriesCollection = await db.collection('series').get();
-            seriesData = seriesCollection.docs.map(doc => doc.data());
-
-            featuredCarousel.innerHTML = '';
-            popularSeriesGrid.innerHTML = '';
-
-            seriesData.forEach(serie => {
-                const cardType = serie.destacado ? 'hero' : 'grid';
-                const card = createSeriesCard(serie, cardType);
-                if (serie.destacado) {
-                    featuredCarousel.appendChild(card);
-                } else {
-                    popularSeriesGrid.appendChild(card);
-                }
-            });
-
-            loader.style.display = 'none';
-            appContent.style.display = 'block';
-
-        } catch (error) {
-            console.error("Error al cargar datos desde Firestore:", error);
-            loader.innerHTML = '<p>Error al conectar con la base de datos. Revisa la configuración de Firebase y las reglas de seguridad.</p>';
-        }
-    }
-
-    function showDetailPage(serieId) {
-        const serie = seriesData.find(s => s.id === serieId);
-        if (!serie) return;
-        buildDetailPage(serie);
-        navigateTo('detail');
-    }
-
-    function createSeriesCard(serie, type = 'grid') {
-        const card = document.createElement('a');
-        card.href = '#';
-        card.addEventListener('click', (e) => { e.preventDefault(); showDetailPage(serie.id); });
-
-        if (type === 'hero') {
-            card.className = 'hero-card';
-            card.innerHTML = `<div class="hero-card-bg" style="background-image: url('${serie.portada}')"></div><img src="${serie.portada}" class="hero-card-cover" alt="${serie.titulo}"><div class="hero-card-info"><h3>${serie.titulo}</h3><p>${serie.categoria}</p></div>`;
-        } else {
-            card.className = 'series-card';
-            card.innerHTML = `<img src="${serie.portada}" alt="${serie.titulo}"><div class="series-card-info"><h3>${serie.titulo}</h3></div>`;
-        }
-        return card;
-    }
-    
-    // ... (El resto de las funciones: buildDetailPage, openVerticalReader, etc. se quedan igual que en mi mensaje anterior)
-    // Las pego aquí para asegurar que no haya errores.
-
-    function navigateTo(view) {
-        mainView.classList.add('hidden');
-        detailView.classList.add('hidden');
-        readerView.classList.add('hidden');
-        if (view === 'main') mainView.classList.remove('hidden');
-        else if (view === 'detail') detailView.classList.remove('hidden');
-        else if (view === 'reader') readerView.classList.remove('hidden');
-        window.scrollTo(0, 0);
-    }
-
     function openVerticalReader(chapter) {
         const readerContent = document.getElementById('reader-content');
         const bottomNav = document.querySelector('.bottom-nav');
         readerContent.innerHTML = '';
         
         if (chapter && chapter.tiras && chapter.tiras.length > 0) {
+            // CORRECCIÓN 1: Leemos el formato del objeto principal del capítulo
+            const formatoGeneral = chapter.formato; 
+
             chapter.tiras.forEach(tira => {
+                // CORRECCIÓN 2: Convertimos el ID de la tira a número y le sumamos 1
+                const tiraNumero = parseInt(tira.id) + 1;
+
                 for (let i = 1; i <= tira.paginas; i++) {
                     const pageNumber = i.toString().padStart(2, '0');
-                    const imageUrl = `https://raw.githubusercontent.com/sylenis123/SHINEES/main/contenido/${chapter.path}/${tira.id}_${pageNumber}.${tira.formato}`;
+                    // CORRECCIÓN 3: Usamos las variables corregidas para construir la URL
+                    const imageUrl = `https://raw.githubusercontent.com/sylenis123/SHINEES/main/contenido/${chapter.path}/${tiraNumero}_${pageNumber}.${formatoGeneral}`;
                     const img = document.createElement('img' );
                     img.src = imageUrl;
                     img.className = 'reader-page-image';
@@ -130,15 +66,21 @@ document.addEventListener('DOMContentLoaded', () => {
         navigateTo('reader');
     }
 
+    // =================================================================
+    // FUNCIÓN buildDetailPage CORREGIDA
+    // =================================================================
     function buildDetailPage(serie) {
-        detailView.innerHTML = `<div class="series-detail-container"><header class="detail-header" style="background-image: url('${serie.portada}')"><button class="back-button">‹</button><div class="detail-info"><div class="detail-info-cover"><img src="${serie.portada}" alt="${serie.titulo}"></div><div class="detail-info-text"><h1>${serie.titulo}</h1><p>${serie.categoria}</p></div></div></header><div class="detail-content"><p class="detail-description">${serie.descripcion}</p><h2>Capítulos</h2><ul class="chapter-list" id="detail-chapter-list"></ul></div></div>`;
+        detailView.innerHTML = `<div class="series-detail-container"><header class="detail-header" style="background-image: url('${serie.portada}')"><button class="back-button">‹</button><div class="detail-info"><div class="detail-info-cover"><img src="${serie.portada}" alt="${serie.titulo}"></div><div class="detail-info-text"><h1>${serie.titulo}</h1><p>${serie.categoria || ''}</p></div></div></header><div class="detail-content"><p class="detail-description">${serie.descripcion}</p><h2>Capítulos</h2><ul class="chapter-list" id="detail-chapter-list"></ul></div></div>`;
         const chapterList = detailView.querySelector('#detail-chapter-list');
         if (serie.capitulos && serie.capitulos.length > 0) {
             serie.capitulos.forEach(cap => {
                 const listItem = document.createElement('li');
                 const link = document.createElement('a');
                 link.href = '#';
-                link.textContent = `${cap.numero}: ${cap.titulo_cap}`;
+                
+                const chapterLabel = cap.numero === 0 ? 'Prólogo' : `Capítulo ${cap.numero}`;
+                link.textContent = `${chapterLabel}: ${cap.titulo_cap || ''}`;
+                
                 link.addEventListener('click', (e) => { e.preventDefault(); openVerticalReader(cap); });
                 listItem.appendChild(link);
                 chapterList.appendChild(listItem);
@@ -147,6 +89,61 @@ document.addEventListener('DOMContentLoaded', () => {
             chapterList.innerHTML = '<li><p>Aún no hay capítulos disponibles.</p></li>';
         }
         detailView.querySelector('.back-button').addEventListener('click', () => navigateTo('main'));
+    }
+
+    // El resto de funciones se quedan igual
+    async function loadContent() {
+        try {
+            const seriesCollection = await db.collection('series').get();
+            seriesData = seriesCollection.docs.map(doc => doc.data());
+            featuredCarousel.innerHTML = '';
+            popularSeriesGrid.innerHTML = '';
+            seriesData.forEach(serie => {
+                const cardType = serie.destacado ? 'hero' : 'grid';
+                const card = createSeriesCard(serie, cardType);
+                if (serie.destacado) {
+                    featuredCarousel.appendChild(card);
+                } else {
+                    popularSeriesGrid.appendChild(card);
+                }
+            });
+            loader.style.display = 'none';
+            appContent.style.display = 'block';
+        } catch (error) {
+            console.error("Error al cargar datos desde Firestore:", error);
+            loader.innerHTML = '<p>Error al conectar con la base de datos.</p>';
+        }
+    }
+
+    function showDetailPage(serieId) {
+        const serie = seriesData.find(s => s.id === serieId);
+        if (!serie) return;
+        buildDetailPage(serie);
+        navigateTo('detail');
+    }
+
+    function createSeriesCard(serie, type = 'grid') {
+        const card = document.createElement('a');
+        card.href = '#';
+        card.addEventListener('click', (e) => { e.preventDefault(); showDetailPage(serie.id); });
+        if (type === 'hero') {
+            card.className = 'hero-card';
+            card.innerHTML = `<div class="hero-card-bg" style="background-image: url('${serie.portada}')"></div><img src="${serie.portada}" class="hero-card-cover" alt="${serie.titulo}"><div class="hero-card-info"><h3>${serie.titulo}</h3><p>${serie.categoria || ''}</p></div>`;
+        } else {
+            card.className = 'series-card';
+            card.innerHTML = `<img src="${serie.portada}" alt="${serie.titulo}"><div class="series-card-info"><h3>${serie.titulo}</h3></div>`;
+        }
+        return card;
+    }
+
+    function navigateTo(view) {
+        mainView.classList.add('hidden');
+        detailView.classList.add('hidden');
+        readerView.classList.add('hidden');
+        if (view === 'main') mainView.classList.remove('hidden');
+        else if (view === 'detail') detailView.classList.remove('hidden');
+        else if (view === 'reader') readerView.classList.remove('hidden');
+        window.scrollTo(0, 0);
     }
 
     readerView.querySelector('.reader-close-button').addEventListener('click', () => {
