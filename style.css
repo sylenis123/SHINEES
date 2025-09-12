@@ -1,299 +1,80 @@
-/* --- Variables Globales y Reseteo --- */
 :root {
-    --primary-color: #3498db;
-    --text-color: #e0e0e0;
-    --bg-color: #121212;
-    --card-bg: #1e1e1e;
-    --nav-bg: #181818;
-    --border-color: #2c2c2c;
+    --primary-color: #3498db; --text-color: #e0e0e0; --bg-color: #121212;
+    --card-bg: #1e1e1e; --nav-bg: #181818; --border-color: #2c2c2c;
 }
-
 [data-theme="light"] {
-    --primary-color: #2980b9;
-    --text-color: #333;
-    --bg-color: #f4f4f4;
-    --card-bg: #ffffff;
-    --nav-bg: #fdfdfd;
-    --border-color: #e0e0e0;
+    --primary-color: #2980b9; --text-color: #333; --bg-color: #f4f4f4;
+    --card-bg: #ffffff; --nav-bg: #fdfdfd; --border-color: #e0e0e0;
 }
-
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-    font-family: 'Roboto', sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    transition: background-color 0.3s, color 0.3s;
-}
+body { font-family: 'Roboto', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
 a { color: var(--primary-color); text-decoration: none; }
 h1, h2, h3 { color: var(--text-color); }
-
-/* --- Loader --- */
-#loader {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background-color: var(--bg-color); display: flex; flex-direction: column;
-    justify-content: center; align-items: center; z-index: 1000;
-}
-.spinner {
-    border: 4px solid rgba(255, 255, 255, 0.2);
-    border-left-color: var(--primary-color);
-    border-radius: 50%; width: 50px; height: 50px;
-    animation: spin 1s linear infinite;
-}
+.hidden { display: none !important; }
+#loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-color); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; }
+.spinner { border: 4px solid rgba(255, 255, 255, 0.2); border-left-color: var(--primary-color); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 #loader p { margin-top: 20px; font-size: 1.2em; }
-
-/* --- Layout General --- */
-.hidden { display: none !important; }
 #app-content { padding-bottom: 70px; }
 .page-view { padding: 15px; }
-
-/* --- Header Principal --- */
-.main-header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 15px; background-color: var(--bg-color);
-    position: sticky; top: 0; z-index: 100;
-}
+.main-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background-color: var(--bg-color); position: sticky; top: 0; z-index: 100; }
 #theme-toggle { background: none; border: none; font-size: 1.5rem; cursor: pointer; }
-
-/* --- Carrusel de Destacados (Hero) --- */
-.hero-carousel {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    gap: 15px;
-    padding: 0 15px 15px;
-    -webkit-overflow-scrolling: touch;
-}
-.hero-card {
-    flex: 0 0 85%;
-    scroll-snap-align: center;
-    position: relative;
-    border-radius: 12px;
-    overflow: hidden;
-    aspect-ratio: 16 / 9;
-    background-color: var(--card-bg);
-}
-.hero-card-background {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    object-fit: cover; filter: blur(10px) brightness(0.5);
-    transform: scale(1.1);
-}
-.hero-card-cover {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    height: 90%;
-    width: auto;
-    max-width: 90%;
-    object-fit: contain;
-    border-radius: 6px;
-}
-.hero-card-info {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    padding: 15px;
-    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-    color: white;
-}
-.hero-card-info h3 { font-size: 1.2rem; color: white; }
-.hero-card-info p { font-size: 0.9rem; color: #ccc; }
-
-/* --- Publicidad --- */
-.ad-container { padding: 0 15px 20px; }
-.ad-placeholder {
-    display: block; position: relative; border-radius: 12px;
-    overflow: hidden; background-color: var(--card-bg);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-.ad-placeholder img { width: 100%; display: block; }
-.ad-label {
-    position: absolute; top: 8px; right: 8px;
-    background-color: rgba(0, 0, 0, 0.6); color: #fff;
-    padding: 2px 6px; font-size: 10px; border-radius: 4px;
-    font-weight: bold; pointer-events: none;
-}
-
-/* --- Parrilla de Series Populares --- */
-.series-grid-container h2 { padding: 0 15px 15px; }
-.series-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 15px;
-    padding: 0 15px;
-}
-.series-card {
-    background-color: var(--card-bg); border-radius: 8px;
-    overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
+.series-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; padding: 0 15px; }
+.series-card { background-color: var(--card-bg); border-radius: 8px; overflow: hidden; }
 .series-card img { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; }
 .series-card-info { padding: 10px; }
 .series-card-info h3 { font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.series-card-info p { font-size: 0.8rem; color: #888; }
-
-/* --- Vista de Detalles --- */
-.detail-header {
-    position: relative; height: 300px;
-    background-size: cover; background-position: center;
-}
-.detail-header::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(to top, var(--bg-color) 0%, transparent 100%);
-}
-.back-button {
-    position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.5);
-    color: white; border: none; border-radius: 50%;
-    width: 40px; height: 40px; font-size: 1.5rem; cursor: pointer;
-}
-.detail-info {
-    position: absolute; bottom: 15px; left: 15px; right: 15px;
-    display: flex; align-items: flex-end; gap: 15px;
-}
+.detail-header { position: relative; height: 300px; background-size: cover; background-position: center; }
+.detail-header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, var(--bg-color) 0%, transparent 100%); }
+.back-button { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.5rem; cursor: pointer; }
+.detail-info { position: absolute; bottom: 15px; left: 15px; right: 15px; display: flex; align-items: flex-end; gap: 15px; }
 .detail-info-cover img { height: 150px; border-radius: 8px; }
 .detail-info-text h1 { color: white; text-shadow: 1px 1px 3px #000; }
-.detail-info-text p { color: #ddd; }
 .detail-content { padding: 15px; }
 .chapter-list { list-style: none; }
-.chapter-list li a {
-    display: block; padding: 15px; border-bottom: 1px solid var(--border-color);
-    color: var(--text-color);
-}
-
-/* --- Lector Vertical --- */
-.reader-header {
-    position: sticky; top: 0; z-index: 101;
-    background: rgba(0,0,0,0.8); padding: 10px;
-    display: flex; justify-content: flex-end;
-}
-.reader-close-button {
-    background: none; border: none; color: white;
-    font-size: 1.5rem; cursor: pointer;
-}
-#reader-content {
-    background-color: #000; width: 100%;
-    max-width: 800px; margin: 0 auto;
-}
-#reader-content img {
-    display: block; width: 100%; margin: 0;
-    padding: 0; border: none;
-}
-
-/* --- Barra de Navegación Inferior --- */
-.bottom-nav {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    display: flex; justify-content: space-around;
-    background-color: var(--nav-bg);
-    border-top: 1px solid var(--border-color);
-    padding: 5px 0;
-}
-.nav-item {
-    display: flex; flex-direction: column; align-items: center;
-    color: var(--text-color); font-size: 0.7rem;
-}
-.nav-item.active { color: var(--primary-color); }
-
-/* --- Estilos de Modales --- */
-.modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: flex; justify-content: center; align-items: center;
-    z-index: 1001;
-}
-.modal-content {
-    background-color: var(--card-bg);
-    padding: 30px; border-radius: 12px;
-    width: 90%; max-width: 400px; position: relative;
-}
-.modal-close-button {
-    position: absolute; top: 10px; right: 15px;
-    background: none; border: none; font-size: 24px;
-    color: var(--text-color); cursor: pointer;
-}
-.modal-content form div { margin-bottom: 15px; }
-.modal-content form label { display: block; margin-bottom: 5px; }
-.modal-content form input {
-    width: 100%; padding: 10px; border-radius: 4px;
-    border: 1px solid var(--border-color);
-    background-color: var(--bg-color); color: var(--text-color);
-}
-.modal-content form button {
-    width: 100%; padding: 12px; border: none; border-radius: 4px;
-    background-color: var(--primary-color); color: white;
-    font-size: 16px; cursor: pointer;
-}
-.error-message { color: #ff4d4d; margin-top: 10px; }
-.forgot-password {
-    display: block; text-align: right; font-size: 12px;
-    color: #00aaff; margin-top: -10px; margin-bottom: 15px;
-    text-decoration: none;
-}
-.forgot-password:hover { text-decoration: underline; }
-
-/* --- Estilos de Perfil --- */
-.profile-content { padding: 20px; }
-.profile-card {
-    background-color: var(--card-bg); border-radius: 12px;
-    padding: 24px; text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px;
-}
-.profile-avatar-container {
-    position: relative; width: 120px; height: 120px;
-    margin: 0 auto 20px;
-}
-#profile-avatar-img {
-    width: 100%; height: 100%; border-radius: 50%;
-    object-fit: cover; border: 3px solid var(--primary-color);
-}
-.avatar-edit-button {
-    position: absolute; bottom: 5px; right: 5px;
-    background-color: var(--primary-color); color: white;
-    border-radius: 50%; width: 30px; height: 30px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; font-size: 16px; border: 2px solid var(--bg-color);
-}
-#profile-display-name { margin: 0; font-size: 24px; }
-#profile-email { color: #888; margin-top: 5px; margin-bottom: 20px; font-size: 14px; }
-#edit-profile-section input { width: calc(100% - 20px); padding: 10px; margin-top: 5px; margin-bottom: 10px; }
-#edit-profile-section button { width: 100%; padding: 12px; }
-.profile-actions .logout-button {
-    width: 100%; padding: 12px; background-color: #dc3545;
-    color: white; border: none; border-radius: 8px; cursor: pointer;
-}
-
-/* --- Estilos de Interacción en Lector --- */
+.chapter-list-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
+.chapter-list-item a { display: block; padding: 15px; color: var(--text-color); flex-grow: 1; }
+.chapter-stats { display: flex; align-items: center; font-size: 14px; color: #888; padding-right: 15px; }
+.chapter-stats span { display: flex; align-items: center; margin-left: 15px; }
+.chapter-stats .icon { margin-right: 5px; }
+#vertical-reader.page-view { padding: 0; }
+.reader-header { position: sticky; top: 0; z-index: 101; background: rgba(0,0,0,0.8); padding: 10px; display: flex; justify-content: flex-end; }
+.reader-close-button { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+#reader-content { background-color: #000; width: 100%; max-width: 800px; margin: 0 auto; }
+#reader-content img { display: block; width: 100%; }
 .interaction-container { padding: 20px; background-color: var(--bg-color); }
 .reactions-container { display: flex; justify-content: center; margin-bottom: 30px; }
-.reaction-button {
-    background: var(--card-bg); border: 1px solid var(--border-color);
-    border-radius: 20px; padding: 8px 16px; cursor: pointer;
-    display: flex; align-items: center; font-size: 16px;
-    color: var(--text-color); transition: transform 0.2s ease, background-color 0.2s;
-}
-.reaction-button:hover { transform: scale(1.05); }
+.reaction-button { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 8px 16px; cursor: pointer; display: flex; align-items: center; font-size: 16px; color: var(--text-color); }
 .reaction-button.liked { background-color: #e53935; color: white; border-color: #e53935; }
 .reaction-button .icon { margin-right: 8px; font-size: 20px; }
-.comments-container h2 { margin-top: 0; }
-#add-comment-form textarea {
-    width: 100%; min-height: 80px; padding: 10px;
-    border-radius: 8px; border: 1px solid var(--border-color);
-    background-color: var(--bg-color); color: var(--text-color);
-}
-#add-comment-form button {
-    display: block; width: auto; margin-top: 10px;
-    margin-left: auto; padding: 10px 20px;
-}
-.comment {
-    display: flex; align-items: flex-start; margin-top: 20px;
-    padding-top: 15px; border-top: 1px solid var(--border-color);
-}
+.comments-container h2 { margin-top: 0; margin-bottom: 15px; }
+#add-comment-form textarea { width: 100%; min-height: 80px; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-color); color: var(--text-color); }
+#add-comment-form button { display: block; width: auto; margin-top: 10px; margin-left: auto; padding: 10px 20px; }
+.comment { display: flex; align-items: flex-start; margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border-color); }
 .comment:first-of-type { border-top: none; padding-top: 0; }
 .comment-avatar { width: 40px; height: 40px; border-radius: 50%; margin-right: 15px; object-fit: cover; }
 .comment-body { flex: 1; }
 .comment-author { font-weight: 700; margin: 0 0 5px 0; }
 .comment-text { margin: 0; white-space: pre-wrap; }
-
-/* --- Estilos para contadores en la lista de capítulos --- */
-.chapter-list-item {
-    display: flex; justify-content: space-between; align-items: center;
-}
-.chapter-stats { display: flex; align-items: center; font-size: 14px; color: #888; }
-.chapter-stats span { display: flex; align-items: center; margin-left: 15px; }
-.chapter-stats .icon { margin-right: 5px; }
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-around; background-color: var(--nav-bg); border-top: 1px solid var(--border-color); padding: 5px 0; }
+.nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-color); font-size: 0.7rem; }
+.nav-item.active { color: var(--primary-color); }
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); display: flex; justify-content: center; align-items: center; z-index: 1001; }
+.modal-content { background-color: var(--card-bg); padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; position: relative; }
+.modal-close-button { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; color: var(--text-color); cursor: pointer; }
+.modal-content form div { margin-bottom: 15px; }
+.modal-content form label { display: block; margin-bottom: 5px; }
+.modal-content form input { width: 100%; padding: 10px; border-radius: 4px; border: 1px solid var(--border-color); background-color: var(--bg-color); color: var(--text-color); }
+.modal-content form button { width: 100%; padding: 12px; border: none; border-radius: 4px; background-color: var(--primary-color); color: white; font-size: 16px; cursor: pointer; }
+.error-message { color: #ff4d4d; margin-top: 10px; }
+.forgot-password { display: block; text-align: right; font-size: 12px; color: #00aaff; margin-top: -10px; margin-bottom: 15px; text-decoration: none; }
+.profile-content { padding: 20px; }
+.profile-card { background-color: var(--card-bg); border-radius: 12px; padding: 24px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
+.profile-avatar-container { position: relative; width: 120px; height: 120px; margin: 0 auto 20px; }
+#profile-avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-color); }
+.avatar-edit-button { position: absolute; bottom: 5px; right: 5px; background-color: var(--primary-color); color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; border: 2px solid var(--bg-color); }
+#profile-display-name { margin: 0; font-size: 24px; }
+#profile-email { color: #888; margin-top: 5px; margin-bottom: 20px; font-size: 14px; }
+#edit-profile-section input { width: calc(100% - 20px); padding: 10px; margin-top: 5px; margin-bottom: 10px; }
+#edit-profile-section button { width: 100%; padding: 12px; }
+.profile-actions .logout-button { width: 100%; padding: 12px; background-color: #dc3545; color: white; border: none; border-radius: 8px; cursor: pointer; }
