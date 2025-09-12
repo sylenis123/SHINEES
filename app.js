@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // =================================================================
-    // 1. CONFIGURACIÓN Y SELECTORES GLOBALES
+    // 1. CONFIGURACIÓN Y SELECTORES
     // =================================================================
     const firebaseConfig = {
         apiKey: "AIzaSyDsv2keytFIEeS4QT4_chwOHMgyWpV8gP4", authDomain: "shinees.firebaseapp.com", projectId: "shinees",
@@ -18,53 +18,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const profileView = document.getElementById('profile-view');
     const loader = document.getElementById('loader');
     const appContent = document.getElementById('app-content');
-    const themeToggleButton = document.getElementById('theme-toggle');
-    const navHomeButton = document.getElementById('nav-home');
-    const navProfileButton = document.getElementById('nav-profile');
     
     let seriesData = [];
     let currentSerieId = null;
     let currentChapterId = null;
 
     // =================================================================
-    // 2. LÓGICA DE AUTENTICACIÓN Y PERFIL
+    // 2. NAVEGACIÓN PRINCIPAL
     // =================================================================
-    const registroModalOverlay = document.getElementById('registro-modal-overlay');
-    const loginModalOverlay = document.getElementById('login-modal-overlay');
-    const headerActions = document.querySelector('.header-actions');
-    const botonLogin = document.createElement('button');
-    botonLogin.id = 'mostrar-login-btn';
-    botonLogin.textContent = 'Iniciar Sesión';
-    const divPerfilUsuario = document.createElement('div');
-    divPerfilUsuario.id = 'perfil-usuario';
-    divPerfilUsuario.classList.add('hidden');
-    if (headerActions) {
-        headerActions.appendChild(botonLogin);
-        headerActions.appendChild(divPerfilUsuario);
-    }
-
-    function abrirModal(modalOverlay) { if (modalOverlay) modalOverlay.classList.remove('hidden'); }
-    function cerrarModal(modalOverlay) { if (modalOverlay) modalOverlay.classList.add('hidden'); }
-
-    auth.onAuthStateChanged(user => {
-        const mostrarRegistroBtn = document.getElementById('mostrar-registro-btn');
-        if (user) {
-            mostrarRegistroBtn.classList.add('hidden');
-            botonLogin.classList.add('hidden');
-            divPerfilUsuario.classList.remove('hidden');
-            const nombreUsuario = user.displayName || user.email.split('@')[0];
-            divPerfilUsuario.innerHTML = `<span class="nombre-usuario">Hola, ${nombreUsuario}</span><button id="logout-btn">Cerrar Sesión</button>`;
-            document.getElementById('logout-btn').addEventListener('click', () => auth.signOut());
-            document.getElementById('profile-display-name').textContent = nombreUsuario;
-            document.getElementById('profile-email').textContent = user.email;
-            document.getElementById('profile-avatar-img').src = user.photoURL || 'https://i.imgur.com/SYJ2s1k.png';
-        } else {
-            mostrarRegistroBtn.classList.remove('hidden' );
-            botonLogin.classList.remove('hidden');
-            divPerfilUsuario.classList.add('hidden');
-        }
-    });
-
     function navigateTo(view) {
         mainView.classList.add('hidden');
         detailView.classList.add('hidden');
@@ -82,14 +43,121 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =================================================================
-    // 3. FUNCIONES DE INTERACCIÓN (COMENTARIOS Y LIKES)
+    // 3. LÓGICA DE AUTENTICACIÓN Y PERFIL
+    // =================================================================
+    auth.onAuthStateChanged(user => {
+        const mostrarRegistroBtn = document.getElementById('mostrar-registro-btn');
+        const headerActions = document.querySelector('.header-actions');
+        let botonLogin = document.getElementById('mostrar-login-btn');
+        let divPerfilUsuario = document.getElementById('perfil-usuario');
+
+        // Limpiamos por si acaso para evitar duplicados
+        if (botonLogin) botonLogin.remove();
+        if (divPerfilUsuario) divPerfilUsuario.remove();
+
+        if (user) {
+            // --- Usuario Conectado ---
+            mostrarRegistroBtn.classList.add('hidden');
+            
+            divPerfilUsuario = document.createElement('div');
+            divPerfilUsuario.id = 'perfil-usuario';
+            const nombreUsuario = user.displayName || user.email.split('@')[0];
+            divPerfilUsuario.innerHTML = `<span class="nombre-usuario">Hola, ${nombreUsuario}</span><button id="logout-btn">Cerrar Sesión</button>`;
+            headerActions.appendChild(divPerfilUsuario);
+            
+            document.getElementById('logout-btn').addEventListener('click', () => auth.signOut());
+            
+            // Actualizamos la info en la página de perfil
+            document.getElementById('profile-display-name').textContent = nombreUsuario;
+            document.getElementById('profile-email').textContent = user.email;
+            document.getElementById('profile-avatar-img').src = user.photoURL || 'https://i.imgur.com/SYJ2s1k.png';
+
+        } else {
+            // --- Usuario Invitado ---
+            mostrarRegistroBtn.classList.remove('hidden' );
+            
+            botonLogin = document.createElement('button');
+            botonLogin.id = 'mostrar-login-btn';
+            botonLogin.textContent = 'Iniciar Sesión';
+            headerActions.appendChild(botonLogin);
+        }
+    });
+
+    // =================================================================
+    // 4. RENDERIZADO DE CONTENIDO (SERIES, CAPÍTULOS, ETC.)
+    // =================================================================
+    function openVerticalReader(serieId, chapter) {
+        currentSerieId = serieId;
+        currentChapterId = chapter.id;
+        const readerContent = document.getElementById('reader-content');
+        readerContent.innerHTML = '';
+        if (chapter.tiras && chapter.tiras.length > 0) {
+            chapter.tiras.forEach(tira => {
+                for (let i = 1; i <= tira.paginas; i++) {
+                    const imageUrl = `https://raw.githubusercontent.com/sylenis123/SHINEES/main/contenido/${chapter.path}/${parseInt(tira.id ) + 1}_${i.toString().padStart(2, '0')}.${chapter.formato}`;
+                    const img = document.createElement('img');
+                    img.src = imageUrl;
+                    readerContent.appendChild(img);
+                }
+            });
+        }
+        displayChapterInteractions(serieId, chapter.id);
+        document.querySelector('.bottom-nav').classList.add('hidden');
+        navigateTo('reader');
+    }
+
+    function buildDetailPage(serie) {
+        const serieId = serie.id;
+        detailView.innerHTML = `<div class="series-detail-container"><header class="detail-header" style="background-image: url('${serie.portada}')"><button class="back-button">‹</button><div class="detail-info"><div class="detail-info-cover"><img src="${serie.portada}" alt="${serie.titulo}"></div><div class="detail-info-text"><h1>${serie.titulo}</h1></div></div></header><div class="detail-content"><p class="detail-description">${serie.descripcion}</p><h2>Capítulos</h2><ul class="chapter-list"></ul></div></div>`;
+        const chapterList = detailView.querySelector('.chapter-list');
+        if (serie.capitulos && serie.capitulos.length > 0) {
+            serie.capitulos.forEach(cap => {
+                const listItem = document.createElement('li');
+                listItem.className = 'chapter-list-item';
+                listItem.innerHTML = `<a href="#">${cap.numero === 0 ? 'Prólogo' : `Cap. ${cap.numero}`}: ${cap.titulo_cap || ''}</a><div class="chapter-stats"><span>❤️ ${cap.likes || 0}</span><span>💬 ${cap.commentsCount || 0}</span></div>`;
+                listItem.querySelector('a').addEventListener('click', (e) => { e.preventDefault(); openVerticalReader(serieId, cap); });
+                chapterList.appendChild(listItem);
+            });
+        }
+    }
+
+    async function loadContent() {
+        try {
+            const seriesCollection = await db.collection('series').get();
+            seriesData = seriesCollection.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const featuredCarousel = document.getElementById('featured-carousel');
+            const popularSeriesGrid = document.getElementById('popular-series');
+            featuredCarousel.innerHTML = '';
+            popularSeriesGrid.innerHTML = '';
+            seriesData.forEach(serie => {
+                const card = document.createElement('a');
+                card.href = '#';
+                card.addEventListener('click', (e) => { e.preventDefault(); buildDetailPage(serie); navigateTo('detail'); });
+                if (serie.destacado) {
+                    card.className = 'hero-card';
+                    card.innerHTML = `<div class="hero-card-bg" style="background-image: url('${serie.portada}')"></div><img src="${serie.portada}" class="hero-card-cover"><div class="hero-card-info"><h3>${serie.titulo}</h3></div>`;
+                    featuredCarousel.appendChild(card);
+                } else {
+                    card.className = 'series-card';
+                    card.innerHTML = `<img src="${serie.portada}" alt="${serie.titulo}"><div class="series-card-info"><h3>${serie.titulo}</h3></div>`;
+                    popularSeriesGrid.appendChild(card);
+                }
+            });
+            loader.style.display = 'none';
+            appContent.style.display = 'block';
+        } catch (error) {
+            console.error("Error al cargar contenido:", error);
+        }
+    }
+
+    // =================================================================
+    // 5. LÓGICA DE INTERACCIONES (LIKES Y COMENTARIOS)
     // =================================================================
     function displayChapterInteractions(serieId, chapterId) {
         const user = auth.currentUser;
         const reactionBtn = document.getElementById('chapter-reaction-btn');
         const reactionCount = document.getElementById('chapter-reaction-count');
         const commentsList = document.getElementById('comments-list');
-        if (!reactionBtn || !commentsList) return;
         const chapterRef = db.collection('series').doc(serieId).collection('capitulos').doc(chapterId);
         chapterRef.get().then(doc => {
             reactionCount.textContent = (doc.data() && doc.data().likes) || 0;
@@ -98,8 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
             chapterRef.collection('reacciones').doc(user.uid).get().then(doc => {
                 reactionBtn.classList.toggle('liked', doc.exists);
             });
-        } else {
-            reactionBtn.classList.remove('liked');
         }
         commentsList.innerHTML = '';
         chapterRef.collection('comentarios').orderBy('fecha', 'desc').get().then(snap => {
@@ -118,26 +184,24 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const user = auth.currentUser;
         const commentInput = document.getElementById('comment-input');
-        const commentText = commentInput.value.trim();
-        if (!user) { alert("Debes iniciar sesión para comentar."); abrirModal(loginModalOverlay); return; }
-        if (!commentText || !currentSerieId || !currentChapterId) return;
+        if (!user) { alert("Debes iniciar sesión para comentar."); return; }
+        if (!commentInput.value.trim()) return;
         const chapterRef = db.collection('series').doc(currentSerieId).collection('capitulos').doc(currentChapterId);
         db.runTransaction(async t => {
             const chapterDoc = await t.get(chapterRef);
             const commentsCount = (chapterDoc.data() && chapterDoc.data().commentsCount) || 0;
             const newCommentRef = chapterRef.collection('comentarios').doc();
-            t.set(newCommentRef, { texto: commentText, userId: user.uid, userName: user.displayName || user.email.split('@')[0], userAvatar: user.photoURL, fecha: firebase.firestore.FieldValue.serverTimestamp() });
+            t.set(newCommentRef, { texto: commentInput.value.trim(), userId: user.uid, userName: user.displayName || user.email.split('@')[0], userAvatar: user.photoURL, fecha: firebase.firestore.FieldValue.serverTimestamp() });
             t.update(chapterRef, { commentsCount: commentsCount + 1 });
         }).then(() => {
             commentInput.value = '';
             displayChapterInteractions(currentSerieId, currentChapterId);
-        }).catch(err => console.error("Error al publicar comentario: ", err));
+        });
     }
 
     function handleReaction() {
         const user = auth.currentUser;
-        if (!user) { alert("Debes iniciar sesión para reaccionar."); abrirModal(loginModalOverlay); return; }
-        if (!currentSerieId || !currentChapterId) return;
+        if (!user) { alert("Debes iniciar sesión para reaccionar."); return; }
         const chapterRef = db.collection('series').doc(currentSerieId).collection('capitulos').doc(currentChapterId);
         const reactionRef = chapterRef.collection('reacciones').doc(user.uid);
         db.runTransaction(async t => {
@@ -147,151 +211,52 @@ document.addEventListener('DOMContentLoaded', () => {
             if (reactionDoc.exists) {
                 t.delete(reactionRef);
                 t.update(chapterRef, { likes: currentLikes - 1 });
-                return { liked: false, newCount: currentLikes - 1 };
             } else {
                 t.set(reactionRef, { likedAt: firebase.firestore.FieldValue.serverTimestamp() });
                 t.update(chapterRef, { likes: currentLikes + 1 });
-                return { liked: true, newCount: currentLikes + 1 };
             }
-        }).then(({ liked, newCount }) => {
-            document.getElementById('chapter-reaction-btn').classList.toggle('liked', liked);
-            document.getElementById('chapter-reaction-count').textContent = newCount < 0 ? 0 : newCount;
-        }).catch(err => console.error("Error en la transacción de reacción: ", err));
+        }).then(() => displayChapterInteractions(currentSerieId, currentChapterId));
     }
 
     // =================================================================
-    // 4. FUNCIONES DE NAVEGACIÓN Y RENDERIZADO
+    // 6. EVENT LISTENERS (VIGILANTES DE CLICS Y ACCIONES)
     // =================================================================
-    function openVerticalReader(serieId, chapter) {
-        currentSerieId = serieId;
-        currentChapterId = chapter.id;
-        const readerContent = document.getElementById('reader-content');
-        readerContent.innerHTML = '';
-        if (chapter.tiras && chapter.tiras.length > 0) {
-            chapter.tiras.forEach(tira => {
-                for (let i = 1; i <= tira.paginas; i++) {
-                    const imageUrl = `https://raw.githubusercontent.com/sylenis123/SHINEES/main/contenido/${chapter.path}/${parseInt(tira.id ) + 1}_${i.toString().padStart(2, '0')}.${chapter.formato}`;
-                    const img = document.createElement('img');
-                    img.src = imageUrl;
-                    readerContent.appendChild(img);
-                }
-            });
-        } else {
-            readerContent.innerHTML = '<p style="color:white; text-align:center; margin-top: 50px;">Este capítulo no tiene páginas.</p>';
-        }
-        displayChapterInteractions(serieId, chapter.id);
-        document.querySelector('.bottom-nav').classList.add('hidden');
-        navigateTo('reader');
-    }
+    document.getElementById('add-comment-form').addEventListener('submit', handlePostComment);
+    document.getElementById('chapter-reaction-btn').addEventListener('click', handleReaction);
+    
+    document.querySelector('.reader-close-button').addEventListener('click', () => {
+        navigateTo('detail');
+        document.querySelector('.bottom-nav').classList.remove('hidden');
+    });
 
-    function buildDetailPage(serie) {
-        const serieId = serie.id;
-        detailView.innerHTML = `<div class="series-detail-container"><header class="detail-header" style="background-image: url('${serie.portada}')"><button class="back-button">‹</button><div class="detail-info"><div class="detail-info-cover"><img src="${serie.portada}" alt="${serie.titulo}"></div><div class="detail-info-text"><h1>${serie.titulo}</h1><p>${serie.categoria || ''}</p></div></div></header><div class="detail-content"><p class="detail-description">${serie.descripcion}</p><h2>Capítulos</h2><ul class="chapter-list" id="detail-chapter-list"></ul></div></div>`;
-        const chapterList = detailView.querySelector('#detail-chapter-list');
-        if (serie.capitulos && serie.capitulos.length > 0) {
-            serie.capitulos.forEach(cap => {
-                const listItem = document.createElement('li');
-                listItem.className = 'chapter-list-item';
-                const link = document.createElement('a');
-                link.href = '#';
-                link.textContent = `${cap.numero === 0 ? 'Prólogo' : `Cap. ${cap.numero}`}: ${cap.titulo_cap || ''}`;
-                link.addEventListener('click', (e) => { e.preventDefault(); openVerticalReader(serieId, cap); });
-                const statsContainer = document.createElement('div');
-                statsContainer.className = 'chapter-stats';
-                statsContainer.innerHTML = `<span><span class="icon">❤️</span> ${cap.likes || 0}</span><span><span class="icon">💬</span> ${cap.commentsCount || 0}</span>`;
-                listItem.appendChild(link);
-                listItem.appendChild(statsContainer);
-                chapterList.appendChild(listItem);
-            });
-        } else {
-            chapterList.innerHTML = '<li><p>Aún no hay capítulos.</p></li>';
-        }
-    }
-
-    async function loadContent() {
-        try {
-            const seriesCollection = await db.collection('series').get();
-            seriesData = seriesCollection.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            const featuredCarousel = document.getElementById('featured-carousel');
-            const popularSeriesGrid = document.getElementById('popular-series');
-            featuredCarousel.innerHTML = '';
-            popularSeriesGrid.innerHTML = '';
-            seriesData.forEach(serie => {
-                const card = document.createElement('a');
-                card.href = '#';
-                card.addEventListener('click', (e) => { e.preventDefault(); buildDetailPage(serie); navigateTo('detail'); });
-                if (serie.destacado) {
-                    card.className = 'hero-card';
-                    card.innerHTML = `<div class="hero-card-bg" style="background-image: url('${serie.portada}')"></div><img src="${serie.portada}" class="hero-card-cover" alt="${serie.titulo}"><div class="hero-card-info"><h3>${serie.titulo}</h3><p>${serie.categoria || ''}</p></div>`;
-                    featuredCarousel.appendChild(card);
-                } else {
-                    card.className = 'series-card';
-                    card.innerHTML = `<img src="${serie.portada}" alt="${serie.titulo}"><div class="series-card-info"><h3>${serie.titulo}</h3></div>`;
-                    popularSeriesGrid.appendChild(card);
-                }
-            });
-            loader.style.display = 'none';
-            appContent.style.display = 'block';
-        } catch (error) {
-            console.error("Error al cargar contenido:", error);
-            loader.innerHTML = '<p>Error al conectar con la base de datos.</p>';
-        }
-    }
-
-    // =================================================================
-    // 5. EVENT LISTENERS GENERALES Y DELEGACIÓN
-    // =================================================================
-    document.addEventListener('click', (e) => {
-        if (e.target.matches('#mostrar-registro-btn')) abrirModal(registroModalOverlay);
-        if (e.target.matches('#cerrar-modal-btn')) cerrarModal(registroModalOverlay);
-        if (e.target === registroModalOverlay) cerrarModal(registroModalOverlay);
-        if (e.target.matches('#mostrar-login-btn')) abrirModal(loginModalOverlay);
-        if (e.target.matches('#cerrar-login-modal-btn')) cerrarModal(loginModalOverlay);
-        if (e.target === loginModalOverlay) cerrarModal(loginModalOverlay);
-        if (e.target.matches('#forgot-password-link')) {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            if (!email) { alert("Introduce tu email."); return; }
-            auth.sendPasswordResetEmail(email).then(() => alert("Correo de recuperación enviado.")).catch(() => alert("Error al enviar correo."));
-        }
-        if (e.target.matches('#save-profile-btn')) {
-            const newDisplayName = document.getElementById('display-name-input').value;
-            const user = auth.currentUser;
-            if (user && newDisplayName) {
-                user.updateProfile({ displayName: newDisplayName }).then(() => alert("Nombre actualizado."));
-            }
-        }
-        if (e.target.matches('#logout-btn-profile')) auth.signOut();
+    document.addEventListener('click', e => {
+        if (e.target.matches('.back-button')) navigateTo('main');
+        if (e.target.matches('#mostrar-registro-btn')) document.getElementById('registro-modal-overlay').classList.remove('hidden');
+        if (e.target.matches('#mostrar-login-btn')) document.getElementById('login-modal-overlay').classList.remove('hidden');
+        if (e.target.matches('.modal-close-button')) e.target.closest('.modal-overlay').classList.add('hidden');
         if (e.target.matches('#nav-home')) { e.preventDefault(); navigateTo('main'); }
         if (e.target.matches('#nav-profile')) {
             e.preventDefault();
             if (auth.currentUser) navigateTo('profile');
-            else abrirModal(loginModalOverlay);
+            else document.getElementById('login-modal-overlay').classList.remove('hidden');
         }
-        if (e.target.matches('.reader-close-button')) {
-            navigateTo('detail');
-            document.querySelector('.bottom-nav').classList.remove('hidden');
-        }
-        if (e.target.matches('.back-button')) navigateTo('main');
-        if (e.target.matches('#chapter-reaction-btn') || e.target.closest('#chapter-reaction-btn')) handleReaction();
+        if (e.target.matches('#logout-btn-profile')) auth.signOut();
     });
 
-    document.addEventListener('submit', (e) => {
-        if (e.target.matches('#registro-form')) {
-            e.preventDefault();
-            const email = document.getElementById('registro-email').value;
-            const password = document.getElementById('registro-password').value;
-            auth.createUserWithEmailAndPassword(email, password)
-                .then(uc => { uc.user.sendEmailVerification(); alert('¡Registro exitoso!'); cerrarModal(registroModalOverlay); })
-                .catch(err => console.error(err));
-        }
-        if (e.target.matches('#login-form')) {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            auth.signInWithEmailAndPassword(email, password).then(() => cerrarModal(loginModalOverlay)).catch(() => alert("Error de login."));
-        }
-        if (e.target.matches('#add-comment-form')) handlePostComment(e);
+    document.getElementById('registro-form').addEventListener('submit', e => {
+        e.preventDefault();
+        const email = document.getElementById('registro-email').value;
+        const password = document.getElementById('registro-password').value;
+        auth.createUserWithEmailAndPassword(email, password)
+            .then(uc => { uc.user.sendEmailVerification(); alert('¡Registro exitoso!'); document.getElementById('registro-modal-overlay').classList.add('hidden'); })
+            .catch(err => console.error(err));
+    });
+
+    document.getElementById('login-form').addEventListener('submit', e => {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        auth.signInWithEmailAndPassword(email, password).then(() => document.getElementById('login-modal-overlay').classList.add('hidden')).catch(() => alert("Error de login."));
     });
 
     document.getElementById('avatar-upload-input').addEventListener('change', (e) => {
@@ -310,11 +275,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    themeToggleButton.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        document.documentElement.setAttribute('data-theme', currentTheme === 'dark' ? 'light' : 'dark');
-        themeToggleButton.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
-    });
-
+    // Carga inicial del contenido
     loadContent();
 });
