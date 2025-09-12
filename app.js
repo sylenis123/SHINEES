@@ -23,7 +23,44 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeToggleButton = document.getElementById('theme-toggle');
     const readerView = document.getElementById('vertical-reader');
     let seriesData = [];
+const auth = firebase.auth(); // Obtenemos el servicio de autenticación
 
+// Selectores para el nuevo formulario
+const registroView = document.getElementById('registro-view');
+const registroForm = document.getElementById('registro-form');
+const registroEmailInput = document.getElementById('registro-email');
+const registroPasswordInput = document.getElementById('registro-password');
+const registroError = document.getElementById('registro-error');
+const mostrarRegistroBtn = document.getElementById('mostrar-registro-btn');
+
+// Evento para mostrar el formulario de registro
+mostrarRegistroBtn.addEventListener('click', () => {
+  registroView.style.display = 'block'; // Muestra el formulario
+  // Aquí podrías ocultar otras vistas si es necesario
+});
+
+// Evento para manejar el envío del formulario
+registroForm.addEventListener('submit', (e) => {
+  e.preventDefault(); // Evita que la página se recargue
+
+  const email = registroEmailInput.value;
+  const password = registroPasswordInput.value;
+  registroError.textContent = ''; // Limpia errores anteriores
+
+  // Usamos la función de Firebase para crear el usuario
+  auth.createUserWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      // ¡Registro exitoso!
+      console.log('¡Usuario registrado!', userCredential.user);
+      alert('¡Te has registrado con éxito!');
+      registroView.style.display = 'none'; // Oculta el formulario de nuevo
+    })
+    .catch((error) => {
+      // Hubo un error
+      console.error('Error en el registro:', error.message);
+      registroError.textContent = error.message; // Muestra el error al usuario
+    });
+});
     // =================================================================
     // FUNCIÓN openVerticalReader CORREGIDA
     // =================================================================
