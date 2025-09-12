@@ -68,6 +68,27 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 
+    <!-- En alguna parte de tu <body> en index.html -->
+
+<div id="registro-view" style="display: none;"> <!-- Lo ponemos oculto por defecto -->
+  <h2>Crear una cuenta en Shinees</h2>
+  <form id="registro-form">
+    <div>
+      <label>Correo Electrónico:</label>
+      <input type="email" id="registro-email" required />
+    </div>
+    <div>
+      <label>Contraseña:</label>
+      <input type="password" id="registro-password" required minlength="6" />
+    </div>
+    <button type="submit">Registrarse</button>
+    <p id="registro-error" style="color: red;"></p>
+  </form>
+</div>
+
+<!-- También necesitarás un botón para mostrar este formulario -->
+<button id="mostrar-registro-btn">Registrarse</button>
+
     <!-- Tu script principal -->
     <script src="app.js"></script>
 </body>
