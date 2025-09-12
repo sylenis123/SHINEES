@@ -1,139 +1,56 @@
 <!DOCTYPE html>
 <html lang="es" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shinees</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- ... (tu head se queda igual) ... -->
 </head>
 <body>
-
-    <!-- Contenido principal de la aplicación -->
-    <div id="loader">
-        <div class="spinner"></div>
-        <p>Shinees</p>
-    </div>
-
+    <!-- ... (tu loader y app-content se quedan igual) ... -->
     <div id="app-content" style="display: none;">
         <main id="main-view" class="page-view">
-            <header class="main-header">
-                <h1>Shinees</h1>
-                <div class="header-actions">
-                    <button id="theme-toggle">☀️</button>
-                    <button id="mostrar-registro-btn">Registrarse</button>
-                    <!-- El botón de Login y el perfil de usuario se crearán y añadirán aquí con JavaScript -->
-                </div>
-            </header>
-            <section id="featured-carousel" class="hero-carousel"></section>
-            <section class="ad-container">
-                <div class="ad-placeholder">
-                    <span class="ad-label">Publicidad</span>
-                    <img src="https://i.imgur.com/K71g2k6.png" alt="Anuncio de ejemplo">
-                </div>
-            </section>
-            <section class="series-grid-container">
-                <h2>Series Populares</h2>
-                <div id="popular-series" class="series-grid"></div>
-            </section>
+            <!-- ... (tu contenido de main-view se queda igual) ... -->
         </main>
 
-        <!-- Vistas de página que se ocultan/muestran -->
         <div id="series-detail-view" class="page-view hidden">
-            <!-- El contenido de esta vista se genera dinámicamente con JavaScript -->
+            <!-- El contenido se genera con JS. Ya no tendrá los comentarios aquí. -->
         </div>
+
         <div id="vertical-reader" class="page-view hidden">
             <header class="reader-header">
                 <button class="reader-close-button">X</button>
             </header>
-            <div id="reader-content"></div>
-        </div>
-
-        <!-- VISTA DE PERFIL DE USUARIO -->
-        <div id="profile-view" class="page-view hidden">
-            <header class="main-header">
-                <h1>Mi Perfil</h1>
-            </header>
-            <div class="profile-content">
-                <div class="profile-card">
-                    <div class="profile-avatar-container">
-                        <img id="profile-avatar-img" src="https://i.imgur.com/SYJ2s1k.png" alt="Avatar de usuario">
-                        <label for="avatar-upload-input" class="avatar-edit-button" title="Cambiar avatar">✏️</label>
-                        <input type="file" id="avatar-upload-input" accept="image/*" style="display: none;">
-                    </div>
-                    <h2 id="profile-display-name">Cargando...</h2>
-                    <p id="profile-email">cargando@email.com</p>
-                    <div id="edit-profile-section">
-                        <label for="display-name-input">Cambiar nombre de usuario:</label>
-                        <input type="text" id="display-name-input" placeholder="Nuevo nombre">
-                        <button id="save-profile-btn">Guardar Cambios</button>
-                    </div>
+            <div id="reader-content">
+                <!-- Las imágenes del capítulo se cargarán aquí -->
+            </div>
+            
+            <!-- ===== SECCIÓN DE INTERACCIÓN DEL CAPÍTULO (AÑADIDA AQUÍ) ===== -->
+            <div id="chapter-interaction-section" class="interaction-container">
+                <div class="reactions-container">
+                    <button id="chapter-reaction-btn" class="reaction-button">
+                        <span class="icon">❤️</span>
+                        <span id="chapter-reaction-count" class="count">0</span>
+                    </button>
                 </div>
-                <div class="profile-actions">
-                    <button id="logout-btn-profile" class="logout-button">Cerrar Sesión</button>
+                <div id="comments-section" class="comments-container">
+                    <h2>Comentarios del Capítulo</h2>
+                    <div id="add-comment-form-container">
+                        <form id="add-comment-form">
+                            <textarea id="comment-input" placeholder="Escribe tu comentario..." required></textarea>
+                            <button type="submit">Publicar</button>
+                        </form>
+                    </div>
+                    <div id="comments-list"></div>
                 </div>
             </div>
+            <!-- ============================================================= -->
         </div>
 
-        <!-- Barra de navegación inferior -->
-        <nav class="bottom-nav">
-            <a href="#" id="nav-home" class="nav-item active"><span>Inicio</span></a>
-            <a href="#" id="nav-series" class="nav-item"><span>Series</span></a>
-            <a href="#" id="nav-originals" class="nav-item"><span>Originales</span></a>
-            <a href="#" id="nav-profile" class="nav-item"><span>Yo</span></a>
-        </nav>
-    </div>
-
-    <!-- ======================================================= -->
-    <!-- MODALES (VENTANAS EMERGENTES ) -->
-    <!-- ======================================================= -->
-
-    <div id="ad-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <span id="ad-modal-close" class="modal-close-button">&times;</span>
-            <span class="ad-label">Publicidad</span>
-            <p>¡Gracias por leer!</p>
-            <div class="ad-placeholder-modal"><img src="https://i.imgur.com/gswg3gC.png" alt="Anuncio"></div>
+        <div id="profile-view" class="page-view hidden">
+            <!-- ... (tu vista de perfil se queda igual) ... -->
         </div>
+
+        <!-- ... (tu barra de navegación y modales se quedan igual) ... -->
     </div>
 
-    <div id="registro-modal-overlay" class="modal-overlay hidden">
-        <div id="registro-modal-content" class="modal-content">
-            <button id="cerrar-modal-btn" class="modal-close-button">&times;</button>
-            <h2>Crear una cuenta en Shinees</h2>
-            <form id="registro-form">
-                <div><label for="registro-email">Correo Electrónico:</label><input type="email" id="registro-email" required /></div>
-                <div><label for="registro-password">Contraseña:</label><input type="password" id="registro-password" required minlength="6" /></div>
-                <button type="submit">Confirmar Registro</button>
-                <p id="registro-error" class="error-message"></p>
-            </form>
-        </div>
-    </div>
-
-    <div id="login-modal-overlay" class="modal-overlay hidden">
-        <div id="login-modal-content" class="modal-content">
-            <button id="cerrar-login-modal-btn" class="modal-close-button">&times;</button>
-            <h2>Iniciar Sesión</h2>
-            <form id="login-form">
-                <div><label for="login-email">Correo Electrónico:</label><input type="email" id="login-email" required /></div>
-                <div><label for="login-password">Contraseña:</label><input type="password" id="login-password" required /></div>
-                <a href="#" id="forgot-password-link" class="forgot-password">¿Olvidaste tu contraseña?</a>
-                <button type="submit">Entrar</button>
-                <p id="login-error" class="error-message"></p>
-            </form>
-        </div>
-    </div>
-
-    <!-- ======================================================= -->
-    <!-- SCRIPTS (AL FINAL DEL BODY ) -->
-    <!-- ======================================================= -->
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="app.js"></script>
-
+    <!-- ... (tus scripts se quedan igual) ... -->
 </body>
 </html>
