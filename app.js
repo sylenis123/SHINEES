@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. CONFIGURACIÓN Y SELECTORES GLOBALES
     // =================================================================
 
-    // Configuración de Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyDsv2keytFIEeS4QT4_chwOHMgyWpV8gP4",
         authDomain: "shinees.firebaseapp.com",
@@ -18,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const db = firebase.firestore();
     const auth = firebase.auth();
 
-    // Selectores del DOM para las vistas principales
     const mainView = document.getElementById('main-view');
     const detailView = document.getElementById('series-detail-view');
     const readerView = document.getElementById('vertical-reader');
@@ -31,10 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let seriesData = [];
 
     // =================================================================
-    // 2. LÓGICA DE AUTENTICACIÓN (REGISTRO, LOGIN Y GESTIÓN DE SESIÓN)
+    // 2. LÓGICA DE AUTENTICACIÓN (REGISTRO, LOGIN, RECUPERACIÓN Y SESIÓN)
     // =================================================================
 
-    // --- Selectores para los modales de autenticación ---
+    // --- Selectores para los modales ---
     const registroModalOverlay = document.getElementById('registro-modal-overlay');
     const registroForm = document.getElementById('registro-form');
     const registroError = document.getElementById('registro-error');
@@ -45,8 +43,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login-form');
     const loginError = document.getElementById('login-error');
     const cerrarLoginModalBtn = document.getElementById('cerrar-login-modal-btn');
+    const forgotPasswordLink = document.getElementById('forgot-password-link'); // Selector añadido
 
-    // --- Creación dinámica de botones de Login y Perfil ---
+    // --- Creación dinámica de botones y perfil ---
     const headerActions = document.querySelector('.header-actions');
     const botonLogin = document.createElement('button');
     botonLogin.id = 'mostrar-login-btn';
@@ -71,10 +70,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (errorElement) errorElement.textContent = '';
     }
 
-    // --- El "Vigilante" de Firebase: Gestiona la sesión del usuario ---
+    // --- El "Vigilante" de Firebase: Gestiona la sesión ---
     auth.onAuthStateChanged(user => {
         if (user) {
-            // ----- USUARIO CON SESIÓN INICIADA -----
             console.log("Usuario conectado:", user.email);
             mostrarRegistroBtn.classList.add('hidden');
             botonLogin.classList.add('hidden');
@@ -91,7 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
         } else {
-            // ----- USUARIO INVITADO (SIN SESIÓN) -----
             console.log("Nadie conectado.");
             mostrarRegistroBtn.classList.remove('hidden');
             botonLogin.classList.remove('hidden');
@@ -100,24 +97,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Event Listeners para los modales ---
-
-    // Modal de Registro
     if (mostrarRegistroBtn) mostrarRegistroBtn.addEventListener('click', () => abrirModal(registroModalOverlay));
     if (cerrarRegistroModalBtn) cerrarRegistroModalBtn.addEventListener('click', () => cerrarModal(registroModalOverlay, registroError));
     if (registroModalOverlay) registroModalOverlay.addEventListener('click', (e) => {
         if (e.target === registroModalOverlay) cerrarModal(registroModalOverlay, registroError);
     });
 
-    // Modal de Login
     if (botonLogin) botonLogin.addEventListener('click', () => abrirModal(loginModalOverlay));
     if (cerrarLoginModalBtn) cerrarLoginModalBtn.addEventListener('click', () => cerrarModal(loginModalOverlay, loginError));
     if (loginModalOverlay) loginModalOverlay.addEventListener('click', (e) => {
         if (e.target === loginModalOverlay) cerrarModal(loginModalOverlay, loginError);
     });
 
-    // --- Lógica de envío de formularios ---
-
-    // Formulario de Registro
+    // --- Lógica de envío de formularios y recuperación ---
     if (registroForm) {
         registroForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -128,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
             auth.createUserWithEmailAndPassword(email, password)
                 .then((userCredential) => {
                     console.log('¡Usuario registrado!', userCredential.user);
-                    userCredential.user.sendEmailVerification(); // Envía correo de verificación
+                    userCredential.user.sendEmailVerification();
                     alert('¡Registro exitoso! Se ha enviado un correo de verificación a tu email.');
                     cerrarModal(registroModalOverlay, registroError);
                 })
@@ -141,7 +133,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Formulario de Login
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -157,6 +148,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 .catch((error) => {
                     console.error("Error de login:", error.message);
                     loginError.textContent = "Email o contraseña incorrectos.";
+                });
+        });
+    }
+
+    // Lógica para recuperar contraseña (AÑADIDA AQUÍ)
+    if (forgotPasswordLink) {
+        forgotPasswordLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            if (!email) {
+                alert("Por favor, introduce tu correo electrónico en el campo de arriba y luego haz clic en '¿Olvidaste tu contraseña?'.");
+                return;
+            }
+
+            auth.sendPasswordResetEmail(email)
+                .then(() => {
+                    alert("¡Correo de recuperación enviado! Revisa tu bandeja de entrada.");
+                    cerrarModal(loginModalOverlay, loginError);
+                })
+                .catch((error) => {
+                    console.error("Error al enviar correo de recuperación:", error);
+                    alert("No se pudo enviar el correo. Asegúrate de que la dirección es correcta y está registrada.");
                 });
         });
     }
