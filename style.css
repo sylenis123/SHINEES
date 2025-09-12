@@ -342,4 +342,83 @@ h1, h2, h3 { color: var(--text-color); }
 .forgot-password:hover {
   text-decoration: underline;
 }
+/* Estilos para la Página de Perfil */
+.profile-content {
+    padding: 20px;
+}
+
+.profile-card {
+    background-color: var(--card-bg-color );
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.profile-avatar-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 20px;
+}
+
+#profile-avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary-color);
+}
+
+.avatar-edit-button {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    border: 2px solid var(--bg-color);
+}
+
+#profile-display-name {
+    margin: 0;
+    font-size: 24px;
+}
+
+#profile-email {
+    color: #888;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+#edit-profile-section input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+#edit-profile-section button {
+    width: 100%;
+    padding: 12px;
+}
+
+.profile-actions .logout-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #dc3545; /* Un color rojo para cerrar sesión */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
 
