@@ -50,7 +50,71 @@ document.addEventListener('DOMContentLoaded', () => {
       if (registroModalOverlay) registroModalOverlay.classList.add('hidden');
       if (registroError) registroError.textContent = ''; // Limpia cualquier error al cerrar
     }
+// =================================================================
+// GESTIÓN DE LA SESIÓN DE USUARIO
+// =================================================================
 
+const botonRegistro = document.getElementById('mostrar-registro-btn');
+const botonLogin = document.createElement('button'); // Creamos un botón de Login
+botonLogin.id = 'mostrar-login-btn';
+botonLogin.textContent = 'Iniciar Sesión';
+
+const divPerfilUsuario = document.createElement('div'); // Creamos un div para el perfil
+divPerfilUsuario.id = 'perfil-usuario';
+divPerfilUsuario.classList.add('hidden'); // Oculto por defecto
+
+// Lo insertamos en el header
+const headerActions = document.querySelector('.header-actions');
+if (headerActions) {
+    headerActions.appendChild(botonLogin);
+    headerActions.appendChild(divPerfilUsuario);
+}
+
+// El "Vigilante" de Firebase
+auth.onAuthStateChanged(user => {
+    if (user) {
+        // ----- EL USUARIO TIENE SESIÓN INICIADA -----
+        console.log("Usuario conectado:", user.email);
+
+        // 1. Ocultamos los botones de "Registrarse" e "Iniciar Sesión"
+        botonRegistro.classList.add('hidden');
+        botonLogin.classList.add('hidden');
+
+        // 2. Mostramos la sección de perfil
+        divPerfilUsuario.classList.remove('hidden');
+        
+        // 3. Creamos el contenido del perfil
+        // Si el usuario tiene un nombre guardado, lo usamos. Si no, usamos el email.
+        const nombreUsuario = user.displayName || user.email.split('@')[0];
+        
+        divPerfilUsuario.innerHTML = `
+            <span class="nombre-usuario">Hola, ${nombreUsuario}</span>
+            <button id="logout-btn">Cerrar Sesión</button>
+        `;
+
+        // 4. Añadimos el evento para cerrar sesión
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            auth.signOut(); // La función mágica para cerrar sesión
+        });
+
+        // 5. Personalizamos la barra de navegación inferior
+        const navYo = document.querySelector('.bottom-nav a[href="#"] span:last-child');
+        if (navYo && navYo.textContent === 'Yo') {
+            // Aquí podrías cambiar "Yo" por el avatar del usuario, por ejemplo
+        }
+
+    } else {
+        // ----- EL USUARIO NO TIENE SESIÓN INICIADA (ES INVITADO) -----
+        console.log("Nadie conectado.");
+
+        // 1. Mostramos los botones de "Registrarse" e "Iniciar Sesión"
+        botonRegistro.classList.remove('hidden');
+        botonLogin.classList.remove('hidden');
+
+        // 2. Ocultamos la sección de perfil
+        divPerfilUsuario.classList.add('hidden');
+    }
+});
     // --- Event Listeners para el modal ---
 
     // 1. Abrir el modal al hacer clic en "Registrarse"
