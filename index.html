@@ -3,845 +3,1477 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shinees</title>
+    <title>Shinees - Platform</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #3498db; --text-color: #e0e0e0; --bg-color: #121212;
-            --card-bg: #1e1e1e; --nav-bg: #181818; --border-color: #2c2c2c;
-            --success-color: #2ecc71; --danger-color: #e74c3c; --warning-color: #f39c12;
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --accent: #10b981;
+            --text: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --bg: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --border: #475569;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
         }
+
         [data-theme="light"] {
-            --primary-color: #2980b9; --text-color: #333; --bg-color: #f4f4f4;
-            --card-bg: #ffffff; --nav-bg: #fdfdfd; --border-color: #e0e0e0;
+            --text: #1e293b;
+            --text-secondary: #64748b;
+            --bg: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #e2e8f0;
+            --border: #e2e8f0;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Roboto', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
         .hidden { display: none !important; }
-        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-color); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; }
-        .spinner { border: 4px solid rgba(255, 255, 255, 0.2); border-left-color: var(--primary-color); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        #loader p { margin-top: 20px; }
-        #app-content { padding-bottom: 70px; }
-        .page-view { padding: 15px; }
-        .main-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background-color: var(--bg-color); position: sticky; top: 0; z-index: 100; }
-        .header-actions { display: flex; align-items: center; gap: 15px; }
-        #theme-toggle, .header-actions button { background: none; border: 1px solid var(--border-color); color: var(--text-color); padding: 8px 12px; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
-        #theme-toggle { font-size: 1.2rem; padding: 5px; }
-        .header-actions button:hover { background-color: var(--primary-color); color: white; }
-        .hero-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 0 15px 15px; -webkit-overflow-scrolling: touch; }
-        .hero-card { flex: 0 0 85%; scroll-snap-align: center; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 16 / 9; background-color: var(--card-bg); }
-        .hero-card-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; filter: blur(10px) brightness(0.5); transform: scale(1.1); }
-        .hero-card-cover { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); height: 90%; width: auto; max-width: 90%; object-fit: contain; border-radius: 6px; }
-        .series-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; padding: 0 15px; }
-        .series-card { background-color: var(--card-bg); border-radius: 8px; overflow: hidden; transition: transform 0.3s; position: relative; }
-        .series-card:hover { transform: translateY(-5px); }
-        .series-card img { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; }
-        .series-card-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding: 10px; }
-        .series-card-title { color: white; font-size: 0.8rem; text-shadow: 1px 1px 3px #000; }
 
-        /* Detalles de serie mejorados */
-        .detail-header { position: relative; height: 300px; background-size: cover; background-position: center; }
-        .detail-header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, var(--bg-color) 0%, transparent 100%); }
-        .back-button { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.5rem; cursor: pointer; }
-        .detail-content { padding: 15px; }
-        .series-info { display: flex; gap: 15px; margin-bottom: 20px; }
-        .series-poster { flex: 0 0 120px; }
-        .series-poster img { width: 100%; border-radius: 8px; }
-        .series-details h1 { margin-bottom: 10px; }
-        .series-meta { display: flex; gap: 15px; margin: 10px 0; color: #888; font-size: 0.9rem; }
-        .series-actions { display: flex; gap: 10px; margin: 15px 0; }
-        .like-button, .favorite-button { background: none; border: 1px solid var(--border-color); color: var(--text-color); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.3s; }
-        .like-button.liked { background-color: var(--danger-color); color: white; border-color: var(--danger-color); }
-        .favorite-button.favorited { background-color: var(--warning-color); color: white; border-color: var(--warning-color); }
-        .chapter-list { list-style: none; margin-top: 20px; }
-        .chapter-list li a { display: block; padding: 15px; border-bottom: 1px solid var(--border-color); color: var(--text-color); text-decoration: none; transition: background-color 0.3s; }
-        .chapter-list li a:hover { background-color: var(--card-bg); }
+        /* ===== LOADING ANIME ===== */
+        #anime-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(45deg, #0f172a, #1e293b, #334155);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            font-family: 'Noto Sans JP', sans-serif;
+        }
 
-        /* Sistema de comentarios */
-        .comments-section { margin-top: 30px; }
-        .comments-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .comment-form { background-color: var(--card-bg); padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-        .comment-form textarea { width: 100%; padding: 10px; border-radius: 4px; border: 1px solid var(--border-color); background-color: var(--bg-color); color: var(--text-color); resize: vertical; min-height: 80px; }
-        .comment-form button { margin-top: 10px; padding: 8px 16px; background-color: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; }
-        .comment { background-color: var(--card-bg); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-        .comment-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .comment-author { font-weight: bold; color: var(--primary-color); }
-        .comment-date { color: #888; font-size: 0.8rem; }
-        .comment-text { line-height: 1.5; }
-        .comment-actions { display: flex; gap: 10px; margin-top: 10px; }
-        .comment-like { background: none; border: none; color: #888; cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; gap: 5px; }
-        .comment-like.liked { color: var(--danger-color); }
+        .anime-spinner {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin-bottom: 40px;
+        }
 
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-around; background-color: var(--nav-bg); border-top: 1px solid var(--border-color); padding: 5px 0; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-color); font-size: 0.7rem; text-decoration: none; padding: 5px; }
-        .nav-item.active { color: var(--primary-color); }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); display: flex; justify-content: center; align-items: center; z-index: 1001; }
-        .modal-content { background-color: var(--card-bg); padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; position: relative; }
-        .modal-close-button { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; color: var(--text-color); cursor: pointer; }
-        .modal-content form div { margin-bottom: 15px; }
-        .modal-content form label { display: block; margin-bottom: 5px; }
-        .modal-content form input { width: 100%; padding: 10px; border-radius: 4px; border: 1px solid var(--border-color); background-color: var(--bg-color); color: var(--text-color); }
-        .modal-content form button { width: 100%; padding: 12px; border: none; border-radius: 4px; background-color: var(--primary-color); color: white; font-size: 16px; cursor: pointer; }
-        
-        .profile-content { padding: 20px; }
-        .profile-card { background-color: var(--card-bg); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 20px; }
-        .profile-avatar-container { position: relative; width: 120px; height: 120px; margin: 0 auto 20px; }
-        #profile-avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-color); }
-        .avatar-edit-button { position: absolute; bottom: 5px; right: 5px; background-color: var(--primary-color); color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; border: 2px solid var(--bg-color); }
-        #profile-display-name { margin: 0; font-size: 24px; }
-        #profile-email { color: #888; margin-top: 5px; margin-bottom: 20px; font-size: 14px; }
-        .profile-actions .logout-button { width: 100%; padding: 12px; background-color: #dc3545; color: white; border: none; border-radius: 8px; cursor: pointer; }
-        .series-grid-container { padding: 15px 0; }
-        .series-grid-container h2 { padding: 0 15px; margin-bottom: 15px; }
+        .spinner-ring {
+            position: absolute;
+            border: 3px solid transparent;
+            border-top: 3px solid var(--primary);
+            border-right: 3px solid var(--secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
 
-        /* Loading states */
-        .loading-skeleton { background: linear-gradient(90deg, var(--card-bg) 25%, rgba(255,255,255,0.1) 50%, var(--card-bg) 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
-        @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-        
-        /* Responsive */
+        .spinner-ring:nth-child(1) {
+            width: 120px;
+            height: 120px;
+            animation-duration: 1.5s;
+        }
+
+        .spinner-ring:nth-child(2) {
+            width: 90px;
+            height: 90px;
+            top: 15px;
+            left: 15px;
+            animation-duration: 1s;
+            animation-direction: reverse;
+        }
+
+        .spinner-ring:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            top: 30px;
+            left: 30px;
+            animation-duration: 0.7s;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--text);
+            text-align: center;
+        }
+
+        .japanese-text {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            opacity: 0;
+            animation: fadeInOut 2s ease-in-out infinite;
+        }
+
+        .english-text {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            opacity: 0;
+            animation: fadeInOut 2s ease-in-out infinite 1s;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; transform: translateY(10px); }
+            50% { opacity: 1; transform: translateY(0); }
+        }
+
+        .loading-progress {
+            width: 300px;
+            height: 4px;
+            background: var(--bg-tertiary);
+            border-radius: 2px;
+            margin-top: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--gradient);
+            width: 0%;
+            animation: progress 3s ease-out forwards;
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* ===== APP LAYOUT ===== */
+        #app-content {
+            min-height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+        }
+
+        /* ===== HEADER ===== */
+        .main-header {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            background: var(--bg-tertiary);
+            color: var(--text);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            border: none;
+            color: white;
+        }
+
+        /* ===== DASHBOARD ===== */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: calc(100vh - 80px);
+        }
+
+        .sidebar {
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: var(--bg-tertiary);
+            color: var(--text);
+        }
+
+        .main-content {
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        /* ===== ANNOUNCEMENTS ===== */
+        .announcement-banner {
+            background: var(--gradient);
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
+            position: relative;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .announcement-close {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+
+        /* ===== CAROUSEL MINIMALISTA ===== */
+        .featured-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+        }
+
+        .carousel {
+            display: flex;
+            transition: transform 0.5s ease;
+            height: 200px;
+        }
+
+        .carousel-item {
+            min-width: 100%;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: end;
+        }
+
+        .carousel-content {
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            width: 100%;
+            padding: 2rem;
+            color: white;
+        }
+
+        .carousel-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-nav:hover {
+            background: rgba(0,0,0,0.8);
+        }
+
+        .carousel-prev { left: 1rem; }
+        .carousel-next { right: 1rem; }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: var(--primary);
+            transform: scale(1.2);
+        }
+
+        /* ===== SERIES GRID ===== */
+        .series-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .series-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid var(--border);
+        }
+
+        .series-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .series-poster {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+        }
+
+        .series-info {
+            padding: 1rem;
+        }
+
+        .series-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .series-meta {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* ===== DETAIL VIEW ===== */
+        .detail-hero {
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: end;
+        }
+
+        .detail-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        }
+
+        .detail-content {
+            position: relative;
+            z-index: 1;
+            padding: 2rem;
+            color: white;
+            width: 100%;
+        }
+
+        .detail-actions {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .like-btn {
+            background: var(--danger);
+            color: white;
+        }
+
+        .favorite-btn {
+            background: var(--warning);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* ===== COMMENTS ===== */
+        .comments-section {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            color: var(--text);
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .comment {
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-around;
+            position: sticky;
+            bottom: 0;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            .series-info { flex-direction: column; }
-            .series-poster { flex: none; width: 150px; align-self: center; }
+            .main-header {
+                padding: 1rem;
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .series-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 1rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="loader">
-        <div class="spinner"></div>
-        <p>Cargando Shinees...</p>
+    <!-- ===== ANIME LOADING ===== -->
+    <div id="anime-loader">
+        <div class="anime-spinner">
+            <div class="spinner-ring"></div>
+            <div class="spinner-ring"></div>
+            <div class="spinner-ring"></div>
+        </div>
+        
+        <div class="loading-text">システム読み込み中...</div>
+        <div class="japanese-text">読み込み中</div>
+        <div class="english-text">Loading System</div>
+        
+        <div class="loading-progress">
+            <div class="progress-bar"></div>
+        </div>
     </div>
-    
-    <div id="app-content" style="display: none;">
-        <main id="main-view" class="page-view">
-            <header class="main-header">
-                <h1>Shinees</h1>
-                <div class="header-actions">
-                    <button id="theme-toggle">☀️</button>
+
+    <!-- ===== APP CONTENT ===== -->
+    <div id="app-content" class="hidden">
+        <!-- Announcement Banner -->
+        <div id="announcement-banner" class="announcement-banner hidden">
+            <span id="announcement-text"></span>
+            <button class="announcement-close" onclick="closeAnnouncement()">×</button>
+        </div>
+
+        <!-- Header -->
+        <header class="main-header">
+            <div class="logo">Shinees</div>
+            <div class="header-actions">
+                <button id="theme-toggle" class="btn">🌙</button>
+                <div id="auth-buttons"></div>
+            </div>
+        </header>
+
+        <!-- Main Views -->
+        <main id="main-view">
+            <div class="dashboard">
+                <aside class="sidebar">
+                    <nav>
+                        <ul class="sidebar-menu">
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link active" data-view="home">
+                                    🏠 Inicio
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link" data-view="trending">
+                                    📈 Tendencias
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link" data-view="favorites">
+                                    ⭐ Favoritos
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link" data-view="history">
+                                    📚 Historial
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </aside>
+
+                <div class="main-content">
+                    <div id="home-view">
+                        <!-- Featured Carousel -->
+                        <section class="featured-section">
+                            <h2 class="section-title">Destacados</h2>
+                            <div class="carousel-container">
+                                <div class="carousel" id="featured-carousel"></div>
+                                <button class="carousel-nav carousel-prev" id="carousel-prev">‹</button>
+                                <button class="carousel-nav carousel-next" id="carousel-next">›</button>
+                            </div>
+                            <div class="carousel-dots" id="carousel-dots"></div>
+                        </section>
+
+                        <!-- Series Grid -->
+                        <section>
+                            <h2 class="section-title">Series Populares</h2>
+                            <div class="series-grid" id="series-grid"></div>
+                        </section>
+                    </div>
+
+                    <div id="trending-view" class="hidden">
+                        <h2 class="section-title">Tendencias</h2>
+                        <div class="series-grid" id="trending-grid"></div>
+                    </div>
+
+                    <div id="favorites-view" class="hidden">
+                        <h2 class="section-title">Mis Favoritos</h2>
+                        <div class="series-grid" id="favorites-grid"></div>
+                    </div>
+
+                    <div id="history-view" class="hidden">
+                        <h2 class="section-title">Historial de Lectura</h2>
+                        <div class="series-grid" id="history-grid"></div>
+                    </div>
                 </div>
-            </header>
-            <section id="featured-carousel" class="hero-carousel"></section>
-            <section class="series-grid-container">
-                <h2>Series Populares</h2>
-                <div id="popular-series" class="series-grid"></div>
-            </section>
+            </div>
         </main>
-        
-        <div id="series-detail-view" class="page-view hidden"></div>
-        <div id="profile-view" class="page-view hidden"></div>
-        
+
+        <!-- Detail View -->
+        <div id="detail-view" class="hidden">
+            <div id="detail-content"></div>
+        </div>
+
+        <!-- Profile View -->
+        <div id="profile-view" class="hidden">
+            <div class="main-content">
+                <h2 class="section-title">Mi Perfil</h2>
+                <div id="profile-content"></div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
         <nav class="bottom-nav">
-            <a href="#" id="nav-home" class="nav-item active"><span>🏠</span><span>Inicio</span></a>
-            <a href="#" id="nav-profile" class="nav-item"><span>👤</span><span>Perfil</span></a>
+            <a href="#" class="nav-item active" data-view="main">
+                <span>🏠</span>
+                <span>Inicio</span>
+            </a>
+            <a href="#" class="nav-item" data-view="search">
+                <span>🔍</span>
+                <span>Buscar</span>
+            </a>
+            <a href="#" class="nav-item" data-view="profile">
+                <span>👤</span>
+                <span>Perfil</span>
+            </a>
         </nav>
     </div>
-    
-    <!-- Modales -->
-    <div id="registro-modal-overlay" class="modal-overlay hidden"></div>
-    <div id="login-modal-overlay" class="modal-overlay hidden"></div>
 
+    <!-- Modal Container -->
+    <div id="modal-container"></div>
+
+    <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Configuración de Firebase
-            const firebaseConfig = {
-                apiKey: "AIzaSyDsv2keytFIEeS4QT4_chwOHMgyWpV8gP4",
-                authDomain: "shinees.firebaseapp.com",
-                projectId: "shinees",
-                storageBucket: "shinees.appspot.com",
-                messagingSenderId: "109623976622",
-                appId: "1:109623976622:web:c9ab5a1c345f502b71833f"
-            };
+document.addEventListener('DOMContentLoaded', () => {
+    // ===== CONFIGURACIÓN ===== 
+    const firebaseConfig = {
+        apiKey: "AIzaSyDsv2keytFIEeS4QT4_chwOHMgyWpV8gP4",
+        authDomain: "shinees.firebaseapp.com", 
+        projectId: "shinees",
+        storageBucket: "shinees.appspot.com",
+        messagingSenderId: "109623976622",
+        appId: "1:109623976622:web:c9ab5a1c345f502b71833f"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    // ===== VARIABLES GLOBALES =====
+    let seriesData = [];
+    let currentUser = null;
+    let currentCarouselIndex = 0;
+    const GITHUB_API = 'https://api.github.com/repos/sylenis123/SHINEES/contents/contenido?ref=V2';
+    const GITHUB_RAW = 'https://raw.githubusercontent.com/sylenis123/SHINEES/V2/contenido';
+
+    // ===== ELEMENTOS DOM =====
+    const animeLoader = document.getElementById('anime-loader');
+    const appContent = document.getElementById('app-content');
+    const modalContainer = document.getElementById('modal-container');
+
+    // ===== FUNCIONES DE CARGA DESDE GITHUB =====
+    async function loadFromGitHub() {
+        try {
+            console.log('🔄 Cargando desde GitHub...');
             
-            firebase.initializeApp(firebaseConfig);
-            const db = firebase.firestore();
-            const auth = firebase.auth();
+            const response = await fetch(GITHUB_API);
+            if (!response.ok) throw new Error(`GitHub API error: ${response.status}`);
+            
+            const folders = await response.json();
+            const seriesPromises = folders
+                .filter(item => item.type === 'dir')
+                .map(loadSerieFromGitHub);
 
-            // Variables globales
-            const loader = document.getElementById('loader');
-            const appContent = document.getElementById('app-content');
-            const mainView = document.getElementById('main-view');
-            const detailView = document.getElementById('series-detail-view');
-            const profileView = document.getElementById('profile-view');
-            const registroModal = document.getElementById('registro-modal-overlay');
-            const loginModal = document.getElementById('login-modal-overlay');
-            const navHome = document.getElementById('nav-home');
-            const navProfile = document.getElementById('nav-profile');
+            const series = await Promise.all(seriesPromises);
+            return series.filter(s => s !== null);
+            
+        } catch (error) {
+            console.error('❌ Error cargando desde GitHub:', error);
+            return [];
+        }
+    }
 
-            let seriesData = [];
-            let currentUser = null;
-            const GITHUB_API_BASE = 'https://api.github.com/repos/sylenis123/SHINEES/contents/contenido';
-            const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/sylenis123/SHINEES/main/contenido';
+    async function loadSerieFromGitHub(folder) {
+        try {
+            const serieName = folder.name;
+            console.log(`📚 Cargando serie: ${serieName}`);
 
-            // =================================================================
-            // CARGA DE CONTENIDO DESDE GITHUB
-            // =================================================================
-            async function loadContentFromGitHub() {
-                try {
-                    const response = await fetch(GITHUB_API_BASE);
-                    const folders = await response.json();
+            // Cargar capítulos
+            const chaptersResponse = await fetch(`${GITHUB_API.replace('/contenido?ref=V2', '')}/contents/contenido/${serieName}?ref=V2`);
+            const chaptersData = await chaptersResponse.json();
+            
+            const chapters = chaptersData
+                .filter(item => item.type === 'dir' && item.name.startsWith('cap'))
+                .map(async chapter => {
+                    const chapterNum = chapter.name.replace('cap-', '').replace('cap', '');
                     
-                    const seriesPromises = folders
-                        .filter(item => item.type === 'dir')
-                        .map(async (folder) => {
-                            try {
-                                // Cargar metadata de la serie
-                                const metadataResponse = await fetch(`${GITHUB_API_BASE}/${folder.name}/metadata.json`);
-                                if (metadataResponse.ok) {
-                                    const metadataContent = await metadataResponse.json();
-                                    const metadata = JSON.parse(atob(metadataContent.content));
-                                    
-                                    // Cargar capítulos
-                                    const chaptersResponse = await fetch(`${GITHUB_API_BASE}/${folder.name}`);
-                                    const chaptersData = await chaptersResponse.json();
-                                    const chapters = chaptersData
-                                        .filter(item => item.type === 'dir' && item.name.startsWith('cap'))
-                                        .map(chapter => ({
-                                            numero: parseInt(chapter.name.replace('cap', '')),
-                                            titulo_cap: chapter.name,
-                                            path: chapter.name
-                                        }))
-                                        .sort((a, b) => a.numero - b.numero);
-
-                                    return {
-                                        id: folder.name,
-                                        titulo: metadata.titulo || folder.name,
-                                        descripcion: metadata.descripcion || '',
-                                        portada: `${GITHUB_RAW_BASE}/${folder.name}/${metadata.portada || 'cover.jpg'}`,
-                                        tipo: metadata.tipo || 'manga',
-                                        generos: metadata.generos || [],
-                                        estado: metadata.estado || 'En emisión',
-                                        año: metadata.año || new Date().getFullYear(),
-                                        autor: metadata.autor || 'Desconocido',
-                                        destacado: metadata.destacado || false,
-                                        capitulos: chapters,
-                                        githubPath: folder.name
-                                    };
-                                }
-                                return null;
-                            } catch (error) {
-                                console.error(`Error cargando serie ${folder.name}:`, error);
-                                return null;
-                            }
+                    // Cargar imágenes del capítulo
+                    const chapterResponse = await fetch(`${GITHUB_API.replace('/contenido?ref=V2', '')}/contents/contenido/${serieName}/${chapter.name}?ref=V2`);
+                    const chapterFiles = await chapterResponse.json();
+                    
+                    const images = chapterFiles
+                        .filter(file => /\.(jpg|jpeg|png|webp)$/i.test(file.name))
+                        .map(img => `${GITHUB_RAW}/${serieName}/${chapter.name}/${img.name}`)
+                        .sort((a, b) => {
+                            const numA = parseFloat(a.match(/(\d+(?:\.\d+)?)/)?.[1] || '0');
+                            const numB = parseFloat(b.match(/(\d+(?:\.\d+)?)/)?.[1] || '0');
+                            return numA - numB;
                         });
 
-                    const series = await Promise.all(seriesPromises);
-                    return series.filter(s => s !== null);
-                } catch (error) {
-                    console.error('Error cargando contenido desde GitHub:', error);
-                    return [];
-                }
+                    return {
+                        numero: parseInt(chapterNum) || 0,
+                        titulo_cap: `Capítulo ${chapterNum}`,
+                        images,
+                        path: chapter.name
+                    };
+                });
+
+            const resolvedChapters = await Promise.all(chapters);
+            resolvedChapters.sort((a, b) => a.numero - b.numero);
+
+            // Buscar portada
+            let coverUrl = `${GITHUB_RAW}/${serieName}/cover.jpg`;
+            if (resolvedChapters[0]?.images[0]) {
+                coverUrl = resolvedChapters[0].images[0];
             }
 
-            // =================================================================
-            // SISTEMA DE LIKES Y FAVORITOS
-            // =================================================================
-            async function toggleLike(serieId, userId) {
-                try {
-                    const likeRef = db.collection('likes').doc(`${serieId}_${userId}`);
-                    const likeDoc = await likeRef.get();
-                    
-                    if (likeDoc.exists) {
-                        await likeRef.delete();
-                        return false;
-                    } else {
-                        await likeRef.set({
-                            serieId,
-                            userId,
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                        return true;
-                    }
-                } catch (error) {
-                    console.error('Error toggling like:', error);
-                    return false;
-                }
-            }
+            return {
+                id: serieName,
+                titulo: serieName.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+                descripcion: `Serie ${serieName} - Cargada automáticamente desde GitHub`,
+                portada: coverUrl,
+                tipo: 'manga',
+                estado: 'En emisión',
+                año: new Date().getFullYear(),
+                autor: 'Desconocido',
+                destacado: Math.random() > 0.7,
+                capitulos: resolvedChapters,
+                githubPath: serieName,
+                source: 'github'
+            };
 
-            async function getLikesCount(serieId) {
-                try {
-                    const likesQuery = await db.collection('likes')
-                        .where('serieId', '==', serieId)
-                        .get();
-                    return likesQuery.size;
-                } catch (error) {
-                    console.error('Error getting likes count:', error);
-                    return 0;
-                }
-            }
+        } catch (error) {
+            console.error(`❌ Error cargando serie ${folder.name}:`, error);
+            return null;
+        }
+    }
 
-            async function isLikedByUser(serieId, userId) {
-                if (!userId) return false;
-                try {
-                    const likeDoc = await db.collection('likes').doc(`${serieId}_${userId}`).get();
-                    return likeDoc.exists;
-                } catch (error) {
-                    console.error('Error checking like status:', error);
-                    return false;
-                }
-            }
+    // ===== SISTEMA DE ANUNCIOS =====
+    const announcements = [
+        "🎉 ¡Nueva función de comentarios disponible!",
+        "📱 La app móvil llegará pronto",
+        "🔥 Nuevas series añadidas esta semana",
+        "⭐ ¡Dale me gusta a tus series favoritas!"
+    ];
 
-            // =================================================================
-            // SISTEMA DE COMENTARIOS
-            // =================================================================
-            async function loadComments(serieId) {
-                try {
-                    const commentsQuery = await db.collection('comments')
-                        .where('serieId', '==', serieId)
-                        .orderBy('timestamp', 'desc')
-                        .get();
-                    
-                    return commentsQuery.docs.map(doc => ({
-                        id: doc.id,
-                        ...doc.data()
-                    }));
-                } catch (error) {
-                    console.error('Error loading comments:', error);
-                    return [];
-                }
-            }
+    function showAnnouncement() {
+        const banner = document.getElementById('announcement-banner');
+        const text = document.getElementById('announcement-text');
+        const randomAnnouncement = announcements[Math.floor(Math.random() * announcements.length)];
+        
+        text.textContent = randomAnnouncement;
+        banner.classList.remove('hidden');
+        
+        // Auto-close después de 5 segundos
+        setTimeout(() => {
+            banner.classList.add('hidden');
+        }, 5000);
+    }
 
-            async function addComment(serieId, userId, userName, text) {
-                try {
-                    await db.collection('comments').add({
-                        serieId,
-                        userId,
-                        userName,
-                        text,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                        likes: 0
-                    });
-                } catch (error) {
-                    console.error('Error adding comment:', error);
-                    throw error;
-                }
-            }
+    window.closeAnnouncement = () => {
+        document.getElementById('announcement-banner').classList.add('hidden');
+    };
 
-            function renderComments(comments, serieId) {
-                const commentsHtml = comments.map(comment => `
-                    <div class="comment" data-comment-id="${comment.id}">
-                        <div class="comment-header">
-                            <span class="comment-author">${comment.userName}</span>
-                            <span class="comment-date">${comment.timestamp ? new Date(comment.timestamp.toDate()).toLocaleDateString() : 'Ahora'}</span>
-                        </div>
-                        <p class="comment-text">${comment.text}</p>
-                        <div class="comment-actions">
-                            <button class="comment-like" data-comment-id="${comment.id}">
-                                ❤️ <span>${comment.likes || 0}</span>
-                            </button>
-                        </div>
+    // ===== CAROUSEL =====
+    function renderCarousel(featuredSeries) {
+        const carousel = document.getElementById('featured-carousel');
+        const dots = document.getElementById('carousel-dots');
+        
+        carousel.innerHTML = featuredSeries.map(serie => `
+            <div class="carousel-item" style="background-image: url('${serie.portada}')" data-serie-id="${serie.id}">
+                <div class="carousel-content">
+                    <h3 class="carousel-title">${serie.titulo}</h3>
+                    <p>${serie.descripcion.substring(0, 100)}...</p>
+                </div>
+            </div>
+        `).join('');
+
+        dots.innerHTML = featuredSeries.map((_, i) => 
+            `<div class="dot ${i === 0 ? 'active' : ''}" data-index="${i}"></div>`
+        ).join('');
+    }
+
+    function updateCarousel() {
+        const carousel = document.getElementById('featured-carousel');
+        const dots = document.querySelectorAll('.dot');
+        
+        carousel.style.transform = `translateX(-${currentCarouselIndex * 100}%)`;
+        
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === currentCarouselIndex);
+        });
+    }
+
+    // ===== NAVEGACIÓN =====
+    function navigateTo(view) {
+        // Ocultar todas las vistas
+        document.querySelectorAll('#main-view, #detail-view, #profile-view').forEach(v => v.classList.add('hidden'));
+        document.querySelectorAll('#home-view, #trending-view, #favorites-view, #history-view').forEach(v => v.classList.add('hidden'));
+        
+        // Actualizar navegación activa
+        document.querySelectorAll('.nav-item, .sidebar-link').forEach(item => item.classList.remove('active'));
+        
+        if (view === 'main') {
+            document.getElementById('main-view').classList.remove('hidden');
+            document.getElementById('home-view').classList.remove('hidden');
+            document.querySelector('[data-view="main"]').classList.add('active');
+            document.querySelector('[data-view="home"]').classList.add('active');
+        } else if (view === 'detail') {
+            document.getElementById('detail-view').classList.remove('hidden');
+        } else if (view === 'profile') {
+            document.getElementById('profile-view').classList.remove('hidden');
+            document.querySelector('[data-view="profile"]').classList.add('active');
+        } else {
+            document.getElementById('main-view').classList.remove('hidden');
+            const targetView = document.getElementById(`${view}-view`);
+            if (targetView) {
+                targetView.classList.remove('hidden');
+                document.querySelector(`[data-view="${view}"]`)?.classList.add('active');
+            }
+        }
+    }
+
+    // ===== RENDERIZADO DE SERIES =====
+    function renderSeries() {
+        const seriesGrid = document.getElementById('series-grid');
+        const featuredSeries = seriesData.filter(s => s.destacado).slice(0, 5);
+        const popularSeries = seriesData.filter(s => !s.destacado);
+
+        // Renderizar carousel
+        if (featuredSeries.length > 0) {
+            renderCarousel(featuredSeries);
+        }
+
+        // Renderizar grid
+        seriesGrid.innerHTML = popularSeries.map(serie => `
+            <div class="series-card" data-serie-id="${serie.id}">
+                <img src="${serie.portada}" alt="${serie.titulo}" class="series-poster">
+                <div class="series-info">
+                    <h3 class="series-title">${serie.titulo}</h3>
+                    <p class="series-meta">${serie.tipo} • ${serie.año}</p>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // ===== DETALLE DE SERIE =====
+    async function buildDetailPage(serie) {
+        const user = auth.currentUser;
+        const likesCount = await getLikesCount(serie.id);
+        const isLiked = user ? await isLikedByUser(serie.id, user.uid) : false;
+        const comments = await loadComments(serie.id);
+
+        document.getElementById('detail-content').innerHTML = `
+            <div class="detail-hero" style="background-image: url('${serie.portada}')">
+                <div class="detail-content">
+                    <button class="btn" onclick="navigateTo('main')" style="margin-bottom: 1rem;">← Volver</button>
+                    <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">${serie.titulo}</h1>
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                        <span>📅 ${serie.año}</span>
+                        <span>📚 ${serie.tipo}</span>
+                        <span>📊 ${serie.estado}</span>
+                        <span>👤 ${serie.autor}</span>
                     </div>
-                `).join('');
-                return commentsHtml;
-            }
+                    <p style="margin-bottom: 1.5rem; max-width: 600px;">${serie.descripcion}</p>
+                    <div class="detail-actions">
+                        <button class="action-btn like-btn ${isLiked ? 'liked' : ''}" data-serie-id="${serie.id}">
+                            ❤️ <span class="like-count">${likesCount}</span> Me gusta
+                        </button>
+                        <button class="action-btn favorite-btn" data-serie-id="${serie.id}">
+                            ⭐ Agregar a favoritos
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-            // =================================================================
-            // NAVEGACIÓN
-            // =================================================================
-            function navigateTo(view) {
-                mainView.classList.add('hidden');
-                detailView.classList.add('hidden');
-                profileView.classList.add('hidden');
-                
-                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-                
-                if (view === 'main') {
-                    mainView.classList.remove('hidden');
-                    navHome.classList.add('active');
-                } else if (view === 'detail') {
-                    detailView.classList.remove('hidden');
-                } else if (view === 'profile') {
-                    profileView.classList.remove('hidden');
-                    navProfile.classList.add('active');
-                }
-            }
-
-            // =================================================================
-            // RENDERIZADO DE UI
-            // =================================================================
-            function renderAuthUI(user) {
-                const headerActions = document.querySelector('.header-actions');
-                headerActions.innerHTML = '<button id="theme-toggle">☀️</button>';
-                
-                if (user) {
-                    const profileBtn = document.createElement('button');
-                    profileBtn.textContent = `Hola, ${user.displayName || user.email.split('@')[0]}`;
-                    profileBtn.addEventListener('click', () => navigateTo('profile'));
-                    headerActions.appendChild(profileBtn);
-                } else {
-                    const registerBtn = document.createElement('button');
-                    registerBtn.textContent = 'Registrarse';
-                    registerBtn.addEventListener('click', () => renderRegistroModal());
-                    headerActions.appendChild(registerBtn);
-
-                    const loginBtn = document.createElement('button');
-                    loginBtn.textContent = 'Iniciar Sesión';
-                    loginBtn.addEventListener('click', () => renderLoginModal());
-                    headerActions.appendChild(loginBtn);
-                }
-                
-                document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
-            }
-
-            function renderProfileView(user) {
-                profileView.innerHTML = `
-                    <header class="main-header">
-                        <h1>Mi Perfil</h1>
-                    </header>
-                    <div class="profile-content">
-                        <div class="profile-card">
-                            <div class="profile-avatar-container">
-                                <img id="profile-avatar-img" src="${user.photoURL || 'https://i.imgur.com/SYJ2s1k.png'}" alt="Avatar">
-                                <label for="avatar-upload-input" class="avatar-edit-button" title="Cambiar avatar">✏️</label>
-                                <input type="file" id="avatar-upload-input" accept="image/*" style="display: none;">
+            <div class="main-content">
+                <section>
+                    <h2 class="section-title">Capítulos (${serie.capitulos.length})</h2>
+                    <div class="series-grid">
+                        ${serie.capitulos.map(cap => `
+                            <div class="series-card" data-chapter="${cap.numero}" data-serie-id="${serie.id}">
+                                <img src="${cap.images?.[0] || serie.portada}" alt="Cap. ${cap.numero}" class="series-poster">
+                                <div class="series-info">
+                                    <h3 class="series-title">Cap. ${cap.numero}</h3>
+                                    <p class="series-meta">${cap.titulo_cap}</p>
+                                </div>
                             </div>
-                            <h2 id="profile-display-name">${user.displayName || 'Sin nombre'}</h2>
-                            <p id="profile-email">${user.email}</p>
-                        </div>
-                        <div class="profile-actions">
-                            <button id="logout-btn-profile" class="logout-button">Cerrar Sesión</button>
-                        </div>
-                    </div>`;
-                
-                document.getElementById('logout-btn-profile').addEventListener('click', () => auth.signOut());
-            }
+                        `).join('') || '<p>No hay capítulos disponibles</p>'}
+                    </div>
+                </section>
 
-            function renderLoginModal() {
-                loginModal.innerHTML = `
-                    <div class="modal-content">
-                        <button class="modal-close-button">&times;</button>
-                        <h2>Iniciar Sesión</h2>
-                        <form id="login-form">
-                            <div>
-                                <label for="login-email">Email:</label>
-                                <input type="email" id="login-email" required />
-                            </div>
-                            <div>
-                                <label for="login-password">Contraseña:</label>
-                                <input type="password" id="login-password" required />
-                            </div>
-                            <button type="submit">Entrar</button>
-                        </form>
-                    </div>`;
-                
-                loginModal.classList.remove('hidden');
-                
-                loginModal.querySelector('.modal-close-button').addEventListener('click', () => {
-                    loginModal.classList.add('hidden');
-                });
-                
-                loginModal.querySelector('#login-form').addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    const email = document.getElementById('login-email').value;
-                    const password = document.getElementById('login-password').value;
+                <section class="comments-section">
+                    <h2 class="section-title">Comentarios (${comments.length})</h2>
                     
-                    try {
-                        await auth.signInWithEmailAndPassword(email, password);
-                        loginModal.classList.add('hidden');
-                    } catch (error) {
-                        alert('Error al iniciar sesión: ' + error.message);
-                    }
-                });
-            }
-
-            function renderRegistroModal() {
-                registroModal.innerHTML = `
-                    <div class="modal-content">
-                        <button class="modal-close-button">&times;</button>
-                        <h2>Crear una cuenta</h2>
-                        <form id="registro-form">
-                            <div>
-                                <label for="registro-email">Email:</label>
-                                <input type="email" id="registro-email" required />
-                            </div>
-                            <div>
-                                <label for="registro-password">Contraseña:</label>
-                                <input type="password" id="registro-password" required minlength="6" />
-                            </div>
-                            <button type="submit">Confirmar</button>
-                        </form>
-                    </div>`;
-                
-                registroModal.classList.remove('hidden');
-                
-                registroModal.querySelector('.modal-close-button').addEventListener('click', () => {
-                    registroModal.classList.add('hidden');
-                });
-                
-                registroModal.querySelector('#registro-form').addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    const email = document.getElementById('registro-email').value;
-                    const password = document.getElementById('registro-password').value;
+                    ${user ? `
+                        <div style="margin-bottom: 2rem;">
+                            <textarea id="comment-text" placeholder="Escribe tu comentario..." class="form-input" style="margin-bottom: 1rem;"></textarea>
+                            <button class="btn btn-primary" id="submit-comment" data-serie-id="${serie.id}">Enviar comentario</button>
+                        </div>
+                    ` : `
+                        <p style="text-align: center; color: var(--text-secondary); padding: 2rem;">
+                            <button class="btn" onclick="showLoginModal()">Inicia sesión</button> para comentar
+                        </p>
+                    `}
                     
-                    try {
-                        await auth.createUserWithEmailAndPassword(email, password);
-                        registroModal.classList.add('hidden');
-                    } catch (error) {
-                        alert('Error al crear cuenta: ' + error.message);
-                    }
-                });
-            }
+                    <div id="comments-container">
+                        ${renderComments(comments, serie.id)}
+                    </div>
+                </section>
+            </div>
+        `;
 
-            async function buildDetailPage(serie) {
+        navigateTo('detail');
+        setupDetailEventListeners(serie);
+    }
+
+    function setupDetailEventListeners(serie) {
+        // Like button
+        const likeButton = document.querySelector('.like-btn');
+        if (likeButton) {
+            likeButton.addEventListener('click', async () => {
                 const user = auth.currentUser;
-                const likesCount = await getLikesCount(serie.id);
-                const isLiked = user ? await isLikedByUser(serie.id, user.uid) : false;
-                const comments = await loadComments(serie.id);
-
-                detailView.innerHTML = `
-                    <div class="series-detail-container">
-                        <header class="detail-header" style="background-image: url('${serie.portada}')">
-                            <button class="back-button">‹</button>
-                        </header>
-                        <div class="detail-content">
-                            <div class="series-info">
-                                <div class="series-poster">
-                                    <img src="${serie.portada}" alt="${serie.titulo}">
-                                </div>
-                                <div class="series-details">
-                                    <h1>${serie.titulo}</h1>
-                                    <div class="series-meta">
-                                        <span>📅 ${serie.año}</span>
-                                        <span>📚 ${serie.tipo}</span>
-                                        <span>📊 ${serie.estado}</span>
-                                    </div>
-                                    <p>${serie.descripcion || 'Sin descripción disponible'}</p>
-                                    <div class="series-actions">
-                                        <button class="like-button ${isLiked ? 'liked' : ''}" data-serie-id="${serie.id}">
-                                            ❤️ <span class="like-count">${likesCount}</span> Me gusta
-                                        </button>
-                                        <button class="favorite-button" data-serie-id="${serie.id}">
-                                            ⭐ Favorito
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <h2>Capítulos (${serie.capitulos.length})</h2>
-                            <ul class="chapter-list">
-                                ${serie.capitulos.length > 0 ? 
-                                    serie.capitulos.map(cap => `
-                                        <li><a href="#" data-chapter="${cap.numero}">Cap. ${cap.numero}: ${cap.titulo_cap || 'Sin título'}</a></li>
-                                    `).join('') : 
-                                    '<li style="padding: 15px; color: #888;">No hay capítulos disponibles</li>'
-                                }
-                            </ul>
-
-                            <div class="comments-section">
-                                <div class="comments-header">
-                                    <h2>Comentarios (${comments.length})</h2>
-                                </div>
-                                
-                                ${user ? `
-                                    <div class="comment-form">
-                                        <textarea id="comment-text" placeholder="Escribe tu comentario..."></textarea>
-                                        <button id="submit-comment" data-serie-id="${serie.id}">Enviar comentario</button>
-                                    </div>
-                                ` : `
-                                    <div class="comment-form">
-                                        <p style="text-align: center; color: #888; padding: 20px;">
-                                            <a href="#" id="login-to-comment" style="color: var(--primary-color);">Inicia sesión</a> para comentar
-                                        </p>
-                                    </div>
-                                `}
-                                
-                                <div id="comments-container">
-                                    ${renderComments(comments, serie.id)}
-                                </div>
-                            </div>
-                        </div>
-                    </div>`;
-                
-                // Event listeners
-                detailView.querySelector('.back-button').addEventListener('click', () => {
-                    navigateTo('main');
-                });
-
-                // Like button
-                const likeButton = detailView.querySelector('.like-button');
-                if (likeButton) {
-                    likeButton.addEventListener('click', async () => {
-                        if (!user) {
-                            renderLoginModal();
-                            return;
-                        }
-                        
-                        const liked = await toggleLike(serie.id, user.uid);
-                        const newCount = await getLikesCount(serie.id);
-                        
-                        likeButton.classList.toggle('liked', liked);
-                        likeButton.querySelector('.like-count').textContent = newCount;
-                    });
-                }
-
-                // Submit comment
-                const submitCommentBtn = detailView.querySelector('#submit-comment');
-                if (submitCommentBtn) {
-                    submitCommentBtn.addEventListener('click', async () => {
-                        const commentText = document.getElementById('comment-text').value.trim();
-                        if (!commentText) return;
-                        
-                        try {
-                            await addComment(
-                                serie.id, 
-                                user.uid, 
-                                user.displayName || user.email.split('@')[0], 
-                                commentText
-                            );
-                            
-                            // Reload comments
-                            const updatedComments = await loadComments(serie.id);
-                            document.getElementById('comments-container').innerHTML = renderComments(updatedComments, serie.id);
-                            document.getElementById('comment-text').value = '';
-                            
-                            // Update comments count
-                            detailView.querySelector('.comments-header h2').textContent = `Comentarios (${updatedComments.length})`;
-                        } catch (error) {
-                            alert('Error al enviar comentario');
-                        }
-                    });
-                }
-
-                // Login to comment
-                const loginToCommentLink = detailView.querySelector('#login-to-comment');
-                if (loginToCommentLink) {
-                    loginToCommentLink.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        renderLoginModal();
-                    });
-                }
-            }
-
-            // =================================================================
-            // TOGGLE THEME
-            // =================================================================
-            function toggleTheme() {
-                const html = document.documentElement;
-                const currentTheme = html.getAttribute('data-theme');
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                html.setAttribute('data-theme', newTheme);
-                
-                const themeButton = document.getElementById('theme-toggle');
-                themeButton.textContent = newTheme === 'dark' ? '☀️' : '🌙';
-            }
-
-            // =================================================================
-            // AUTENTICACIÓN
-            // =================================================================
-            auth.onAuthStateChanged(user => {
-                currentUser = user;
-                renderAuthUI(user);
-                if (user) {
-                    renderProfileView(user);
-                }
-            });
-
-            // =================================================================
-            // CARGA Y RENDERIZADO DE SERIES
-            // =================================================================
-            async function loadSeriesData() {
-                try {
-                    // Primero intentar cargar desde Firebase
-                    const seriesCollection = await db.collection('series').get();
-                    const firebaseSeries = seriesCollection.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    
-                    // Luego cargar desde GitHub
-                    const githubSeries = await loadContentFromGitHub();
-                    
-                    // Combinar ambas fuentes, priorizando Firebase
-                    seriesData = [...firebaseSeries];
-                    
-                    // Agregar series de GitHub que no están en Firebase
-                    githubSeries.forEach(githubSerie => {
-                        if (!seriesData.find(s => s.id === githubSerie.id)) {
-                            seriesData.push(githubSerie);
-                        }
-                    });
-                    
-                    // Si no hay datos de Firebase, usar solo GitHub
-                    if (seriesData.length === 0) {
-                        seriesData = githubSeries;
-                    }
-                    
-                    renderSeries();
-                } catch (error) {
-                    console.error("Error al cargar series:", error);
-                    // Fallback a datos de prueba
-                    loadMockData();
-                }
-            }
-
-            function loadMockData() {
-                seriesData = [
-                    {
-                        id: 'serie-demo-1',
-                        titulo: 'Serie Destacada Demo',
-                        descripcion: 'Una serie increíble cargada desde el sistema de demostración.',
-                        portada: 'https://via.placeholder.com/400x600/3498db/white?text=Demo+Serie+1',
-                        tipo: 'manga',
-                        estado: 'En emisión',
-                        año: 2024,
-                        autor: 'Autor Demo',
-                        destacado: true,
-                        capitulos: [
-                            { numero: 1, titulo_cap: 'El comienzo de la aventura', path: 'cap1' },
-                            { numero: 2, titulo_cap: 'La historia continúa', path: 'cap2' }
-                        ]
-                    },
-                    {
-                        id: 'serie-demo-2',
-                        titulo: 'Serie Popular Demo',
-                        descripcion: 'Una historia fascinante de demostración.',
-                        portada: 'https://via.placeholder.com/400x600/e74c3c/white?text=Demo+Serie+2',
-                        tipo: 'anime',
-                        estado: 'Completa',
-                        año: 2023,
-                        autor: 'Autor Demo 2',
-                        destacado: false,
-                        capitulos: [
-                            { numero: 1, titulo_cap: 'Inicio épico', path: 'cap1' }
-                        ]
-                    }
-                ];
-                renderSeries();
-            }
-
-            function renderSeries() {
-                const featuredCarousel = document.getElementById('featured-carousel');
-                const popularSeriesGrid = document.getElementById('popular-series');
-                featuredCarousel.innerHTML = '';
-                popularSeriesGrid.innerHTML = '';
-
-                // Mostrar skeleton loading si no hay datos
-                if (seriesData.length === 0) {
-                    for (let i = 0; i < 3; i++) {
-                        const skeletonCard = document.createElement('div');
-                        skeletonCard.className = 'series-card loading-skeleton';
-                        skeletonCard.style.height = '200px';
-                        popularSeriesGrid.appendChild(skeletonCard);
-                    }
+                if (!user) {
+                    showLoginModal();
                     return;
                 }
-
-                seriesData.forEach(serie => {
-                    const card = document.createElement('a');
-                    card.href = '#';
-                    card.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        buildDetailPage(serie);
-                        navigateTo('detail');
-                    });
-
-                    if (serie.destacado) {
-                        card.className = 'hero-card';
-                        card.innerHTML = `
-                            <div class="hero-card-bg" style="background-image: url('${serie.portada}')"></div>
-                            <img src="${serie.portada}" class="hero-card-cover" alt="${serie.titulo}">`;
-                        featuredCarousel.appendChild(card);
-                    } else {
-                        card.className = 'series-card';
-                        card.innerHTML = `
-                            <img src="${serie.portada}" alt="${serie.titulo}">
-                            <div class="series-card-overlay">
-                                <div class="series-card-title">${serie.titulo}</div>
-                            </div>`;
-                        popularSeriesGrid.appendChild(card);
-                    }
-                });
-            }
-
-            // =================================================================
-            // SINCRONIZACIÓN AUTOMÁTICA
-            // =================================================================
-            async function syncWithGitHub() {
-                try {
-                    console.log('Sincronizando con GitHub...');
-                    const githubSeries = await loadContentFromGitHub();
-                    
-                    // Actualizar Firebase con nuevas series de GitHub
-                    for (const serie of githubSeries) {
-                        const serieRef = db.collection('series').doc(serie.id);
-                        const serieDoc = await serieRef.get();
-                        
-                        if (!serieDoc.exists) {
-                            await serieRef.set(serie);
-                            console.log(`Serie ${serie.titulo} añadida a Firebase`);
-                        } else {
-                            // Actualizar solo si hay cambios en capítulos
-                            const existingSerie = serieDoc.data();
-                            if (existingSerie.capitulos.length !== serie.capitulos.length) {
-                                await serieRef.update({ capitulos: serie.capitulos });
-                                console.log(`Capítulos actualizados para ${serie.titulo}`);
-                            }
-                        }
-                    }
-                    
-                    // Recargar datos
-                    await loadSeriesData();
-                    console.log('Sincronización completada');
-                } catch (error) {
-                    console.error('Error en sincronización:', error);
-                }
-            }
-
-            // Sincronizar cada 5 minutos
-            setInterval(syncWithGitHub, 5 * 60 * 1000);
-
-            // =================================================================
-            // EVENT LISTENERS PRINCIPALES
-            // =================================================================
-            navHome.addEventListener('click', (e) => {
-                e.preventDefault();
-                navigateTo('main');
+                
+                const liked = await toggleLike(serie.id, user.uid);
+                const newCount = await getLikesCount(serie.id);
+                
+                likeButton.classList.toggle('liked', liked);
+                likeButton.querySelector('.like-count').textContent = newCount;
             });
+        }
 
-            navProfile.addEventListener('click', (e) => {
-                e.preventDefault();
+        // Submit comment
+        const submitBtn = document.getElementById('submit-comment');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', async () => {
+                const commentText = document.getElementById('comment-text').value.trim();
+                if (!commentText) return;
+                
                 const user = auth.currentUser;
-                if (user) {
-                    navigateTo('profile');
-                } else {
-                    renderLoginModal();
-                }
-            });
-
-            // Cerrar modales al hacer clic fuera
-            [registroModal, loginModal].forEach(modal => {
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        modal.classList.add('hidden');
-                    }
-                });
-            });
-
-            // =================================================================
-            // INICIALIZACIÓN
-            // =================================================================
-            async function init() {
                 try {
-                    loader.querySelector('p').textContent = 'Cargando contenido...';
-                    await loadSeriesData();
+                    await addComment(serie.id, user.uid, user.displayName || user.email.split('@')[0], commentText);
                     
-                    // Sincronización inicial
-                    setTimeout(syncWithGitHub, 2000);
-                    
-                    loader.style.display = 'none';
-                    appContent.style.display = 'block';
+                    const updatedComments = await loadComments(serie.id);
+                    document.getElementById('comments-container').innerHTML = renderComments(updatedComments, serie.id);
+                    document.getElementById('comment-text').value = '';
                 } catch (error) {
-                    console.error('Error en inicialización:', error);
-                    loader.querySelector('p').textContent = 'Error al cargar. Reintentando...';
-                    setTimeout(init, 3000);
+                    alert('Error al enviar comentario');
                 }
-            }
+            });
+        }
+    }
 
-            // Inicializar la aplicación
-            init();
+    // ===== SISTEMA DE LIKES Y COMENTARIOS =====
+    async function toggleLike(serieId, userId) {
+        try {
+            const likeRef = db.collection('likes').doc(`${serieId}_${userId}`);
+            const likeDoc = await likeRef.get();
+            
+            if (likeDoc.exists) {
+                await likeRef.delete();
+                return false;
+            } else {
+                await likeRef.set({
+                    serieId,
+                    userId,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                return true;
+            }
+        } catch (error) {
+            console.error('Error toggling like:', error);
+            return false;
+        }
+    }
+
+    async function getLikesCount(serieId) {
+        try {
+            const likesQuery = await db.collection('likes').where('serieId', '==', serieId).get();
+            return likesQuery.size;
+        } catch (error) {
+            return 0;
+        }
+    }
+
+    async function isLikedByUser(serieId, userId) {
+        if (!userId) return false;
+        try {
+            const likeDoc = await db.collection('likes').doc(`${serieId}_${userId}`).get();
+            return likeDoc.exists;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    async function loadComments(serieId) {
+        try {
+            const commentsQuery = await db.collection('comments')
+                .where('serieId', '==', serieId)
+                .orderBy('timestamp', 'desc')
+                .get();
+            
+            return commentsQuery.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        } catch (error) {
+            return [];
+        }
+    }
+
+    async function addComment(serieId, userId, userName, text) {
+        await db.collection('comments').add({
+            serieId,
+            userId,
+            userName,
+            text,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            likes: 0
         });
+    }
+
+    function renderComments(comments, serieId) {
+        return comments.map(comment => `
+            <div class="comment">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span class="comment-author">${comment.userName}</span>
+                    <span style="color: var(--text-secondary); font-size: 0.8rem;">
+                        ${comment.timestamp ? new Date(comment.timestamp.toDate()).toLocaleDateString() : 'Ahora'}
+                    </span>
+                </div>
+                <p>${comment.text}</p>
+            </div>
+        `).join('') || '<p style="color: var(--text-secondary);">No hay comentarios aún</p>';
+    }
+
+    // ===== AUTENTICACIÓN =====
+    function renderAuthUI(user) {
+        const authButtons = document.getElementById('auth-buttons');
+        
+        if (user) {
+            authButtons.innerHTML = `
+                <button class="btn" onclick="navigateTo('profile')">
+                    👤 ${user.displayName || user.email.split('@')[0]}
+                </button>
+            `;
+            renderProfileView(user);
+        } else {
+            authButtons.innerHTML = `
+                <button class="btn" onclick="showLoginModal()">Iniciar Sesión</button>
+                <button class="btn btn-primary" onclick="showRegisterModal()">Registrarse</button>
+            `;
+        }
+    }
+
+    function renderProfileView(user) {
+        if (!user) {
+            document.getElementById('profile-content').innerHTML = `
+                <p>Debes iniciar sesión para ver tu perfil.</p>
+                <button class="btn btn-primary" onclick="showLoginModal()">Iniciar Sesión</button>
+            `;
+            return;
+        }
+
+        document.getElementById('profile-content').innerHTML = `
+            <div style="background: var(--bg-secondary); border-radius: 16px; padding: 2rem; text-align: center;">
+                <img src="${user.photoURL || 'https://via.placeholder.com/120'}" alt="Avatar" 
+                     style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); margin-bottom: 1rem;">
+                <h2>${user.displayName || 'Sin nombre'}</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">${user.email}</p>
+                <button class="btn" onclick="auth.signOut()" style="background: var(--danger); border-color: var(--danger);">
+                    Cerrar Sesión
+                </button>
+            </div>
+        `;
+    }
+
+    // ===== MODALES =====
+    window.showLoginModal = () => {
+        modalContainer.innerHTML = `
+            <div class="modal-overlay" onclick="closeModal(event)">
+                <div class="modal">
+                    <button class="modal-close" onclick="closeModal()">&times;</button>
+                    <h2>Iniciar Sesión</h2>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label class="form-label">Email:</label>
+                            <input type="email" id="login-email" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Contraseña:</label>
+                            <input type="password" id="login-password" class="form-input" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar</button>
+                    </form>
+                </div>
+            </div>
+        `;
+    };
+
+    window.showRegisterModal = () => {
+        modalContainer.innerHTML = `
+            <div class="modal-overlay" onclick="closeModal(event)">
+                <div class="modal">
+                    <button class="modal-close" onclick="closeModal()">&times;</button>
+                    <h2>Crear Cuenta</h2>
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label class="form-label">Email:</label>
+                            <input type="email" id="register-email" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Contraseña:</label>
+                            <input type="password" id="register-password" class="form-input" required minlength="6">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Crear Cuenta</button>
+                    </form>
+                </div>
+            </div>
+        `;
+    };
+
+    window.closeModal = (event) => {
+        if (!event || event.target.classList.contains('modal-overlay') || event.target.classList.contains('modal-close')) {
+            modalContainer.innerHTML = '';
+        }
+    };
+
+    // ===== THEME TOGGLE =====
+    function toggleTheme() {
+        const html = document.documentElement;
+        const currentTheme = html.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', newTheme);
+        
+        document.getElementById('theme-toggle').textContent = newTheme === 'dark' ? '🌙' : '☀️';
+    }
+
+    // ===== ANIME LOADER =====
+    function showSystemLoaded() {
+        const animeLoader = document.getElementById('anime-loader');
+        const loadingText = animeLoader.querySelector('.loading-text');
+        const japaneseText = animeLoader.querySelector('.japanese-text');
+        const englishText = animeLoader.querySelector('.english-text');
+        
+        loadingText.textContent = 'システム準備完了';
+        japaneseText.textContent = '完了';
+        englishText.textContent = 'System Ready';
+        
+        setTimeout(() => {
+            animeLoader.style.opacity = '0';
+            animeLoader.style.transform = 'scale(0.9)';
+            animeLoader.style.transition = 'all 0.5s ease';
+            
+            setTimeout(() => {
+                animeLoader.classList.add('hidden');
+                appContent.classList.remove('hidden');
+                
+                // Mostrar anuncio después de cargar
+                setTimeout(showAnnouncement, 1000);
+            }, 500);
+        }, 1000);
+    }
+
+    // ===== CARGA PRINCIPAL =====
+    async function loadSeriesData() {
+        try {
+            // Cargar desde Firebase primero
+            const firebasePromise = db.collection('series').get().then(snapshot => 
+                snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), source: 'firebase' }))
+            ).catch(() => []);
+
+            // Cargar desde GitHub
+            const githubPromise = loadFromGitHub();
+            
+            const [firebaseSeries, githubSeries] = await Promise.all([firebasePromise, githubPromise]);
+            
+            // Combinar datos
+            seriesData = [...firebaseSeries];
+            
+            // Agregar series de GitHub que no están en Firebase
+            githubSeries.forEach(githubSerie => {
+                if (!seriesData.find(s => s.id === githubSerie.id)) {
+                    seriesData.push(githubSerie);
+                    
+                    // Guardar en Firebase para cache
+                    db.collection('series').doc(githubSerie.id).set(githubSerie).catch(console.error);
+                }
+            });
+            
+            console.log(`✅ Cargadas ${seriesData.length} series (Firebase: ${firebaseSeries.length}, GitHub: ${githubSeries.length})`);
+            
+            if (seriesData.length === 0) {
+                loadMockData();
+            } else {
+                renderSeries();
+            }
+            
+        } catch (error) {
+            console.error('❌ Error cargando datos:', error);
+            loadMockData();
+        }
+    }
+
+    function loadMockData() {
+        seriesData = [
+            {
+                id: 'demo-serie-1',
+                titulo: 'Serie Demo 1',
+                descripcion: 'Una increíble serie de demostración con capítulos disponibles',
+                portada: 'https://via.placeholder.com/300x450/6366f1/white?text=Demo+Serie+1',
+                tipo: 'manga',
+                estado: 'En emisión',
+                año: 2024,
+                autor: 'Demo Author',
+                destacado: true,
+                capitulos: [
+                    { numero: 1, titulo_cap: 'El comienzo', images: ['https://via.placeholder.com/800x1200/6366f1/white?text=Página+1'] }
+                ]
+            },
+            {
+                id: 'demo-serie-2', 
+                titulo: 'Serie Demo 2',
+                descripcion: 'Otra serie fascinante para demostrar el funcionamiento',
+                portada: 'https://via.placeholder.com/300x450/ec4899/white?text=Demo+Serie+2',
+                tipo: 'anime',
+                estado: 'Completa',
+                año: 2023,
+                autor: 'Demo Studio',
+                destacado: false,
+                capitulos: []
+            }
+        ];
+        renderSeries();
+    }
+
+    // ===== EVENT LISTENERS =====
+    auth.onAuthStateChanged(user => {
+        currentUser = user;
+        renderAuthUI(user);
+    });
+
+    // Delegación de eventos
+    document.addEventListener('click', (e) => {
+        // Theme toggle
+        if (e.target.id === 'theme-toggle') {
+            toggleTheme();
+        }
+        
+        // Navigation
+        if (e.target.closest('.nav-item, .sidebar-link')) {
+            e.preventDefault();
+            const view = e.target.closest('.nav-item, .sidebar-link').dataset.view;
+            if (view) navigateTo(view);
+        }
+        
+        // Series cards
+        if (e.target.closest('.series-card')) {
+            const serieId = e.target.closest('.series-card').dataset.serieId;
+            const serie = seriesData.find(s => s.id === serieId);
+            if (serie) buildDetailPage(serie);
+        }
+
+        // Carousel navigation
+        if (e.target.id === 'carousel-prev') {
+            const maxIndex = document.querySelectorAll('.carousel-item').length - 1;
+            currentCarouselIndex = currentCarouselIndex > 0 ? currentCarouselIndex - 1 : maxIndex;
+            updateCarousel();
+        }
+        
+        if (e.target.id === 'carousel-next') {
+            const maxIndex = document.querySelectorAll('.carousel-item').length - 1;
+            currentCarouselIndex = currentCarouselIndex < maxIndex ? currentCarouselIndex + 1 : 0;
+            updateCarousel();
+        }
+
+        // Carousel dots
+        if (e.target.classList.contains('dot')) {
+            currentCarouselIndex = parseInt(e.target.dataset.index);
+            updateCarousel();
+        }
+
+        // Carousel items
+        if (e.target.closest('.carousel-item')) {
+            const serieId = e.target.closest('.carousel-item').dataset.serieId;
+            const serie = seriesData.find(s => s.id === serieId);
+            if (serie) buildDetailPage(serie);
+        }
+    });
+
+    // Form submissions
+    document.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        if (e.target.id === 'login-form') {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                closeModal();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+        
+        if (e.target.id === 'register-form') {
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            
+            try {
+                await auth.createUserWithEmailAndPassword(email, password);
+                closeModal();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+    });
+
+    // Auto carousel
+    setInterval(() => {
+        if (document.querySelectorAll('.carousel-item').length > 1) {
+            const maxIndex = document.querySelectorAll('.carousel-item').length - 1;
+            currentCarouselIndex = currentCarouselIndex < maxIndex ? currentCarouselIndex + 1 : 0;
+            updateCarousel();
+        }
+    }, 5000);
+
+    // ===== INICIALIZACIÓN =====
+    async function init() {
+        try {
+            await loadSeriesData();
+            showSystemLoaded();
+        } catch (error) {
+            console.error('Error en inicialización:', error);
+            setTimeout(init, 2000);
+        }
+    }
+
+    // Exponer funciones globales
+    window.navigateTo = navigateTo;
+    window.toggleTheme = toggleTheme;
+    
+    // Inicializar
+    init();
+});
     </script>
 </body>
 </html>
