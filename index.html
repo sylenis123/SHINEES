@@ -11,6 +11,7 @@
         :root {
             --primary-color: #3498db; --text-color: #e0e0e0; --bg-color: #121212;
             --card-bg: #1e1e1e; --nav-bg: #181818; --border-color: #2c2c2c;
+            --success-color: #2ecc71; --danger-color: #e74c3c; --warning-color: #f39c12;
         }
         [data-theme="light"] {
             --primary-color: #2980b9; --text-color: #333; --bg-color: #f4f4f4;
@@ -27,25 +28,53 @@
         .page-view { padding: 15px; }
         .main-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background-color: var(--bg-color); position: sticky; top: 0; z-index: 100; }
         .header-actions { display: flex; align-items: center; gap: 15px; }
-        #theme-toggle, .header-actions button { background: none; border: 1px solid var(--border-color); color: var(--text-color); padding: 8px 12px; border-radius: 8px; cursor: pointer; }
+        #theme-toggle, .header-actions button { background: none; border: 1px solid var(--border-color); color: var(--text-color); padding: 8px 12px; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
         #theme-toggle { font-size: 1.2rem; padding: 5px; }
+        .header-actions button:hover { background-color: var(--primary-color); color: white; }
         .hero-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 0 15px 15px; -webkit-overflow-scrolling: touch; }
         .hero-card { flex: 0 0 85%; scroll-snap-align: center; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 16 / 9; background-color: var(--card-bg); }
         .hero-card-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; filter: blur(10px) brightness(0.5); transform: scale(1.1); }
         .hero-card-cover { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); height: 90%; width: auto; max-width: 90%; object-fit: contain; border-radius: 6px; }
         .series-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; padding: 0 15px; }
-        .series-card { background-color: var(--card-bg); border-radius: 8px; overflow: hidden; }
+        .series-card { background-color: var(--card-bg); border-radius: 8px; overflow: hidden; transition: transform 0.3s; position: relative; }
+        .series-card:hover { transform: translateY(-5px); }
         .series-card img { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; }
+        .series-card-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding: 10px; }
+        .series-card-title { color: white; font-size: 0.8rem; text-shadow: 1px 1px 3px #000; }
+
+        /* Detalles de serie mejorados */
         .detail-header { position: relative; height: 300px; background-size: cover; background-position: center; }
         .detail-header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, var(--bg-color) 0%, transparent 100%); }
         .back-button { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.5rem; cursor: pointer; }
-        .detail-info { position: absolute; bottom: 15px; left: 15px; right: 15px; display: flex; align-items: flex-end; gap: 15px; }
-        .detail-info-cover img { height: 150px; border-radius: 8px; }
-        .detail-info-text h1 { color: white; text-shadow: 1px 1px 3px #000; }
         .detail-content { padding: 15px; }
-        .chapter-list { list-style: none; }
-        .chapter-list li a { display: block; padding: 15px; border-bottom: 1px solid var(--border-color); color: var(--text-color); text-decoration: none; }
+        .series-info { display: flex; gap: 15px; margin-bottom: 20px; }
+        .series-poster { flex: 0 0 120px; }
+        .series-poster img { width: 100%; border-radius: 8px; }
+        .series-details h1 { margin-bottom: 10px; }
+        .series-meta { display: flex; gap: 15px; margin: 10px 0; color: #888; font-size: 0.9rem; }
+        .series-actions { display: flex; gap: 10px; margin: 15px 0; }
+        .like-button, .favorite-button { background: none; border: 1px solid var(--border-color); color: var(--text-color); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.3s; }
+        .like-button.liked { background-color: var(--danger-color); color: white; border-color: var(--danger-color); }
+        .favorite-button.favorited { background-color: var(--warning-color); color: white; border-color: var(--warning-color); }
+        .chapter-list { list-style: none; margin-top: 20px; }
+        .chapter-list li a { display: block; padding: 15px; border-bottom: 1px solid var(--border-color); color: var(--text-color); text-decoration: none; transition: background-color 0.3s; }
         .chapter-list li a:hover { background-color: var(--card-bg); }
+
+        /* Sistema de comentarios */
+        .comments-section { margin-top: 30px; }
+        .comments-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .comment-form { background-color: var(--card-bg); padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .comment-form textarea { width: 100%; padding: 10px; border-radius: 4px; border: 1px solid var(--border-color); background-color: var(--bg-color); color: var(--text-color); resize: vertical; min-height: 80px; }
+        .comment-form button { margin-top: 10px; padding: 8px 16px; background-color: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .comment { background-color: var(--card-bg); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        .comment-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .comment-author { font-weight: bold; color: var(--primary-color); }
+        .comment-date { color: #888; font-size: 0.8rem; }
+        .comment-text { line-height: 1.5; }
+        .comment-actions { display: flex; gap: 10px; margin-top: 10px; }
+        .comment-like { background: none; border: none; color: #888; cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; gap: 5px; }
+        .comment-like.liked { color: var(--danger-color); }
+
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-around; background-color: var(--nav-bg); border-top: 1px solid var(--border-color); padding: 5px 0; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-color); font-size: 0.7rem; text-decoration: none; padding: 5px; }
         .nav-item.active { color: var(--primary-color); }
@@ -56,6 +85,7 @@
         .modal-content form label { display: block; margin-bottom: 5px; }
         .modal-content form input { width: 100%; padding: 10px; border-radius: 4px; border: 1px solid var(--border-color); background-color: var(--bg-color); color: var(--text-color); }
         .modal-content form button { width: 100%; padding: 12px; border: none; border-radius: 4px; background-color: var(--primary-color); color: white; font-size: 16px; cursor: pointer; }
+        
         .profile-content { padding: 20px; }
         .profile-card { background-color: var(--card-bg); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 20px; }
         .profile-avatar-container { position: relative; width: 120px; height: 120px; margin: 0 auto 20px; }
@@ -66,12 +96,22 @@
         .profile-actions .logout-button { width: 100%; padding: 12px; background-color: #dc3545; color: white; border: none; border-radius: 8px; cursor: pointer; }
         .series-grid-container { padding: 15px 0; }
         .series-grid-container h2 { padding: 0 15px; margin-bottom: 15px; }
+
+        /* Loading states */
+        .loading-skeleton { background: linear-gradient(90deg, var(--card-bg) 25%, rgba(255,255,255,0.1) 50%, var(--card-bg) 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
+        @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .series-info { flex-direction: column; }
+            .series-poster { flex: none; width: 150px; align-self: center; }
+        }
     </style>
 </head>
 <body>
     <div id="loader">
         <div class="spinner"></div>
-        <p>Shinees</p>
+        <p>Cargando Shinees...</p>
     </div>
     
     <div id="app-content" style="display: none;">
@@ -93,8 +133,8 @@
         <div id="profile-view" class="page-view hidden"></div>
         
         <nav class="bottom-nav">
-            <a href="#" id="nav-home" class="nav-item active"><span>Inicio</span></a>
-            <a href="#" id="nav-profile" class="nav-item"><span>Yo</span></a>
+            <a href="#" id="nav-home" class="nav-item active"><span>🏠</span><span>Inicio</span></a>
+            <a href="#" id="nav-profile" class="nav-item"><span>👤</span><span>Perfil</span></a>
         </nav>
     </div>
     
@@ -122,7 +162,7 @@
             const db = firebase.firestore();
             const auth = firebase.auth();
 
-            // Selectores de elementos
+            // Variables globales
             const loader = document.getElementById('loader');
             const appContent = document.getElementById('app-content');
             const mainView = document.getElementById('main-view');
@@ -134,6 +174,171 @@
             const navProfile = document.getElementById('nav-profile');
 
             let seriesData = [];
+            let currentUser = null;
+            const GITHUB_API_BASE = 'https://api.github.com/repos/sylenis123/SHINEES/contents/contenido';
+            const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/sylenis123/SHINEES/main/contenido';
+
+            // =================================================================
+            // CARGA DE CONTENIDO DESDE GITHUB
+            // =================================================================
+            async function loadContentFromGitHub() {
+                try {
+                    const response = await fetch(GITHUB_API_BASE);
+                    const folders = await response.json();
+                    
+                    const seriesPromises = folders
+                        .filter(item => item.type === 'dir')
+                        .map(async (folder) => {
+                            try {
+                                // Cargar metadata de la serie
+                                const metadataResponse = await fetch(`${GITHUB_API_BASE}/${folder.name}/metadata.json`);
+                                if (metadataResponse.ok) {
+                                    const metadataContent = await metadataResponse.json();
+                                    const metadata = JSON.parse(atob(metadataContent.content));
+                                    
+                                    // Cargar capítulos
+                                    const chaptersResponse = await fetch(`${GITHUB_API_BASE}/${folder.name}`);
+                                    const chaptersData = await chaptersResponse.json();
+                                    const chapters = chaptersData
+                                        .filter(item => item.type === 'dir' && item.name.startsWith('cap'))
+                                        .map(chapter => ({
+                                            numero: parseInt(chapter.name.replace('cap', '')),
+                                            titulo_cap: chapter.name,
+                                            path: chapter.name
+                                        }))
+                                        .sort((a, b) => a.numero - b.numero);
+
+                                    return {
+                                        id: folder.name,
+                                        titulo: metadata.titulo || folder.name,
+                                        descripcion: metadata.descripcion || '',
+                                        portada: `${GITHUB_RAW_BASE}/${folder.name}/${metadata.portada || 'cover.jpg'}`,
+                                        tipo: metadata.tipo || 'manga',
+                                        generos: metadata.generos || [],
+                                        estado: metadata.estado || 'En emisión',
+                                        año: metadata.año || new Date().getFullYear(),
+                                        autor: metadata.autor || 'Desconocido',
+                                        destacado: metadata.destacado || false,
+                                        capitulos: chapters,
+                                        githubPath: folder.name
+                                    };
+                                }
+                                return null;
+                            } catch (error) {
+                                console.error(`Error cargando serie ${folder.name}:`, error);
+                                return null;
+                            }
+                        });
+
+                    const series = await Promise.all(seriesPromises);
+                    return series.filter(s => s !== null);
+                } catch (error) {
+                    console.error('Error cargando contenido desde GitHub:', error);
+                    return [];
+                }
+            }
+
+            // =================================================================
+            // SISTEMA DE LIKES Y FAVORITOS
+            // =================================================================
+            async function toggleLike(serieId, userId) {
+                try {
+                    const likeRef = db.collection('likes').doc(`${serieId}_${userId}`);
+                    const likeDoc = await likeRef.get();
+                    
+                    if (likeDoc.exists) {
+                        await likeRef.delete();
+                        return false;
+                    } else {
+                        await likeRef.set({
+                            serieId,
+                            userId,
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        return true;
+                    }
+                } catch (error) {
+                    console.error('Error toggling like:', error);
+                    return false;
+                }
+            }
+
+            async function getLikesCount(serieId) {
+                try {
+                    const likesQuery = await db.collection('likes')
+                        .where('serieId', '==', serieId)
+                        .get();
+                    return likesQuery.size;
+                } catch (error) {
+                    console.error('Error getting likes count:', error);
+                    return 0;
+                }
+            }
+
+            async function isLikedByUser(serieId, userId) {
+                if (!userId) return false;
+                try {
+                    const likeDoc = await db.collection('likes').doc(`${serieId}_${userId}`).get();
+                    return likeDoc.exists;
+                } catch (error) {
+                    console.error('Error checking like status:', error);
+                    return false;
+                }
+            }
+
+            // =================================================================
+            // SISTEMA DE COMENTARIOS
+            // =================================================================
+            async function loadComments(serieId) {
+                try {
+                    const commentsQuery = await db.collection('comments')
+                        .where('serieId', '==', serieId)
+                        .orderBy('timestamp', 'desc')
+                        .get();
+                    
+                    return commentsQuery.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+                } catch (error) {
+                    console.error('Error loading comments:', error);
+                    return [];
+                }
+            }
+
+            async function addComment(serieId, userId, userName, text) {
+                try {
+                    await db.collection('comments').add({
+                        serieId,
+                        userId,
+                        userName,
+                        text,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                        likes: 0
+                    });
+                } catch (error) {
+                    console.error('Error adding comment:', error);
+                    throw error;
+                }
+            }
+
+            function renderComments(comments, serieId) {
+                const commentsHtml = comments.map(comment => `
+                    <div class="comment" data-comment-id="${comment.id}">
+                        <div class="comment-header">
+                            <span class="comment-author">${comment.userName}</span>
+                            <span class="comment-date">${comment.timestamp ? new Date(comment.timestamp.toDate()).toLocaleDateString() : 'Ahora'}</span>
+                        </div>
+                        <p class="comment-text">${comment.text}</p>
+                        <div class="comment-actions">
+                            <button class="comment-like" data-comment-id="${comment.id}">
+                                ❤️ <span>${comment.likes || 0}</span>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                return commentsHtml;
+            }
 
             // =================================================================
             // NAVEGACIÓN
@@ -143,7 +348,6 @@
                 detailView.classList.add('hidden');
                 profileView.classList.add('hidden');
                 
-                // Actualizar navegación activa
                 document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
                 
                 if (view === 'main') {
@@ -181,7 +385,6 @@
                     headerActions.appendChild(loginBtn);
                 }
                 
-                // Re-agregar el event listener del theme toggle
                 document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
             }
 
@@ -228,7 +431,6 @@
                 
                 loginModal.classList.remove('hidden');
                 
-                // Event listeners del modal
                 loginModal.querySelector('.modal-close-button').addEventListener('click', () => {
                     loginModal.classList.add('hidden');
                 });
@@ -267,7 +469,6 @@
                 
                 registroModal.classList.remove('hidden');
                 
-                // Event listeners del modal
                 registroModal.querySelector('.modal-close-button').addEventListener('click', () => {
                     registroModal.classList.add('hidden');
                 });
@@ -286,35 +487,134 @@
                 });
             }
 
-            function buildDetailPage(serie) {
+            async function buildDetailPage(serie) {
+                const user = auth.currentUser;
+                const likesCount = await getLikesCount(serie.id);
+                const isLiked = user ? await isLikedByUser(serie.id, user.uid) : false;
+                const comments = await loadComments(serie.id);
+
                 detailView.innerHTML = `
                     <div class="series-detail-container">
                         <header class="detail-header" style="background-image: url('${serie.portada}')">
                             <button class="back-button">‹</button>
                         </header>
                         <div class="detail-content">
-                            <h1>${serie.titulo}</h1>
-                            <p>${serie.descripcion || 'Sin descripción disponible'}</p>
-                            <h2>Capítulos</h2>
-                            <ul class="chapter-list"></ul>
+                            <div class="series-info">
+                                <div class="series-poster">
+                                    <img src="${serie.portada}" alt="${serie.titulo}">
+                                </div>
+                                <div class="series-details">
+                                    <h1>${serie.titulo}</h1>
+                                    <div class="series-meta">
+                                        <span>📅 ${serie.año}</span>
+                                        <span>📚 ${serie.tipo}</span>
+                                        <span>📊 ${serie.estado}</span>
+                                    </div>
+                                    <p>${serie.descripcion || 'Sin descripción disponible'}</p>
+                                    <div class="series-actions">
+                                        <button class="like-button ${isLiked ? 'liked' : ''}" data-serie-id="${serie.id}">
+                                            ❤️ <span class="like-count">${likesCount}</span> Me gusta
+                                        </button>
+                                        <button class="favorite-button" data-serie-id="${serie.id}">
+                                            ⭐ Favorito
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h2>Capítulos (${serie.capitulos.length})</h2>
+                            <ul class="chapter-list">
+                                ${serie.capitulos.length > 0 ? 
+                                    serie.capitulos.map(cap => `
+                                        <li><a href="#" data-chapter="${cap.numero}">Cap. ${cap.numero}: ${cap.titulo_cap || 'Sin título'}</a></li>
+                                    `).join('') : 
+                                    '<li style="padding: 15px; color: #888;">No hay capítulos disponibles</li>'
+                                }
+                            </ul>
+
+                            <div class="comments-section">
+                                <div class="comments-header">
+                                    <h2>Comentarios (${comments.length})</h2>
+                                </div>
+                                
+                                ${user ? `
+                                    <div class="comment-form">
+                                        <textarea id="comment-text" placeholder="Escribe tu comentario..."></textarea>
+                                        <button id="submit-comment" data-serie-id="${serie.id}">Enviar comentario</button>
+                                    </div>
+                                ` : `
+                                    <div class="comment-form">
+                                        <p style="text-align: center; color: #888; padding: 20px;">
+                                            <a href="#" id="login-to-comment" style="color: var(--primary-color);">Inicia sesión</a> para comentar
+                                        </p>
+                                    </div>
+                                `}
+                                
+                                <div id="comments-container">
+                                    ${renderComments(comments, serie.id)}
+                                </div>
+                            </div>
                         </div>
                     </div>`;
                 
-                const chapterList = detailView.querySelector('.chapter-list');
-                if (serie.capitulos && serie.capitulos.length > 0) {
-                    serie.capitulos.forEach(cap => {
-                        const listItem = document.createElement('li');
-                        listItem.innerHTML = `<a href="#">Cap. ${cap.numero}: ${cap.titulo_cap || 'Sin título'}</a>`;
-                        chapterList.appendChild(listItem);
-                    });
-                } else {
-                    chapterList.innerHTML = '<li style="padding: 15px; color: #888;">No hay capítulos disponibles</li>';
-                }
-                
-                // Event listener del botón de regreso
+                // Event listeners
                 detailView.querySelector('.back-button').addEventListener('click', () => {
                     navigateTo('main');
                 });
+
+                // Like button
+                const likeButton = detailView.querySelector('.like-button');
+                if (likeButton) {
+                    likeButton.addEventListener('click', async () => {
+                        if (!user) {
+                            renderLoginModal();
+                            return;
+                        }
+                        
+                        const liked = await toggleLike(serie.id, user.uid);
+                        const newCount = await getLikesCount(serie.id);
+                        
+                        likeButton.classList.toggle('liked', liked);
+                        likeButton.querySelector('.like-count').textContent = newCount;
+                    });
+                }
+
+                // Submit comment
+                const submitCommentBtn = detailView.querySelector('#submit-comment');
+                if (submitCommentBtn) {
+                    submitCommentBtn.addEventListener('click', async () => {
+                        const commentText = document.getElementById('comment-text').value.trim();
+                        if (!commentText) return;
+                        
+                        try {
+                            await addComment(
+                                serie.id, 
+                                user.uid, 
+                                user.displayName || user.email.split('@')[0], 
+                                commentText
+                            );
+                            
+                            // Reload comments
+                            const updatedComments = await loadComments(serie.id);
+                            document.getElementById('comments-container').innerHTML = renderComments(updatedComments, serie.id);
+                            document.getElementById('comment-text').value = '';
+                            
+                            // Update comments count
+                            detailView.querySelector('.comments-header h2').textContent = `Comentarios (${updatedComments.length})`;
+                        } catch (error) {
+                            alert('Error al enviar comentario');
+                        }
+                    });
+                }
+
+                // Login to comment
+                const loginToCommentLink = detailView.querySelector('#login-to-comment');
+                if (loginToCommentLink) {
+                    loginToCommentLink.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        renderLoginModal();
+                    });
+                }
             }
 
             // =================================================================
@@ -334,6 +634,7 @@
             // AUTENTICACIÓN
             // =================================================================
             auth.onAuthStateChanged(user => {
+                currentUser = user;
                 renderAuthUI(user);
                 if (user) {
                     renderProfileView(user);
@@ -341,17 +642,36 @@
             });
 
             // =================================================================
-            // CARGA DE DATOS
+            // CARGA Y RENDERIZADO DE SERIES
             // =================================================================
             async function loadSeriesData() {
                 try {
+                    // Primero intentar cargar desde Firebase
                     const seriesCollection = await db.collection('series').get();
-                    seriesData = seriesCollection.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    const firebaseSeries = seriesCollection.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    
+                    // Luego cargar desde GitHub
+                    const githubSeries = await loadContentFromGitHub();
+                    
+                    // Combinar ambas fuentes, priorizando Firebase
+                    seriesData = [...firebaseSeries];
+                    
+                    // Agregar series de GitHub que no están en Firebase
+                    githubSeries.forEach(githubSerie => {
+                        if (!seriesData.find(s => s.id === githubSerie.id)) {
+                            seriesData.push(githubSerie);
+                        }
+                    });
+                    
+                    // Si no hay datos de Firebase, usar solo GitHub
+                    if (seriesData.length === 0) {
+                        seriesData = githubSeries;
+                    }
                     
                     renderSeries();
                 } catch (error) {
                     console.error("Error al cargar series:", error);
-                    // Si hay error con Firebase, cargar datos de prueba
+                    // Fallback a datos de prueba
                     loadMockData();
                 }
             }
@@ -359,33 +679,33 @@
             function loadMockData() {
                 seriesData = [
                     {
-                        id: '1',
-                        titulo: 'Serie Destacada 1',
-                        descripcion: 'Una serie increíble llena de aventuras.',
-                        portada: 'https://via.placeholder.com/400x600/3498db/white?text=Serie+1',
+                        id: 'serie-demo-1',
+                        titulo: 'Serie Destacada Demo',
+                        descripcion: 'Una serie increíble cargada desde el sistema de demostración.',
+                        portada: 'https://via.placeholder.com/400x600/3498db/white?text=Demo+Serie+1',
+                        tipo: 'manga',
+                        estado: 'En emisión',
+                        año: 2024,
+                        autor: 'Autor Demo',
                         destacado: true,
                         capitulos: [
-                            { numero: 1, titulo_cap: 'El comienzo' },
-                            { numero: 2, titulo_cap: 'La aventura continúa' }
+                            { numero: 1, titulo_cap: 'El comienzo de la aventura', path: 'cap1' },
+                            { numero: 2, titulo_cap: 'La historia continúa', path: 'cap2' }
                         ]
                     },
                     {
-                        id: '2',
-                        titulo: 'Serie Popular 1',
-                        descripcion: 'Una historia fascinante.',
-                        portada: 'https://via.placeholder.com/400x600/e74c3c/white?text=Serie+2',
+                        id: 'serie-demo-2',
+                        titulo: 'Serie Popular Demo',
+                        descripcion: 'Una historia fascinante de demostración.',
+                        portada: 'https://via.placeholder.com/400x600/e74c3c/white?text=Demo+Serie+2',
+                        tipo: 'anime',
+                        estado: 'Completa',
+                        año: 2023,
+                        autor: 'Autor Demo 2',
                         destacado: false,
                         capitulos: [
-                            { numero: 1, titulo_cap: 'Inicio' }
+                            { numero: 1, titulo_cap: 'Inicio épico', path: 'cap1' }
                         ]
-                    },
-                    {
-                        id: '3',
-                        titulo: 'Serie Popular 2',
-                        descripcion: 'Más aventuras esperan.',
-                        portada: 'https://via.placeholder.com/400x600/2ecc71/white?text=Serie+3',
-                        destacado: false,
-                        capitulos: []
                     }
                 ];
                 renderSeries();
@@ -396,6 +716,17 @@
                 const popularSeriesGrid = document.getElementById('popular-series');
                 featuredCarousel.innerHTML = '';
                 popularSeriesGrid.innerHTML = '';
+
+                // Mostrar skeleton loading si no hay datos
+                if (seriesData.length === 0) {
+                    for (let i = 0; i < 3; i++) {
+                        const skeletonCard = document.createElement('div');
+                        skeletonCard.className = 'series-card loading-skeleton';
+                        skeletonCard.style.height = '200px';
+                        popularSeriesGrid.appendChild(skeletonCard);
+                    }
+                    return;
+                }
 
                 seriesData.forEach(serie => {
                     const card = document.createElement('a');
@@ -414,11 +745,52 @@
                         featuredCarousel.appendChild(card);
                     } else {
                         card.className = 'series-card';
-                        card.innerHTML = `<img src="${serie.portada}" alt="${serie.titulo}">`;
+                        card.innerHTML = `
+                            <img src="${serie.portada}" alt="${serie.titulo}">
+                            <div class="series-card-overlay">
+                                <div class="series-card-title">${serie.titulo}</div>
+                            </div>`;
                         popularSeriesGrid.appendChild(card);
                     }
                 });
             }
+
+            // =================================================================
+            // SINCRONIZACIÓN AUTOMÁTICA
+            // =================================================================
+            async function syncWithGitHub() {
+                try {
+                    console.log('Sincronizando con GitHub...');
+                    const githubSeries = await loadContentFromGitHub();
+                    
+                    // Actualizar Firebase con nuevas series de GitHub
+                    for (const serie of githubSeries) {
+                        const serieRef = db.collection('series').doc(serie.id);
+                        const serieDoc = await serieRef.get();
+                        
+                        if (!serieDoc.exists) {
+                            await serieRef.set(serie);
+                            console.log(`Serie ${serie.titulo} añadida a Firebase`);
+                        } else {
+                            // Actualizar solo si hay cambios en capítulos
+                            const existingSerie = serieDoc.data();
+                            if (existingSerie.capitulos.length !== serie.capitulos.length) {
+                                await serieRef.update({ capitulos: serie.capitulos });
+                                console.log(`Capítulos actualizados para ${serie.titulo}`);
+                            }
+                        }
+                    }
+                    
+                    // Recargar datos
+                    await loadSeriesData();
+                    console.log('Sincronización completada');
+                } catch (error) {
+                    console.error('Error en sincronización:', error);
+                }
+            }
+
+            // Sincronizar cada 5 minutos
+            setInterval(syncWithGitHub, 5 * 60 * 1000);
 
             // =================================================================
             // EVENT LISTENERS PRINCIPALES
@@ -451,9 +823,20 @@
             // INICIALIZACIÓN
             // =================================================================
             async function init() {
-                await loadSeriesData();
-                loader.style.display = 'none';
-                appContent.style.display = 'block';
+                try {
+                    loader.querySelector('p').textContent = 'Cargando contenido...';
+                    await loadSeriesData();
+                    
+                    // Sincronización inicial
+                    setTimeout(syncWithGitHub, 2000);
+                    
+                    loader.style.display = 'none';
+                    appContent.style.display = 'block';
+                } catch (error) {
+                    console.error('Error en inicialización:', error);
+                    loader.querySelector('p').textContent = 'Error al cargar. Reintentando...';
+                    setTimeout(init, 3000);
+                }
             }
 
             // Inicializar la aplicación
