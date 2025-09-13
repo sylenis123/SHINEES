@@ -210,8 +210,7 @@
         }
 
         .run-animal {
-            width: 50px;
-            height: 50px;
+            font-size: 40px;
             position: relative;
             animation: run 3s linear infinite;
         }
@@ -832,8 +831,8 @@
         <div class="spanish-text" data-i18n="changing-page">Cambiando página...</div>
         
         <div class="running-animals">
-            <img src="https://via.placeholder.com/50?text=Cat" alt="Cat" class="run-animal run-cat">
-            <img src="https://via.placeholder.com/50?text=Dog" alt="Dog" class="run-animal run-dog">
+            <span class="run-animal run-cat">🐱</span>
+            <span class="run-animal run-dog">🐶</span>
         </div>
         
         <div class="loaded-message" data-i18n="loaded">¡Ya está cargado!</div>
@@ -1652,6 +1651,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 animeLoader.classList.add('hidden');
                 appContent.classList.remove('hidden');
                 setTimeout(showAnnouncement, 1000);
+                setInterval(updateFooter, 1000);
+                updateFooter();
             }, 500);
         }, 1000);
     }
@@ -1660,6 +1661,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateFooter() {
         const dateSpan = document.getElementById('current-date');
         const timeSpan = document.getElementById('usage-time');
+        if (!dateSpan || !timeSpan) return;
         dateSpan.textContent = new Date().toLocaleString();
         
         const elapsed = Math.floor((Date.now() - sessionStart) / 1000);
@@ -1668,8 +1670,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const secs = elapsed % 60;
         timeSpan.textContent = `${hours}h ${mins}m ${secs}s`;
     }
-
-    setInterval(updateFooter, 1000);
 
     // ===== EVENT LISTENERS =====
     auth.onAuthStateChanged(user => {
@@ -1818,7 +1818,6 @@ document.addEventListener('DOMContentLoaded', () => {
             await loadSeriesData();
             showSystemLoaded();
             updateTranslations();
-            updateFooter();
             checkUrlParams();
         } catch (error) {
             console.error('Error en inicialización:', error);
