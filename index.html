@@ -11,15 +11,16 @@
 </head>
 <body>
 
+    <!-- Pantalla de carga inicial -->
     <div id="loader"><div class="spinner"></div><p>Shinees</p></div>
 
+    <!-- Contenido principal de la aplicación -->
     <div id="app-content" style="display: none;">
         <main id="main-view" class="page-view">
             <header class="main-header">
                 <h1>Shinees</h1>
                 <div class="header-actions">
-                    <button id="theme-toggle">☀️</button>
-                    <!-- Botones de Auth se generan aquí -->
+                    <!-- Los botones de autenticación y tema se generan dinámicamente -->
                 </div>
             </header>
             <section id="featured-carousel" class="hero-carousel"></section>
@@ -29,28 +30,25 @@
             </section>
         </main>
 
-        <!-- VISTAS OCULTAS (SIN IDs DUPLICADOS ) -->
+        <!-- Vistas adicionales (ocultas por defecto ) -->
         <div id="series-detail-view" class="page-view hidden"></div>
         <div id="profile-view" class="page-view hidden"></div>
-        <div id="vertical-reader" class="page-view hidden"></div> 
-
+        
+        <!-- Navegación inferior -->
         <nav class="bottom-nav">
-            <a href="#" id="nav-home" class="nav-item active"><span>Inicio</span></a>
-            <a href="#" id="nav-profile" class="nav-item"><span>Yo</span></a>
+            <a href="#" data-view="main" class="nav-item active"><span>Inicio</span></a>
+            <a href="#" data-view="profile" class="nav-item"><span>Yo</span></a>
         </nav>
     </div>
 
-    <!-- Modales -->
-    <div id="registro-modal-overlay" class="modal-overlay hidden"></div>
-    <div id="login-modal-overlay" class="modal-overlay hidden"></div>
+    <!-- Contenedores para los modales -->
+    <div id="modal-container"></div>
 
+    <!-- Scripts de Firebase y la aplicación -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="app.js"></script>
-<!-- Forzando un redespliegue limpio - [12/09/25] -->
-</body>
-</html>
 
 </body>
 </html>
