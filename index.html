@@ -4,23 +4,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shinees</title>
-    <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db; --text-color: #e0e0e0; --bg-color: #121212;
+            --card-bg: #1e1e1e; --nav-bg: #181818; --border-color: #2c2c2c;
+        }
+        [data-theme="light"] {
+            --primary-color: #2980b9; --text-color: #333; --bg-color: #f4f4f4;
+            --card-bg: #ffffff; --nav-bg: #fdfdfd; --border-color: #e0e0e0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
+        .hidden { display: none !important; }
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-color); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; }
+        .spinner { border: 4px solid rgba(255, 255, 255, 0.2); border-left-color: var(--primary-color); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #loader p { margin-top: 20px; }
+        #app-content { padding-bottom: 70px; }
+        .page-view { padding: 15px; }
+        .main-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background-color: var(--bg-color); position: sticky; top: 0; z-index: 100; }
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        #theme-toggle, .header-actions button { background: none; border: 1px solid var(--border-color); color: var(--text-color); padding: 8px 12px; border-radius: 8px; cursor: pointer; }
+        #theme-toggle { font-size: 1.2rem; padding: 5px; }
+        .hero-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 0 15px 15px; -webkit-overflow-scrolling: touch; }
+        .hero-card { flex: 0 0 85%; scroll-snap-align: center; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 16 / 9; background-color: var(--card-bg); }
+        .hero-card-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; filter: blur(10px) brightness(0.5); transform: scale(1.1); }
+        .hero-card-cover { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); height: 90%; width: auto; max-width: 90%; object-fit: contain; border-radius: 6px; }
+        .series-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; padding: 0 15px; }
+        .series-card { background-color: var(--card-bg); border-radius: 8px; overflow: hidden; }
+        .series-card img { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; }
+        .detail-header { position: relative; height: 300px; background-size: cover; background-position: center; }
+        .detail-header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, var(--bg-color) 0%, transparent 100%); }
+        .back-button { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.5rem; cursor: pointer; }
+        .detail-info { position: absolute; bottom: 15px; left: 15px; right: 15px; display: flex; align-items: flex-end; gap: 15px; }
+        .detail-info-cover img { height: 150px; border-radius: 8px; }
+        .detail-info-text h1 { color: white; text-shadow: 1px 1px 3px #000; }
+        .detail-content { padding: 15px; }
+        .chapter-list { list-style: none; }
+        .chapter-list li a { display: block; padding: 15px; border-bottom: 1px solid var(--border-color); color: var(--text-color); text-decoration: none; }
+        .chapter-list li a:hover { background-color: var(--card-bg); }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-around; background-color: var(--nav-bg); border-top: 1px solid var(--border-color); padding: 5px 0; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-color); font-size: 0.7rem; text-decoration: none; padding: 5px; }
+        .nav-item.active { color: var(--primary-color); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); display: flex; justify-content: center; align-items: center; z-index: 1001; }
+        .modal-content { background-color: var(--card-bg); padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; position: relative; }
+        .modal-close-button { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; color: var(--text-color); cursor: pointer; }
+        .modal-content form div { margin-bottom: 15px; }
+        .modal-content form label { display: block; margin-bottom: 5px; }
+        .modal-content form input { width: 100%; padding: 10px; border-radius: 4px; border: 1px solid var(--border-color); background-color: var(--bg-color); color: var(--text-color); }
+        .modal-content form button { width: 100%; padding: 12px; border: none; border-radius: 4px; background-color: var(--primary-color); color: white; font-size: 16px; cursor: pointer; }
+        .profile-content { padding: 20px; }
+        .profile-card { background-color: var(--card-bg); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 20px; }
+        .profile-avatar-container { position: relative; width: 120px; height: 120px; margin: 0 auto 20px; }
+        #profile-avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-color); }
+        .avatar-edit-button { position: absolute; bottom: 5px; right: 5px; background-color: var(--primary-color); color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; border: 2px solid var(--bg-color); }
+        #profile-display-name { margin: 0; font-size: 24px; }
+        #profile-email { color: #888; margin-top: 5px; margin-bottom: 20px; font-size: 14px; }
+        .profile-actions .logout-button { width: 100%; padding: 12px; background-color: #dc3545; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        .series-grid-container { padding: 15px 0; }
+        .series-grid-container h2 { padding: 0 15px; margin-bottom: 15px; }
+    </style>
 </head>
 <body>
-
-    <!-- Pantalla de carga inicial -->
-    <div id="loader"><div class="spinner"></div><p>Shinees</p></div>
-
-    <!-- Contenido principal de la aplicación -->
+    <div id="loader">
+        <div class="spinner"></div>
+        <p>Shinees</p>
+    </div>
+    
     <div id="app-content" style="display: none;">
         <main id="main-view" class="page-view">
             <header class="main-header">
                 <h1>Shinees</h1>
                 <div class="header-actions">
-                    <!-- Los botones de autenticación y tema se generan dinámicamente -->
+                    <button id="theme-toggle">☀️</button>
                 </div>
             </header>
             <section id="featured-carousel" class="hero-carousel"></section>
@@ -29,26 +88,377 @@
                 <div id="popular-series" class="series-grid"></div>
             </section>
         </main>
-
-        <!-- Vistas adicionales (ocultas por defecto ) -->
+        
         <div id="series-detail-view" class="page-view hidden"></div>
         <div id="profile-view" class="page-view hidden"></div>
         
-        <!-- Navegación inferior -->
         <nav class="bottom-nav">
-            <a href="#" data-view="main" class="nav-item active"><span>Inicio</span></a>
-            <a href="#" data-view="profile" class="nav-item"><span>Yo</span></a>
+            <a href="#" id="nav-home" class="nav-item active"><span>Inicio</span></a>
+            <a href="#" id="nav-profile" class="nav-item"><span>Yo</span></a>
         </nav>
     </div>
+    
+    <!-- Modales -->
+    <div id="registro-modal-overlay" class="modal-overlay hidden"></div>
+    <div id="login-modal-overlay" class="modal-overlay hidden"></div>
 
-    <!-- Contenedores para los modales -->
-    <div id="modal-container"></div>
-
-    <!-- Scripts de Firebase y la aplicación -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="app.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Configuración de Firebase
+            const firebaseConfig = {
+                apiKey: "AIzaSyDsv2keytFIEeS4QT4_chwOHMgyWpV8gP4",
+                authDomain: "shinees.firebaseapp.com",
+                projectId: "shinees",
+                storageBucket: "shinees.appspot.com",
+                messagingSenderId: "109623976622",
+                appId: "1:109623976622:web:c9ab5a1c345f502b71833f"
+            };
+            
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+            const auth = firebase.auth();
 
+            // Selectores de elementos
+            const loader = document.getElementById('loader');
+            const appContent = document.getElementById('app-content');
+            const mainView = document.getElementById('main-view');
+            const detailView = document.getElementById('series-detail-view');
+            const profileView = document.getElementById('profile-view');
+            const registroModal = document.getElementById('registro-modal-overlay');
+            const loginModal = document.getElementById('login-modal-overlay');
+            const navHome = document.getElementById('nav-home');
+            const navProfile = document.getElementById('nav-profile');
+
+            let seriesData = [];
+
+            // =================================================================
+            // NAVEGACIÓN
+            // =================================================================
+            function navigateTo(view) {
+                mainView.classList.add('hidden');
+                detailView.classList.add('hidden');
+                profileView.classList.add('hidden');
+                
+                // Actualizar navegación activa
+                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+                
+                if (view === 'main') {
+                    mainView.classList.remove('hidden');
+                    navHome.classList.add('active');
+                } else if (view === 'detail') {
+                    detailView.classList.remove('hidden');
+                } else if (view === 'profile') {
+                    profileView.classList.remove('hidden');
+                    navProfile.classList.add('active');
+                }
+            }
+
+            // =================================================================
+            // RENDERIZADO DE UI
+            // =================================================================
+            function renderAuthUI(user) {
+                const headerActions = document.querySelector('.header-actions');
+                headerActions.innerHTML = '<button id="theme-toggle">☀️</button>';
+                
+                if (user) {
+                    const profileBtn = document.createElement('button');
+                    profileBtn.textContent = `Hola, ${user.displayName || user.email.split('@')[0]}`;
+                    profileBtn.addEventListener('click', () => navigateTo('profile'));
+                    headerActions.appendChild(profileBtn);
+                } else {
+                    const registerBtn = document.createElement('button');
+                    registerBtn.textContent = 'Registrarse';
+                    registerBtn.addEventListener('click', () => renderRegistroModal());
+                    headerActions.appendChild(registerBtn);
+
+                    const loginBtn = document.createElement('button');
+                    loginBtn.textContent = 'Iniciar Sesión';
+                    loginBtn.addEventListener('click', () => renderLoginModal());
+                    headerActions.appendChild(loginBtn);
+                }
+                
+                // Re-agregar el event listener del theme toggle
+                document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+            }
+
+            function renderProfileView(user) {
+                profileView.innerHTML = `
+                    <header class="main-header">
+                        <h1>Mi Perfil</h1>
+                    </header>
+                    <div class="profile-content">
+                        <div class="profile-card">
+                            <div class="profile-avatar-container">
+                                <img id="profile-avatar-img" src="${user.photoURL || 'https://i.imgur.com/SYJ2s1k.png'}" alt="Avatar">
+                                <label for="avatar-upload-input" class="avatar-edit-button" title="Cambiar avatar">✏️</label>
+                                <input type="file" id="avatar-upload-input" accept="image/*" style="display: none;">
+                            </div>
+                            <h2 id="profile-display-name">${user.displayName || 'Sin nombre'}</h2>
+                            <p id="profile-email">${user.email}</p>
+                        </div>
+                        <div class="profile-actions">
+                            <button id="logout-btn-profile" class="logout-button">Cerrar Sesión</button>
+                        </div>
+                    </div>`;
+                
+                document.getElementById('logout-btn-profile').addEventListener('click', () => auth.signOut());
+            }
+
+            function renderLoginModal() {
+                loginModal.innerHTML = `
+                    <div class="modal-content">
+                        <button class="modal-close-button">&times;</button>
+                        <h2>Iniciar Sesión</h2>
+                        <form id="login-form">
+                            <div>
+                                <label for="login-email">Email:</label>
+                                <input type="email" id="login-email" required />
+                            </div>
+                            <div>
+                                <label for="login-password">Contraseña:</label>
+                                <input type="password" id="login-password" required />
+                            </div>
+                            <button type="submit">Entrar</button>
+                        </form>
+                    </div>`;
+                
+                loginModal.classList.remove('hidden');
+                
+                // Event listeners del modal
+                loginModal.querySelector('.modal-close-button').addEventListener('click', () => {
+                    loginModal.classList.add('hidden');
+                });
+                
+                loginModal.querySelector('#login-form').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('login-email').value;
+                    const password = document.getElementById('login-password').value;
+                    
+                    try {
+                        await auth.signInWithEmailAndPassword(email, password);
+                        loginModal.classList.add('hidden');
+                    } catch (error) {
+                        alert('Error al iniciar sesión: ' + error.message);
+                    }
+                });
+            }
+
+            function renderRegistroModal() {
+                registroModal.innerHTML = `
+                    <div class="modal-content">
+                        <button class="modal-close-button">&times;</button>
+                        <h2>Crear una cuenta</h2>
+                        <form id="registro-form">
+                            <div>
+                                <label for="registro-email">Email:</label>
+                                <input type="email" id="registro-email" required />
+                            </div>
+                            <div>
+                                <label for="registro-password">Contraseña:</label>
+                                <input type="password" id="registro-password" required minlength="6" />
+                            </div>
+                            <button type="submit">Confirmar</button>
+                        </form>
+                    </div>`;
+                
+                registroModal.classList.remove('hidden');
+                
+                // Event listeners del modal
+                registroModal.querySelector('.modal-close-button').addEventListener('click', () => {
+                    registroModal.classList.add('hidden');
+                });
+                
+                registroModal.querySelector('#registro-form').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('registro-email').value;
+                    const password = document.getElementById('registro-password').value;
+                    
+                    try {
+                        await auth.createUserWithEmailAndPassword(email, password);
+                        registroModal.classList.add('hidden');
+                    } catch (error) {
+                        alert('Error al crear cuenta: ' + error.message);
+                    }
+                });
+            }
+
+            function buildDetailPage(serie) {
+                detailView.innerHTML = `
+                    <div class="series-detail-container">
+                        <header class="detail-header" style="background-image: url('${serie.portada}')">
+                            <button class="back-button">‹</button>
+                        </header>
+                        <div class="detail-content">
+                            <h1>${serie.titulo}</h1>
+                            <p>${serie.descripcion || 'Sin descripción disponible'}</p>
+                            <h2>Capítulos</h2>
+                            <ul class="chapter-list"></ul>
+                        </div>
+                    </div>`;
+                
+                const chapterList = detailView.querySelector('.chapter-list');
+                if (serie.capitulos && serie.capitulos.length > 0) {
+                    serie.capitulos.forEach(cap => {
+                        const listItem = document.createElement('li');
+                        listItem.innerHTML = `<a href="#">Cap. ${cap.numero}: ${cap.titulo_cap || 'Sin título'}</a>`;
+                        chapterList.appendChild(listItem);
+                    });
+                } else {
+                    chapterList.innerHTML = '<li style="padding: 15px; color: #888;">No hay capítulos disponibles</li>';
+                }
+                
+                // Event listener del botón de regreso
+                detailView.querySelector('.back-button').addEventListener('click', () => {
+                    navigateTo('main');
+                });
+            }
+
+            // =================================================================
+            // TOGGLE THEME
+            // =================================================================
+            function toggleTheme() {
+                const html = document.documentElement;
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                html.setAttribute('data-theme', newTheme);
+                
+                const themeButton = document.getElementById('theme-toggle');
+                themeButton.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+            }
+
+            // =================================================================
+            // AUTENTICACIÓN
+            // =================================================================
+            auth.onAuthStateChanged(user => {
+                renderAuthUI(user);
+                if (user) {
+                    renderProfileView(user);
+                }
+            });
+
+            // =================================================================
+            // CARGA DE DATOS
+            // =================================================================
+            async function loadSeriesData() {
+                try {
+                    const seriesCollection = await db.collection('series').get();
+                    seriesData = seriesCollection.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    
+                    renderSeries();
+                } catch (error) {
+                    console.error("Error al cargar series:", error);
+                    // Si hay error con Firebase, cargar datos de prueba
+                    loadMockData();
+                }
+            }
+
+            function loadMockData() {
+                seriesData = [
+                    {
+                        id: '1',
+                        titulo: 'Serie Destacada 1',
+                        descripcion: 'Una serie increíble llena de aventuras.',
+                        portada: 'https://via.placeholder.com/400x600/3498db/white?text=Serie+1',
+                        destacado: true,
+                        capitulos: [
+                            { numero: 1, titulo_cap: 'El comienzo' },
+                            { numero: 2, titulo_cap: 'La aventura continúa' }
+                        ]
+                    },
+                    {
+                        id: '2',
+                        titulo: 'Serie Popular 1',
+                        descripcion: 'Una historia fascinante.',
+                        portada: 'https://via.placeholder.com/400x600/e74c3c/white?text=Serie+2',
+                        destacado: false,
+                        capitulos: [
+                            { numero: 1, titulo_cap: 'Inicio' }
+                        ]
+                    },
+                    {
+                        id: '3',
+                        titulo: 'Serie Popular 2',
+                        descripcion: 'Más aventuras esperan.',
+                        portada: 'https://via.placeholder.com/400x600/2ecc71/white?text=Serie+3',
+                        destacado: false,
+                        capitulos: []
+                    }
+                ];
+                renderSeries();
+            }
+
+            function renderSeries() {
+                const featuredCarousel = document.getElementById('featured-carousel');
+                const popularSeriesGrid = document.getElementById('popular-series');
+                featuredCarousel.innerHTML = '';
+                popularSeriesGrid.innerHTML = '';
+
+                seriesData.forEach(serie => {
+                    const card = document.createElement('a');
+                    card.href = '#';
+                    card.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        buildDetailPage(serie);
+                        navigateTo('detail');
+                    });
+
+                    if (serie.destacado) {
+                        card.className = 'hero-card';
+                        card.innerHTML = `
+                            <div class="hero-card-bg" style="background-image: url('${serie.portada}')"></div>
+                            <img src="${serie.portada}" class="hero-card-cover" alt="${serie.titulo}">`;
+                        featuredCarousel.appendChild(card);
+                    } else {
+                        card.className = 'series-card';
+                        card.innerHTML = `<img src="${serie.portada}" alt="${serie.titulo}">`;
+                        popularSeriesGrid.appendChild(card);
+                    }
+                });
+            }
+
+            // =================================================================
+            // EVENT LISTENERS PRINCIPALES
+            // =================================================================
+            navHome.addEventListener('click', (e) => {
+                e.preventDefault();
+                navigateTo('main');
+            });
+
+            navProfile.addEventListener('click', (e) => {
+                e.preventDefault();
+                const user = auth.currentUser;
+                if (user) {
+                    navigateTo('profile');
+                } else {
+                    renderLoginModal();
+                }
+            });
+
+            // Cerrar modales al hacer clic fuera
+            [registroModal, loginModal].forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.add('hidden');
+                    }
+                });
+            });
+
+            // =================================================================
+            // INICIALIZACIÓN
+            // =================================================================
+            async function init() {
+                await loadSeriesData();
+                loader.style.display = 'none';
+                appContent.style.display = 'block';
+            }
+
+            // Inicializar la aplicación
+            init();
+        });
+    </script>
 </body>
 </html>
