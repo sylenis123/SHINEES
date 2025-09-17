@@ -1,31 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     // =================================================================
-    // 1. INICIALIZACIÓN Y SELECTORES
+    // 1. INICIALIZACIÓN Y SELECTORES (SIN CAMBIOS)
     // =================================================================
     const firebaseConfig = {
-        apiKey: "<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyDsv2keytFIEeS4QT4_chwOHMgyWpV8gP4",
-    authDomain: "shinees.firebaseapp.com",
-    projectId: "shinees",
-    storageBucket: "shinees.firebasestorage.app",
-    messagingSenderId: "109623976622",
-    appId: "1:109623976622:web:c9ab5a1c345f502b71833f",
-    measurementId: "G-Z0HSJ2WDZQ"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>", // ¡¡¡IMPORTANTE!!!
+        apiKey: "TU_API_KEY_REAL_VA_AQUI", // ¡¡¡IMPORTANTE!!!
         authDomain: "shinees.firebaseapp.com",
         projectId: "shinees",
         storageBucket: "shinees.appspot.com",
@@ -40,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const appContent = document.getElementById('app-content');
     const modalContainer = document.getElementById('modal-container');
     
-    // AÑADIDO: La nueva vista de biblioteca
     const views = {
         main: document.getElementById('main-view'),
         detail: document.getElementById('detail-view'),
@@ -51,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let seriesData = [];
 
     // =================================================================
-    // 2. NAVEGACIÓN
+    // 2. NAVEGACIÓN (SIN CAMBIOS)
     // =================================================================
     function navigateTo(viewName) {
         Object.values(views).forEach(view => view.classList.add('hidden'));
@@ -64,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =================================================================
-    // 3. RENDERIZADO DE COMPONENTES
+    // 3. RENDERIZADO DE COMPONENTES (SIN CAMBIOS)
     // =================================================================
     function renderAuthUI(user) {
         const headerActions = document.querySelector('.header-actions');
@@ -157,7 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
         navigateTo('detail');
     }
 
-    // AÑADIDO: La nueva función para pintar la biblioteca
     function renderLibrary() {
         const grid = document.getElementById('library-grid');
         if (!grid) return;
@@ -174,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =================================================================
-    // 4. LÓGICA DE DATOS Y ESTADO
+    // 4. LÓGICA DE DATOS Y ESTADO (SIN CAMBIOS)
     // =================================================================
     function toggleTheme() {
         const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -200,6 +176,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const seriesCollection = await db.collection('series').get();
             seriesData = seriesCollection.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             
+            console.log(`✅ Cargadas ${seriesData.length} series de Firebase`);
+
             const featuredCarousel = document.getElementById('featured-carousel');
             const popularSeriesGrid = document.getElementById('series-grid');
             
@@ -237,35 +215,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =================================================================
-    // 5. DELEGACIÓN DE EVENTOS
+    // 5. DELEGACIÓN DE EVENTOS (¡¡¡SECCIÓN CORREGIDA!!!)
     // =================================================================
     document.body.addEventListener('click', async (e) => {
+        // --- Botones del Header ---
         if (e.target.id === 'theme-toggle') toggleTheme();
         if (e.target.id === 'header-profile-btn') navigateTo('profile');
         if (e.target.id === 'header-register-btn') renderRegistroModal();
         if (e.target.id === 'header-login-btn') renderLoginModal();
         if (e.target.id === 'logout-btn-profile') await auth.signOut();
 
+        // --- Navegación Principal (Sidebar y Bottom Nav) ---
         const navItem = e.target.closest('.nav-item, .sidebar-link');
         if (navItem) {
             e.preventDefault();
             const view = navItem.dataset.view;
-            
-            if (view === 'profile' && !auth.currentUser) {
+
+            if (!view) return; // Si no hay data-view, no hace nada
+
+            // Lógica especial para vistas que requieren autenticación
+            if ((view === 'profile' || view === 'favorites' || view === 'history') && !auth.currentUser) {
                 renderLoginModal();
-                return; // Importante: Detiene la ejecución para no navegar
+                return; 
             }
             
-            // AÑADIDO: Lógica para renderizar la biblioteca antes de navegar
+            // Lógica especial para vistas que necesitan renderizar contenido
             if (view === 'library') {
                 renderLibrary();
             }
+            // Aquí iría la lógica para 'favorites', 'history', etc.
             
-            if (view) {
-                navigateTo(view);
-            }
+            // Navega a la vista correspondiente
+            navigateTo(view);
         }
 
+        // --- Clic en Tarjetas de Series (Carrusel, Parrilla, Biblioteca) ---
         const seriesLink = e.target.closest('.hero-card, .series-card');
         if (seriesLink) {
             e.preventDefault();
@@ -273,12 +257,20 @@ document.addEventListener('DOMContentLoaded', () => {
             if (serie) buildDetailPage(serie);
         }
 
-        if (e.target.closest('.back-button')) navigateTo('main');
+        // --- Botón de Volver en la Vista de Detalles ---
+        if (e.target.closest('.back-button')) {
+            navigateTo('main');
+        }
+
+        // --- Cierre de Modales ---
         if (e.target.classList.contains('modal-close-button') || e.target.classList.contains('modal-overlay')) {
             modalContainer.innerHTML = '';
         }
     });
 
+    // =================================================================
+    // 6. MANEJO DE FORMULARIOS (SIN CAMBIOS)
+    // =================================================================
     document.body.addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -304,7 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // =================================================================
-    // 6. EJECUCIÓN INICIAL
+    // 7. EJECUCIÓN INICIAL (SIN CAMBIOS)
     // =================================================================
     main();
 });
