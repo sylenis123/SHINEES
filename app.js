@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         main: document.getElementById('main-view'),
         detail: document.getElementById('series-detail-view'),
         profile: document.getElementById('profile-view'),
+        library: document.getElementById('library-view')
     };
 
     let seriesData = [];
@@ -92,6 +93,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!user) {
             views.profile.innerHTML = `<p>Debes iniciar sesión para ver tu perfil.</p>`;
             return;
+            // Muestra todas las series sin filtrar por "destacado"
+    grid.innerHTML = seriesData.map(serie => `
+        <div class="series-card" data-serie-id="${serie.id}">
+            <img src="${serie.portada || 'https://via.placeholder.com/300x450?text=No+Cover'}" alt="${serie.titulo}" class="series-poster" loading="lazy">
+            <div class="series-info">
+                <h3 class="series-title">${serie.titulo}</h3>
+                <p class="series-meta">${serie.tipo} • ${serie.año}</p>
+            </div>
+        </div>
+    ` ).join('');
         }
         views.profile.innerHTML = `
             <header class="main-header"><h1>Mi Perfil</h1></header>
@@ -235,6 +246,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (navItem) {
             e.preventDefault();
             const view = navItem.dataset.view;
+             if (view === 'library') {
+        renderLibrary(); // Llama a la función que acabamos de crear
+    }
+    
+    if (view) navigateTo(view);
+        }
             if (view === 'profile' && !auth.currentUser) {
                 renderLoginModal(); // Si no está logueado, pide iniciar sesión
             } else {
