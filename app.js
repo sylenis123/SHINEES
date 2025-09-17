@@ -3,7 +3,30 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. INICIALIZACIÓN Y SELECTORES
     // =================================================================
     const firebaseConfig = {
-        apiKey: "TU_API_KEY", // MEJORA: Reemplaza con tus credenciales reales
+        apiKey: "<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyDsv2keytFIEeS4QT4_chwOHMgyWpV8gP4",
+    authDomain: "shinees.firebaseapp.com",
+    projectId: "shinees",
+    storageBucket: "shinees.firebasestorage.app",
+    messagingSenderId: "109623976622",
+    appId: "1:109623976622:web:c9ab5a1c345f502b71833f",
+    measurementId: "G-Z0HSJ2WDZQ"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+", // MEJORA: Reemplaza con tus credenciales reales
         authDomain: "shinees.firebaseapp.com",
         projectId: "shinees",
         storageBucket: "shinees.appspot.com",
