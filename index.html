@@ -4,21 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shinees - Platform</title>
-    <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- ======================================================= -->
+    <!-- ESTILOS CSS INTEGRADOS DIRECTAMENTE AQUÍ -->
+    <!-- ======================================================= -->
+    <style>
+        :root {
+            --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #ec4899; --accent: #10b981;
+            --text: #f8fafc; --text-secondary: #cbd5e1; --bg: #0f172a; --bg-secondary: #1e293b;
+            --bg-tertiary: #334155; --border: #475569; --gradient: linear-gradient(135deg, var(--primary ), var(--secondary));
+        }
+        [data-theme="light"] {
+            --text: #1e293b; --text-secondary: #64748b; --bg: #ffffff; --bg-secondary: #f8fafc;
+            --bg-tertiary: #e2e8f0; --border: #e2e8f0;
+        }
+        [data-theme="girl"] {
+            --primary: #ff69b4; --primary-dark: #ff1493; --secondary: #ffc0cb; --accent: #ffb6c1;
+            --text: #4b0082; --text-secondary: #9370db; --bg: #fff0f5; --bg-secondary: #ffe4e1;
+            --bg-tertiary: #ffdab9; --border: #ffc0cb; --gradient: linear-gradient(135deg, #ff69b4, #ffc0cb);
+        }
+        [data-theme="boy"] {
+            --primary: #1e90ff; --primary-dark: #0000ff; --secondary: #00bfff; --accent: #87ceeb;
+            --text: #ffffff; --text-secondary: #add8e6; --bg: #191970; --bg-secondary: #4682b4;
+            --bg-tertiary: #5f9ea0; --border: #00bfff; --gradient: linear-gradient(135deg, #1e90ff, #00bfff);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+        .hidden { display: none !important; }
+        #loader { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10000; }
+        .spinner { border: 4px solid rgba(255, 255, 255, 0.2); border-left-color: var(--primary); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+        #loader p { margin-top: 20px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #app-content { min-height: 100vh; }
+        .main-header { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .logo { font-family: 'Noto Sans JP', sans-serif; font-size: 1.8rem; font-weight: 700; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .header-actions { display: flex; gap: 1rem; align-items: center; }
+        .btn { padding: 0.5rem 1rem; border: 1px solid var(--border); background: var(--bg-tertiary); color: var(--text); border-radius: 8px; cursor: pointer; font-size: 0.9rem; }
+        .btn-primary { background: var(--gradient); border: none; color: white; }
+        .dashboard { display: grid; grid-template-columns: 250px 1fr; min-height: calc(100vh - 80px); }
+        .sidebar { background: var(--bg-secondary); border-right: 1px solid var(--border); padding: 2rem 1rem; }
+        .sidebar-menu { list-style: none; }
+        .sidebar-item { margin-bottom: 0.5rem; }
+        .sidebar-link { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: var(--text-secondary); text-decoration: none; border-radius: 8px; }
+        .sidebar-link:hover, .sidebar-link.active { background: var(--bg-tertiary); color: var(--text); }
+        .main-content { padding: 2rem; overflow-y: auto; }
+        .section-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--text); }
+        #featured-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 1rem; padding-bottom: 1rem; }
+        .hero-card { flex: 0 0 80%; scroll-snap-align: center; position: relative; border-radius: 16px; overflow: hidden; aspect-ratio: 16 / 9; }
+        .hero-card-bg { position: absolute; inset: 0; object-fit: cover; width: 100%; height: 100%; filter: blur(10px) brightness(0.5); }
+        .hero-card-cover { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); height: 90%; object-fit: contain; }
+        .series-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1.5rem; }
+        .series-card { background: var(--bg-secondary); border-radius: 12px; overflow: hidden; transition: all 0.3s ease; cursor: pointer; border: 1px solid var(--border); }
+        .series-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .series-poster { width: 100%; height: 240px; object-fit: cover; }
+        .series-info { padding: 1rem; }
+        .series-title { font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem; }
+        .series-meta { font-size: 0.8rem; color: var(--text-secondary); }
+        .detail-header { height: 400px; background-size: cover; background-position: center; position: relative; display: flex; align-items: end; }
+        .detail-header::before { content: ''; position: absolute; inset: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); }
+        .detail-info { position: relative; z-index: 1; padding: 2rem; color: white; display: flex; gap: 2rem; align-items: end; }
+        .detail-info-cover img { width: 150px; border-radius: 12px; }
+        .detail-content { padding: 2rem; }
+        .chapter-list { list-style: none; }
+        .chapter-list li a { display: block; padding: 1rem; border-bottom: 1px solid var(--border); color: var(--text); text-decoration: none; }
+        .profile-content { padding: 2rem; }
+        .profile-card { background: var(--bg-secondary); border-radius: 16px; padding: 2rem; text-align: center; }
+        .profile-avatar-container { margin: 0 auto 1rem; }
+        #profile-avatar-img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); }
+        .profile-actions { margin-top: 2rem; }
+        .logout-button { background: var(--danger); color: white; border: none; }
+        .bottom-nav { background: var(--bg-secondary); border-top: 1px solid var(--border); padding: 1rem; display: flex; justify-content: space-around; position: sticky; bottom: 0; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; color: var(--text-secondary); text-decoration: none; font-size: 0.8rem; }
+        .nav-item.active { color: var(--primary); }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: var(--bg-secondary); border-radius: 16px; padding: 2rem; width: 90%; max-width: 400px; position: relative; }
+        .modal-close-button { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 1.5rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label { display: block; margin-bottom: 0.5rem; }
+        .form-input { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); }
+        @media (max-width: 768px) { .dashboard { grid-template-columns: 1fr; } .sidebar { display: none; } .main-content, .detail-content { padding: 1rem; } }
+    </style>
 </head>
 <body>
-    <!-- Loader (no cambia ) -->
+    <!-- Loader -->
     <div id="loader">
         <div class="spinner"></div>
-        <p>Shinees</p>
+        <p>Cargando Shinees...</p>
     </div>
 
     <!-- Contenido Principal de la App -->
     <div id="app-content" style="display: none;">
-        <!-- Header (no cambia) -->
+        <!-- Header -->
         <header class="main-header">
             <div class="logo">Shinees</div>
             <div class="header-actions">
@@ -33,57 +112,42 @@
                     <nav>
                         <ul class="sidebar-menu">
                             <li class="sidebar-item">
-                                <a href="#" class="sidebar-link active" data-view="home" data-i18n="home">
-                                    🏠 Inicio
-                                </a>
+                                <a href="#" class="sidebar-link active" data-view="home">🏠 Inicio</a>
                             </li>
                             <li class="sidebar-item">
-                                <a href="#" class="sidebar-link" data-view="trending" data-i18n="trending">
-                                    📈 Tendencias
-                                </a>
-                            </li>
-                            <!-- ESTE ES EL NUEVO BOTÓN PARA LA BIBLIOTECA -->
-                            <li class="sidebar-item">
-                                <a href="#" class="sidebar-link" data-view="library" data-i18n="library">
-                                    📖 Biblioteca
-                                </a>
+                                <a href="#" class="sidebar-link" data-view="trending">📈 Tendencias</a>
                             </li>
                             <li class="sidebar-item">
-                                <a href="#" class="sidebar-link" data-view="favorites" data-i18n="favorites">
-                                    ⭐ Favoritos
-                                </a>
+                                <a href="#" class="sidebar-link" data-view="favorites">⭐ Favoritos</a>
                             </li>
                             <li class="sidebar-item">
-                                <a href="#" class="sidebar-link" data-view="history" data-i18n="history">
-                                    📚 Historial
-                                </a>
+                                <a href="#" class="sidebar-link" data-view="history">📚 Historial</a>
                             </li>
                         </ul>
                     </nav>
                 </aside>
 
                 <div class="main-content">
-                    <!-- Vistas internas del dashboard -->
                     <div id="home-view">
                         <section class="featured-section">
-                            <h2 class="section-title" data-i18n="featured">Destacados</h2>
+                            <h2 class="section-title">Destacados</h2>
                             <div id="featured-carousel"></div>
                         </section>
                         <section>
-                            <h2 class="section-title" data-i18n="popular-series">Series Populares</h2>
+                            <h2 class="section-title">Series Populares</h2>
                             <div class="series-grid" id="series-grid"></div>
                         </section>
                     </div>
                     <div id="trending-view" class="hidden">
-                        <h2 class="section-title" data-i18n="trending">Tendencias</h2>
+                        <h2 class="section-title">Tendencias</h2>
                         <div class="series-grid" id="trending-grid"></div>
                     </div>
                     <div id="favorites-view" class="hidden">
-                        <h2 class="section-title" data-i18n="my-favorites">Mis Favoritos</h2>
+                        <h2 class="section-title">Mis Favoritos</h2>
                         <div class="series-grid" id="favorites-grid"></div>
                     </div>
                     <div id="history-view" class="hidden">
-                        <h2 class="section-title" data-i18n="reading-history">Historial de Lectura</h2>
+                        <h2 class="section-title">Historial de Lectura</h2>
                         <div class="series-grid" id="history-grid"></div>
                     </div>
                 </div>
@@ -93,33 +157,19 @@
         <!-- Otras Vistas Principales -->
         <div id="detail-view" class="hidden"></div>
         <div id="profile-view" class="hidden"></div>
-        
-        <!-- ESTA ES LA NUEVA VISTA PARA LA BIBLIOTECA -->
-        <div id="library-view" class="hidden">
-            <div class="main-content">
-                <h2 class="section-title" data-i18n="library">Biblioteca Completa</h2>
-                <div class="series-grid" id="library-grid"></div>
-            </div>
-        </div>
 
-        <!-- Barra de Navegación Inferior (no cambia) -->
+        <!-- Barra de Navegación Inferior -->
         <nav class="bottom-nav">
-            <a href="#" class="nav-item active" data-view="main">
-                <span>🏠</span> <span data-i18n="home">Inicio</span>
-            </a>
-            <a href="#" class="nav-item" data-view="search">
-                <span>🔍</span> <span data-i18n="search">Buscar</span>
-            </a>
-            <a href="#" class="nav-item" data-view="profile">
-                <span>👤</span> <span data-i18n="profile">Perfil</span>
-            </a>
+            <a href="#" class="nav-item active" data-view="main"><span>🏠</span> <span>Inicio</span></a>
+            <a href="#" class="nav-item" data-view="search"><span>🔍</span> <span>Buscar</span></a>
+            <a href="#" class="nav-item" data-view="profile"><span>👤</span> <span>Perfil</span></a>
         </nav>
     </div>
 
-    <!-- Contenedor de Modales (no cambia) -->
+    <!-- Contenedor de Modales -->
     <div id="modal-container"></div>
 
-    <!-- Scripts (no cambian) -->
+    <!-- Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
