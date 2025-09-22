@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shinees - Anime & Manga Platform</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap' );
         
         :root {
             --primary: #ff6b1a;
@@ -63,6 +63,851 @@
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
+        }
+
+        /* HEADER MEJORADO */
+        header {
+            background: var(--bg-secondary);
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+        }
+
+        /* LOGO 3D ANIMADO */
+        .logo-3d {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255, 107, 26, 0.5);
+            animation: float 3s ease-in-out infinite;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            perspective: 1000px;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotateX(0); }
+            50% { transform: translateY(-10px) rotateX(5deg); }
+        }
+
+        .logo-3d:hover {
+            animation: rotate3d 1s ease-in-out;
+            text-shadow: 0 0 50px rgba(255, 107, 26, 0.8);
+        }
+
+        @keyframes rotate3d {
+            0% { transform: rotateY(0); }
+            100% { transform: rotateY(360deg); }
+        }
+
+        /* NAVEGACIÓN PRINCIPAL */
+        .main-nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* BUSCADOR MEJORADO */
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+            margin: 0 30px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 40px 8px 15px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            color: var(--text);
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(255, 107, 26, 0.2);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .search-btn:hover {
+            background: var(--accent);
+        }
+
+        /* HERO CAROUSEL MEJORADO */
+        .hero-carousel {
+            position: relative;
+            height: 450px;
+            overflow: hidden;
+            background: var(--bg-secondary);
+        }
+
+        .carousel-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s;
+            display: flex;
+            align-items: center;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+        }
+
+        .carousel-content {
+            position: relative;
+            z-index: 2;
+            padding: 0 60px;
+            max-width: 600px;
+        }
+
+        .carousel-title {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            animation: slideInLeft 1s;
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .carousel-description {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            color: var(--text-secondary);
+        }
+
+        .watch-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .watch-btn:hover {
+            background: var(--accent);
+            transform: scale(1.05);
+        }
+
+        .carousel-image {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 60%;
+            height: 100%;
+            object-fit: cover;
+            mask-image: linear-gradient(to right, transparent, black 30%);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 30%);
+        }
+
+        /* SECCIONES DE CONTENIDO */
+        .content-section {
+            padding: 40px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .view-all {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: gap 0.3s;
+        }
+
+        .view-all:hover {
+            gap: 10px;
+        }
+
+        /* GRID DE ANIME/MANGA */
+        .anime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .anime-card {
+            background: var(--bg-card);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .anime-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(255, 107, 26, 0.3);
+        }
+
+        .anime-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .anime-info {
+            padding: 15px;
+        }
+
+        .anime-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .anime-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .anime-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* PERFIL DE USUARIO MEJORADO */
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(180deg);
+        }
+
+        /* BIBLIOTECA MEJORADA */
+        .library-filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* FOOTER MEJORADO */
+        footer {
+            background: var(--bg-secondary);
+            padding: 40px 20px 20px;
+            margin-top: 60px;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-card);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .social-link:hover {
+            background: var(--primary);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .main-nav {
+                display: none;
+            }
+            
+            .search-container {
+                margin: 0 10px;
+            }
+            
+            .carousel-content {
+                padding: 0 20px;
+            }
+            
+            .carousel-title {
+                font-size: 2rem;
+            }
+            
+            .anime-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER MEJORADO -->
+    <header>
+        <div class="header-container">
+            <div class="logo-3d" onclick="location.reload()">SHINEES</div>
+            
+            <nav class="main-nav">
+                <a href="#" class="nav-link">Browse</a>
+                <a href="#" class="nav-link">Manga</a>
+                <a href="#" class="nav-link">Games</a>
+                <a href="#" class="nav-link">Store</a>
+                <a href="#" class="nav-link">News</a>
+            </nav>
+            
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Buscar anime, manga o juegos..." id="searchInput">
+                <button class="search-btn">🔍</button>
+            </div>
+            
+            <div class="user-menu">
+                <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+                <div class="user-avatar">U</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO CAROUSEL -->
+    <div class="hero-carousel">
+        <div class="carousel-slide active">
+            <div class="carousel-content">
+                <h1 class="carousel-title">Jujutsu Kaisen</h1>
+                <p class="carousel-description">Un estudiante de secundaria se une a una organización secreta de hechiceros para eliminar una maldición poderosa.</p>
+                <button class="watch-btn">▶ Ver Ahora</button>
+            </div>
+            <img src="https://i.imgur.com/8iLdC2B.jpg" class="carousel-image">
+        </div>
+        <div class="carousel-slide">
+            <div class="carousel-content">
+                <h1 class="carousel-title">Solo Leveling</h1>
+                <p class="carousel-description">En un mundo plagado de monstruos, un cazador de bajo rango adquiere un poder extraordinario.</p>
+                <button class="watch-btn">▶ Ver Ahora</button>
+            </div>
+            <img src="https://i.imgur.com/O1xO2G3.jpg" class="carousel-image">
+        </div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main>
+        <!-- Sección Destacados -->
+        <section class="content-section">
+            <div class="section-header">
+                <h2 class="section-title">🔥 Tendencias Ahora</h2>
+                <a href="#" class="view-all">Ver todo →</a>
+            </div>
+            <div class="anime-grid">
+                <div class="anime-card">
+                    <span class="anime-badge">NUEVO</span>
+                    <img src="https://i.imgur.com/sYJ2s1k.png" alt="Anime 1">
+                    <div class="anime-info">
+                        <div class="anime-title">Attack on Titan</div>
+                        <div class="anime-meta">Acción • 2023</div>
+                    </div>
+                </div>
+                <div class="anime-card">
+                    <span class="anime-badge">HOT</span>
+                    <img src="https://i.imgur.com/sYJ2s1k.png" alt="Anime 2">
+                    <div class="anime-info">
+                        <div class="anime-title">Demon Slayer</div>
+                        <div class="anime-meta">Aventura • 2023</div>
+                    </div>
+                </div>
+                <div class="anime-card">
+                    <img src="https://i.imgur.com/sYJ2s1k.png" alt="Anime 3">
+                    <div class="anime-info">
+                        <div class="anime-title">One Piece</div>
+                        <div class="anime-meta">Shonen • En emisión</div>
+                    </div>
+                </div>
+                <div class="anime-card">
+                    <img src="https://i.imgur.com/sYJ2s1k.png" alt="Anime 4">
+                    <div class="anime-info">
+                        <div class="anime-title">My Hero Academia</div>
+                        <div class="anime-meta">Superhéroes • 2023</div>
+                    </div>
+                </div>
+                <div class="anime-card">
+                    <img src="https://i.imgur.com/sYJ2s1k.png" alt="Anime 5">
+                    <div class="anime-info">
+                        <div class="anime-title">Tokyo Revengers</div>
+                        <div class="anime-meta">Drama • 2023</div>
+                    </div>
+                </div>
+                <div class="anime-card">
+                    <img src="https://i.imgur.com/sYJ2s1k.png" alt="Anime 6">
+                    <div class="anime-info">
+                        <div class="anime-title">Chainsaw Man</div>
+                        <div class="anime-meta">Horror • 2022</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Biblioteca Personal -->
+        <section class="content-section">
+            <div class="section-header">
+                <h2 class="section-title">📚 Mi Biblioteca</h2>
+                <a href="#" class="view-all">Administrar →</a>
+            </div>
+            <div class="library-filters">
+                <button class="filter-btn active">Todo</button>
+                <button class="filter-btn">Viendo</button>
+                <button class="filter-btn">Completado</button>
+                <button class="filter-btn">En espera</button>
+                <button class="filter-btn">Abandonado</button>
+            </div>
+            <div class="anime-grid">
+                <div class="anime-card">
+                    <img src="https://i.imgur.com/sYJ2s1k.png" alt="Library 1">
+                    <div class="anime-info">
+                        <div class="anime-title">Spy x Family</div>
+                        <div class="anime-meta">Ep. 12 de 25</div>
+                    </div>
+                </div>
+                <div class="anime-card">
+                    <img src="https://i.imgur.com/sYJ2s1k.png" alt="Library 2">
+                    <div class="anime-info">
+                        <div class="anime-title">Blue Lock</div>
+                        <div class="anime-meta">Ep. 8 de 24</div>
+                    </div>
+                </div>
+                <div class="anime-card">
+                    <img src="https://i.imgur.com/sYJ2s1k.png" alt="Library 3">
+                    <div class="anime-info">
+                        <div class="anime-title">Mob Psycho 100</div>
+                        <div class="anime-meta">Completado</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nuevos Episodios -->
+        <section class="content-section">
+            <div class="section-header">
+                <h2 class="section-title">🆕 Nuevos Episodios</h2>
+                <a href="#" class="view-all">Ver calendario →</a>
+            </div>
+            <div class="anime-grid">
+                <div class="anime-card">
+                    <span class="anime-badge">HOY</span>
+                    <img src="https://i.imgur.com/sYJ2s1k.png" alt="New 1">
+                    <div class="anime-info">
+                        <div class="anime-title">Frieren</div>
+                        <div class="anime-meta">Episodio 15</div>
+                    </div>
+                </div>
+                <div class="anime-card">
+                    <span class="anime-badge">HOY</span>
+                    <img src="https://i.imgur.com/sYJ2s1k.png" alt="New 2">
+                    <div class="anime-info">
+                        <div class="anime-title">Solo Leveling</div>
+                        <div class="anime-meta">Episodio 3</div>
+                    </div>
+                </div>
+                <div class="anime-card">
+                    <img src="https://i.imgur.com/sYJ2s1k.png" alt="New 3">
+                    <div class="anime-info">
+                        <div class="anime-title">Dr. Stone</div>
+                        <div class="anime-meta">Episodio 22</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER MEJORADO -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Navegación</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Inicio</a></li>
+                    <li><a href="#">Catálogo</a></li>
+                    <li><a href="#">Nuevos lanzamientos</a></li>
+                    <li><a href="#">Calendario</a></li>
+                    <li><a href="#">Random</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Cuenta</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Mi Perfil</a></li>
+                    <li><a href="#">Biblioteca</a></li>
+                    <li><a href="#">Historial</a></li>
+                    <li><a href="#">Configuración</a></li>
+                    <li><a href="#">Cerrar sesión</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Conecta con nosotros</h3>
+                <div class="social-links">
+                    <a href="#" class="social-link">📘</a>
+                    <a href="#" class="social-link">🐦</a>
+                    <a href="#" class="social-link">📷</a>
+                    <a href="#" class="social-link">💬</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Información</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Sobre nosotros</a></li>
+                    <li><a href="#">Términos de uso</a></li>
+                    <li><a href="#">Política de privacidad</a></li>
+                    <li><a href="#">DMCA</a></li>
+                    <li><a href="#">Contacto</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 Shinees Platform. Todos los derechos reservados. | Sistema activo 🟢</p>
+        </div>
+    </footer>
+
+    <script>
+        // Sistema de temas mejorado
+        let currentTheme = 'dark';
+        const themes = ['dark', 'light', 'girl', 'boy'];
+        
+        function toggleTheme( ) {
+            const currentIndex = themes.indexOf(currentTheme);
+            const nextIndex = (currentIndex + 1) % themes.length;
+            currentTheme = themes[nextIndex];
+            
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            
+            // Actualizar icono del botón
+            const themeBtn = document.querySelector('.theme-toggle');
+            const icons = {
+                'dark': '🌙',
+                'light': '☀️',
+                'girl': '🌸',
+                'boy': '⚡'
+            };
+            themeBtn.textContent = icons[currentTheme];
+            
+            // Efecto especial en el logo cuando cambia el tema
+            const logo = document.querySelector('.logo-3d');
+            logo.style.animation = 'none';
+            setTimeout(() => {
+                logo.style.animation = 'rotate3d 1s ease-in-out, float 3s ease-in-out infinite';
+            }, 10);
+        }
+
+        // Sistema de búsqueda mejorado
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.querySelector('.search-btn');
+        
+        searchBtn.addEventListener('click', performSearch);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') performSearch();
+        });
+        
+        function performSearch() {
+            const query = searchInput.value.trim();
+            if (query) {
+                showNotification(`Buscando: "${query}"...`);
+                // Aquí iría la lógica de búsqueda real
+                searchInput.style.borderColor = '#10b981';
+                setTimeout(() => {
+                    searchInput.style.borderColor = '';
+                }, 2000);
+            }
+        }
+
+        // Carousel automático
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        
+        function nextSlide() {
+            if (slides.length > 0) {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+            }
+        }
+        
+        // Cambiar slide cada 5 segundos
+        setInterval(nextSlide, 5000);
+
+        // Animación de cards al hacer scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.5s forwards';
+                    observer.unobserve(entry.target); // Dejar de observar una vez animado
+                }
+            });
+        }, observerOptions);
+
+        // Observar todas las cards
+        document.querySelectorAll('.anime-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Animación fadeInUp
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Filtros de biblioteca
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                showNotification(`Filtro cambiado a: ${this.textContent}`);
+            });
+        });
+
+        // Sistema de archivos simulado (Drive)
+        class FileManager {
+            constructor() {
+                this.files = new Map();
+            }
+            
+            async loadFromDrive(folderId) {
+                // Simulación de carga desde Drive
+                console.log(`Cargando archivos desde carpeta de Drive: ${folderId}`);
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        const simulatedFiles = ['jujutsu-kaisen.json', 'solo-leveling.json', 'one-piece.manga'];
+                        console.log('Archivos encontrados en Drive:', simulatedFiles);
+                        resolve({
+                            success: true,
+                            files: simulatedFiles
+                        });
+                    }, 1000);
+                });
+            }
+            
+            async getFile(filename) {
+                // Buscar archivo por nombre
+                console.log(`Solicitando archivo: ${filename}`);
+                if (this.files.has(filename)) {
+                    return this.files.get(filename);
+                }
+                // Simular carga desde servidor si no está en caché
+                return await this.fetchFile(filename);
+            }
+            
+            async fetchFile(filename) {
+                console.log(`Descargando y cacheando: ${filename}`);
+                // Aquí iría la lógica real de descarga
+                const fileData = { name: filename, content: { title: filename.split('.')[0] }, loaded: Date.now() };
+                this.files.set(filename, fileData);
+                return fileData;
+            }
+        }
+        
+        const fileManager = new FileManager();
+
+        // Perfil de usuario mejorado
+        class UserProfile {
+            constructor() {
+                this.data = {
+                    username: 'Usuario',
+                    avatar: null,
+                    favorites: [],
+                    watchlist: [],
+                    history: [],
+                    preferences: { theme: 'dark', language: 'es', autoplay: true }
+                };
+                this.load();
+            }
+            
+            load() {
+                const saved = localStorage.getItem('userProfile');
+                if (saved) {
+                    this.data = JSON.parse(saved);
+                    console.log('Perfil
         }
 
         /* HEADER MEJORADO */
@@ -1007,3 +1852,301 @@
         // Ejemplo de uso del sistema
         console.log('Sistema Shinees inicializado ✓');
         showNotification('¡Bienvenido a Shinees Platform!', 'success');
+    <script>
+        // Sistema de temas mejorado
+        let currentTheme = 'dark';
+        const themes = ['dark', 'light', 'girl', 'boy'];
+        
+        function toggleTheme() {
+            const currentIndex = themes.indexOf(currentTheme);
+            const nextIndex = (currentIndex + 1) % themes.length;
+            currentTheme = themes[nextIndex];
+            
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            
+            // Actualizar icono del botón
+            const themeBtn = document.querySelector('.theme-toggle');
+            const icons = {
+                'dark': '🌙',
+                'light': '☀️',
+                'girl': '🌸',
+                'boy': '⚡'
+            };
+            themeBtn.textContent = icons[currentTheme];
+            
+            // Efecto especial en el logo cuando cambia el tema
+            const logo = document.querySelector('.logo-3d');
+            logo.style.animation = 'none';
+            setTimeout(() => {
+                logo.style.animation = 'rotate3d 1s ease-in-out, float 3s ease-in-out infinite';
+            }, 10);
+        }
+
+        // Sistema de búsqueda mejorado
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.querySelector('.search-btn');
+        
+        searchBtn.addEventListener('click', performSearch);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') performSearch();
+        });
+        
+        function performSearch() {
+            const query = searchInput.value.trim();
+            if (query) {
+                showNotification(`Buscando: "${query}"...`);
+                // Aquí iría la lógica de búsqueda real
+                searchInput.style.borderColor = '#10b981';
+                setTimeout(() => {
+                    searchInput.style.borderColor = '';
+                }, 2000);
+            }
+        }
+
+        // Carousel automático
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        
+        function nextSlide() {
+            if (slides.length > 0) {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+            }
+        }
+        
+        // Cambiar slide cada 5 segundos
+        setInterval(nextSlide, 5000);
+
+        // Animación de cards al hacer scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.5s forwards';
+                    observer.unobserve(entry.target); // Dejar de observar una vez animado
+                }
+            });
+        }, observerOptions);
+
+        // Observar todas las cards
+        document.querySelectorAll('.anime-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Animación fadeInUp
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Filtros de biblioteca
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                showNotification(`Filtro cambiado a: ${this.textContent}`);
+            });
+        });
+
+        // Sistema de archivos simulado (Drive)
+        class FileManager {
+            constructor() {
+                this.files = new Map();
+            }
+            
+            async loadFromDrive(folderId) {
+                // Simulación de carga desde Drive
+                console.log(`Cargando archivos desde carpeta de Drive: ${folderId}`);
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        const simulatedFiles = ['jujutsu-kaisen.json', 'solo-leveling.json', 'one-piece.manga'];
+                        console.log('Archivos encontrados en Drive:', simulatedFiles);
+                        resolve({
+                            success: true,
+                            files: simulatedFiles
+                        });
+                    }, 1000);
+                });
+            }
+            
+            async getFile(filename) {
+                // Buscar archivo por nombre
+                console.log(`Solicitando archivo: ${filename}`);
+                if (this.files.has(filename)) {
+                    return this.files.get(filename);
+                }
+                // Simular carga desde servidor si no está en caché
+                return await this.fetchFile(filename);
+            }
+            
+            async fetchFile(filename) {
+                console.log(`Descargando y cacheando: ${filename}`);
+                // Aquí iría la lógica real de descarga
+                const fileData = { name: filename, content: { title: filename.split('.')[0] }, loaded: Date.now() };
+                this.files.set(filename, fileData);
+                return fileData;
+            }
+        }
+        
+        const fileManager = new FileManager();
+
+        // Perfil de usuario mejorado
+        class UserProfile {
+            constructor() {
+                this.data = {
+                    username: 'Usuario',
+                    avatar: null,
+                    favorites: [],
+                    watchlist: [],
+                    history: [],
+                    preferences: { theme: 'dark', language: 'es', autoplay: true }
+                };
+                this.load();
+            }
+            
+            load() {
+                const saved = localStorage.getItem('userProfile');
+                if (saved) {
+                    this.data = JSON.parse(saved);
+                    console.log('Perfil de usuario cargado desde localStorage.');
+                }
+            }
+            
+            save() {
+                localStorage.setItem('userProfile', JSON.stringify(this.data));
+                console.log('Perfil de usuario guardado.');
+            }
+            
+            addToFavorites(animeId) {
+                if (!this.data.favorites.includes(animeId)) {
+                    this.data.favorites.push(animeId);
+                    this.save();
+                    showNotification(`${animeId} añadido a favoritos.`, 'success');
+                } else {
+                    showNotification(`${animeId} ya está en favoritos.`, 'info');
+                }
+            }
+            
+            addToHistory(animeId, episode) {
+                this.data.history.push({
+                    animeId,
+                    episode,
+                    timestamp: Date.now()
+                });
+                this.save();
+            }
+        }
+        
+        const userProfile = new UserProfile();
+
+        // Click en avatar para mostrar menú de perfil
+        document.querySelector('.user-avatar').addEventListener('click', function(event) {
+            event.stopPropagation(); // Evita que el clic se propague y cierre el menú inmediatamente
+            
+            // Si ya hay un menú, lo quita
+            const existingMenu = document.querySelector('.profile-menu');
+            if (existingMenu) {
+                existingMenu.remove();
+                return;
+            }
+
+            const menu = document.createElement('div');
+            menu.className = 'profile-menu';
+            menu.innerHTML = `
+                <div style="position: absolute; right: 0; top: 45px; background: var(--bg-card); 
+                            border: 1px solid var(--border); border-radius: 10px; 
+                            padding: 10px; min-width: 200px; z-index: 1000;
+                            box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                    <a href="#" style="display: block; padding: 10px; cursor: pointer; color: var(--text); text-decoration: none;">Mi Perfil</a>
+                    <a href="#" style="display: block; padding: 10px; cursor: pointer; color: var(--text); text-decoration: none;">Biblioteca</a>
+                    <a href="#" style="display: block; padding: 10px; cursor: pointer; color: var(--text); text-decoration: none;">Configuración</a>
+                    <hr style="border-color: var(--border); margin: 10px 0;">
+                    <a href="#" style="display: block; padding: 10px; cursor: pointer; color: var(--text); text-decoration: none;">Cerrar sesión</a>
+                </div>
+            `;
+            
+            this.parentElement.appendChild(menu);
+
+            // Cerrar menú al hacer clic fuera
+            function closeMenuOnClickOutside(e) {
+                if (!menu.contains(e.target)) {
+                    menu.remove();
+                    document.removeEventListener('click', closeMenuOnClickOutside);
+                }
+            }
+            
+            setTimeout(() => {
+                document.addEventListener('click', closeMenuOnClickOutside);
+            }, 0);
+        });
+
+        // Sistema de notificaciones
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#ff6b1a'};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                z-index: 2000;
+                animation: slideInRight 0.3s forwards;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s forwards';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Animaciones adicionales
+        const additionalStyles = document.createElement('style');
+        additionalStyles.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            
+            .anime-card {
+                opacity: 0;
+            }
+        `;
+        document.head.appendChild(additionalStyles);
+
+        // Inicializar sistema de archivos y mostrar saludo
+        window.addEventListener('DOMContentLoaded', async () => {
+            // Cargar archivos desde Drive (simulado)
+            const driveFiles = await fileManager.loadFromDrive('shinees-content');
+            
+            console.log('Sistema Shinees inicializado ✓');
+            showNotification('¡Bienvenido a Shinees Platform!', 'success');
+        });
+    </script>
+</body>
+</html>
