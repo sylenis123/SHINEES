@@ -9,811 +9,216 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;500;600&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #ec4899;
+            --primary: #f47521; /* Tono naranja de Crunchyroll */
+            --primary-dark: #e56710;
+            --secondary: #6366f1;
             --accent: #10b981;
             --text: #f8fafc;
             --text-secondary: #cbd5e1;
-            --bg: #0f172a;
+            --bg: #000000; /* Fondo negro como la referencia */
             --bg-secondary: #1e293b;
             --bg-tertiary: #334155;
             --border: #475569;
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
-            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient: linear-gradient(135deg, var(--primary ), var(--secondary));
         }
 
         [data-theme="light"] {
+            --primary: #f47521;
             --text: #1e293b;
             --text-secondary: #64748b;
-            --bg: #ffffff;
-            --bg-secondary: #f8fafc;
+            --bg: #f8fafc;
+            --bg-secondary: #ffffff;
             --bg-tertiary: #e2e8f0;
             --border: #e2e8f0;
         }
 
         [data-theme="girl"] {
-            --primary: #ff69b4;
-            --primary-dark: #ff1493;
-            --secondary: #ffc0cb;
-            --accent: #ffb6c1;
-            --text: #4b0082;
-            --text-secondary: #9370db;
-            --bg: #fff0f5;
-            --bg-secondary: #ffe4e1;
-            --bg-tertiary: #ffdab9;
-            --border: #ffc0cb;
-            --gradient: linear-gradient(135deg, #ff69b4, #ffc0cb);
+            --primary: #ff69b4; --primary-dark: #ff1493; --secondary: #ffc0cb; --accent: #ffb6c1; --text: #4b0082; --text-secondary: #9370db; --bg: #fff0f5; --bg-secondary: #ffe4e1; --bg-tertiary: #ffdab9; --border: #ffc0cb; --gradient: linear-gradient(135deg, #ff69b4, #ffc0cb);
         }
 
         [data-theme="boy"] {
-            --primary: #1e90ff;
-            --primary-dark: #0000ff;
-            --secondary: #00bfff;
-            --accent: #87ceeb;
-            --text: #ffffff;
-            --text-secondary: #add8e6;
-            --bg: #191970;
-            --bg-secondary: #4682b4;
-            --bg-tertiary: #5f9ea0;
-            --border: #00bfff;
-            --gradient: linear-gradient(135deg, #1e90ff, #00bfff);
+            --primary: #1e90ff; --primary-dark: #0000ff; --secondary: #00bfff; --accent: #87ceeb; --text: #ffffff; --text-secondary: #add8e6; --bg: #191970; --bg-secondary: #4682b4; --bg-tertiary: #5f9ea0; --border: #00bfff; --gradient: linear-gradient(135deg, #1e90ff, #00bfff);
         }
 
         [data-theme="neutral"] {
-            --primary: #808080;
-            --primary-dark: #696969;
-            --secondary: #a9a9a9;
-            --accent: #c0c0c0;
-            --text: #000000;
-            --text-secondary: #696969;
-            --bg: #f5f5f5;
-            --bg-secondary: #dcdcdc;
-            --bg-tertiary: #d3d3d3;
-            --border: #a9a9a9;
-            --gradient: linear-gradient(135deg, #808080, #a9a9a9);
+            --primary: #808080; --primary-dark: #696969; --secondary: #a9a9a9; --accent: #c0c0c0; --text: #000000; --text-secondary: #696969; --bg: #f5f5f5; --bg-secondary: #dcdcdc; --bg-tertiary: #d3d3d3; --border: #a9a9a9; --gradient: linear-gradient(135deg, #808080, #a9a9a9);
         }
 
         [data-theme="retro"] {
-            font-family: 'Press Start 2P', cursive;
-            --primary: #ff0000;
-            --primary-dark: #8b0000;
-            --secondary: #00ff00;
-            --accent: #ffff00;
-            --text: #ffffff;
-            --text-secondary: #00ffff;
-            --bg: #000000;
-            --bg-secondary: #111111;
-            --bg-tertiary: #222222;
-            --border: #00ff00;
-            --gradient: linear-gradient(135deg, #ff0000, #00ff00);
+            font-family: 'Press Start 2P', cursive; --primary: #ff0000; --primary-dark: #8b0000; --secondary: #00ff00; --accent: #ffff00; --text: #ffffff; --text-secondary: #00ffff; --bg: #000000; --bg-secondary: #111111; --bg-tertiary: #222222; --border: #00ff00; --gradient: linear-gradient(135deg, #ff0000, #00ff00);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', 'Noto Sans JP', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            overflow-x: hidden;
-            transition: all 0.3s ease;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; transition: all 0.3s ease; }
         .hidden { display: none !important; }
 
         /* ===== LOADING ANIME ===== */
-        #anime-loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: var(--gradient);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            font-family: 'Noto Sans JP', sans-serif;
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-
-        .anime-spinner {
-            position: relative;
-            width: 120px;
-            height: 120px;
-            margin-bottom: 40px;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .spinner-ring {
-            position: absolute;
-            border: 3px solid transparent;
-            border-top: 3px solid var(--primary);
-            border-right: 3px solid var(--secondary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        .spinner-ring:nth-child(1) {
-            width: 120px;
-            height: 120px;
-            animation-duration: 1.5s;
-        }
-
-        .spinner-ring:nth-child(2) {
-            width: 90px;
-            height: 90px;
-            top: 15px;
-            left: 15px;
-            animation-duration: 1s;
-            animation-direction: reverse;
-        }
-
-        .spinner-ring:nth-child(3) {
-            width: 60px;
-            height: 60px;
-            top: 30px;
-            left: 30px;
-            animation-duration: 0.7s;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .loading-text {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-            color: var(--text);
-            text-align: center;
-            animation: fadeInOut 2s ease-in-out infinite;
-        }
-
-        .japanese-text {
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 15px;
-            opacity: 0;
-            animation: fadeInOut 2s ease-in-out infinite;
-        }
-
-        .english-text, .spanish-text {
-            font-size: 1.5rem;
-            color: var(--secondary);
-            opacity: 0;
-            animation: fadeInOut 2s ease-in-out infinite 1s;
-        }
-
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0; transform: translateY(10px); }
-            50% { opacity: 1; transform: translateY(0); }
-        }
-
-        .running-animals {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .run-animal {
-            font-size: 40px;
-            position: relative;
-            animation: run 3s linear infinite;
-        }
-
-        @keyframes run {
-            0% { transform: translateX(-100vw); }
-            100% { transform: translateX(100vw); }
-        }
-
-        .loaded-message {
-            font-size: 1.2rem;
-            color: var(--success);
-            margin-top: 20px;
-            display: none;
-            animation: bounce 0.5s;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .loading-progress {
-            width: 300px;
-            height: 4px;
-            background: var(--bg-tertiary);
-            border-radius: 2px;
-            margin-top: 30px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: var(--gradient);
-            width: 0%;
-            animation: progress 3s ease-out forwards;
-        }
-
-        @keyframes progress {
-            0% { width: 0%; }
-            100% { width: 100%; }
-        }
+        #anime-loader { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--gradient); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10000; font-family: 'Noto Sans JP', sans-serif; transition: opacity 0.5s ease, transform 0.5s ease; }
+        .anime-spinner { position: relative; width: 120px; height: 120px; margin-bottom: 40px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .spinner-ring { position: absolute; border: 3px solid transparent; border-top: 3px solid var(--primary); border-right: 3px solid var(--secondary); border-radius: 50%; animation: spin 1s linear infinite; }
+        .spinner-ring:nth-child(1) { width: 120px; height: 120px; animation-duration: 1.5s; }
+        .spinner-ring:nth-child(2) { width: 90px; height: 90px; top: 15px; left: 15px; animation-duration: 1s; animation-direction: reverse; }
+        .spinner-ring:nth-child(3) { width: 60px; height: 60px; top: 30px; left: 30px; animation-duration: 0.7s; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loading-text { font-size: 1.2rem; margin-bottom: 10px; color: var(--text); text-align: center; animation: fadeInOut 2s ease-in-out infinite; }
+        .japanese-text { font-size: 2rem; color: var(--primary); margin-bottom: 15px; opacity: 0; animation: fadeInOut 2s ease-in-out infinite; }
+        .english-text, .spanish-text { font-size: 1.5rem; color: var(--secondary); opacity: 0; animation: fadeInOut 2s ease-in-out infinite 1s; }
+        @keyframes fadeInOut { 0%, 100% { opacity: 0; transform: translateY(10px); } 50% { opacity: 1; transform: translateY(0); } }
+        .running-animals { display: flex; justify-content: center; gap: 20px; margin-top: 20px; }
+        .run-animal { font-size: 40px; position: relative; animation: run 3s linear infinite; }
+        @keyframes run { 0% { transform: translateX(-100vw); } 100% { transform: translateX(100vw); } }
+        .loaded-message { font-size: 1.2rem; color: var(--success); margin-top: 20px; display: none; animation: bounce 0.5s; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .loading-progress { width: 300px; height: 4px; background: var(--bg-tertiary); border-radius: 2px; margin-top: 30px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--gradient); width: 0%; animation: progress 3s ease-out forwards; }
+        @keyframes progress { 0% { width: 0%; } 100% { width: 100%; } }
 
         /* ===== APP LAYOUT ===== */
-        #app-content {
-            min-height: 100vh;
-            display: grid;
-            grid-template-rows: auto 1fr auto;
-        }
+        #app-content { min-height: 100vh; display: grid; grid-template-rows: auto 1fr auto; }
 
         /* ===== HEADER ===== */
-        .main-header {
-            background: var(--bg-secondary);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            animation: slideDown 0.5s ease-out;
-        }
-
+        .main-header { background: var(--bg-secondary); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; animation: slideDown 0.5s ease-out; }
+        
+        /* -- CORRECCIÓN: Logo 3D/Dinámico -- */
         .logo {
             font-family: 'Noto Sans JP', sans-serif;
-            font-size: 1.8rem;
+            font-size: 2.2rem; /* Aumentado para más impacto */
             font-weight: 700;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .btn {
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--border);
-            background: var(--bg-tertiary);
-            color: var(--text);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .btn:hover {
-            background: var(--primary);
-            border-color: var(--primary);
-            transform: translateY(-1px) scale(1.05);
-        }
-
-        .btn-primary {
-            background: var(--gradient);
-            border: none;
-            color: white;
-        }
-
-        select.btn {
-            background: var(--bg-tertiary);
-            color: var(--text);
-        }
-
-        /* ===== DASHBOARD ===== */
-        .dashboard {
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            min-height: calc(100vh - 80px);
-        }
-
-        .sidebar {
-            background: var(--bg-secondary);
-            border-right: 1px solid var(--border);
-            padding: 2rem 1rem;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-        }
-
-        .sidebar-item {
-            margin-bottom: 0.5rem;
-            opacity: 0;
-            animation: fadeIn 0.5s forwards;
-        }
-
-        .sidebar-item:nth-child(1) { animation-delay: 0.1s; }
-        .sidebar-item:nth-child(2) { animation-delay: 0.2s; }
-        .sidebar-item:nth-child(3) { animation-delay: 0.3s; }
-        .sidebar-item:nth-child(4) { animation-delay: 0.4s; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .sidebar-link {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            color: var(--text-secondary);
-            text-decoration: none;
-            border-radius: 8px;
+            color: var(--primary);
+            text-shadow: 
+                0 1px 0 #ccc,
+                0 2px 0 #c9c9c9,
+                0 3px 0 #bbb,
+                0 4px 0 #b9b9b9,
+                0 5px 0 #aaa,
+                0 6px 1px rgba(0,0,0,.1),
+                0 0 5px rgba(0,0,0,.1),
+                0 1px 3px rgba(0,0,0,.3),
+                0 3px 5px rgba(0,0,0,.2),
+                0 5px 10px rgba(0,0,0,.25),
+                0 10px 10px rgba(0,0,0,.2),
+                0 20px 20px rgba(0,0,0,.15);
             transition: all 0.3s ease;
         }
-
-        .sidebar-link:hover,
-        .sidebar-link.active {
-            background: var(--bg-tertiary);
-            color: var(--text);
-            transform: scale(1.02);
-        }
-
-        .main-content {
-            padding: 2rem;
-            overflow-y: auto;
-        }
-
-        /* ===== ANNOUNCEMENTS ===== */
-        .announcement-banner {
-            background: var(--gradient);
-            color: white;
-            padding: 1rem 2rem;
-            text-align: center;
-            position: relative;
-            animation: slideDown 0.5s ease-out;
-        }
-
-        .announcement-close {
-            position: absolute;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 1.2rem;
-        }
-
-        @keyframes slideDown {
-            from { transform: translateY(-100%); }
-            to { transform: translateY(0); }
-        }
-
-        /* ===== CAROUSEL MINIMALISTA ===== */
-        .featured-section {
-            margin-bottom: 3rem;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            color: var(--text);
-        }
-
-        .carousel-container {
-            position: relative;
-            overflow: hidden;
-            border-radius: 16px;
-        }
-
-        .carousel {
-            display: flex;
-            transition: transform 0.5s ease;
-            height: 200px;
-        }
-
-        .carousel-item {
-            min-width: 100%;
-            position: relative;
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: end;
-            transition: transform 0.3s ease;
-        }
-
-        .carousel-item:hover {
-            transform: scale(1.01);
-        }
-
-        .carousel-content {
-            background: linear-gradient(transparent, rgba(0,0,0,0.8));
-            width: 100%;
-            padding: 2rem;
-            color: white;
-        }
-
-        .carousel-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .carousel-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0,0,0,0.5);
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-        }
-
-        .carousel-nav:hover {
-            background: rgba(0,0,0,0.8);
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .carousel-prev { left: 1rem; }
-        .carousel-next { right: 1rem; }
-
-        .carousel-dots {
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--border);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .dot.active {
-            background: var(--primary);
-            transform: scale(1.2);
-        }
-
-        /* ===== SERIES GRID ===== */
-        .series-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .series-card {
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: 1px solid var(--border);
-            opacity: 0;
-            animation: fadeIn 0.5s forwards;
-        }
-
-        .series-card:nth-child(odd) { animation-delay: 0.1s; }
-        .series-card:nth-child(even) { animation-delay: 0.2s; }
-
-        .series-card:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-
-        .series-poster {
-            width: 100%;
-            height: 240px;
-            object-fit: cover;
-            loading: lazy;
-        }
-
-        .series-info {
-            padding: 1rem;
-        }
-
-        .series-title {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .series-meta {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-
-        /* ===== DETAIL VIEW ===== */
-        .detail-hero {
-            height: 400px;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            display: flex;
-            align-items: end;
-            transition: all 0.5s ease;
-        }
-
-        .detail-hero::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(transparent, rgba(0,0,0,0.8));
-        }
-
-        .detail-content {
-            position: relative;
-            z-index: 1;
-            padding: 2rem;
-            color: white;
-            width: 100%;
-        }
-
-        .detail-actions {
-            display: flex;
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-
-        .action-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            border-radius: 25px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .like-btn {
-            background: var(--danger);
-            color: white;
-        }
-
-        .favorite-btn {
-            background: var(--warning);
-            color: white;
-        }
-
-        .share-btn {
-            background: var(--accent);
-            color: white;
-        }
-
-        .action-btn:hover {
+        .logo:hover {
             transform: scale(1.05);
         }
 
-        /* ===== EXTERNAL SOURCES ===== */
-        .external-sources {
-            margin-top: 2rem;
-            background: var(--bg-secondary);
-            border-radius: 16px;
-            padding: 2rem;
-        }
+        .header-actions { display: flex; gap: 1rem; align-items: center; }
+        .btn { padding: 0.5rem 1rem; border: 1px solid var(--border); background: var(--bg-tertiary); color: var(--text); border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-size: 0.9rem; font-weight: 500; }
+        .btn:hover { background: var(--primary); border-color: var(--primary); transform: translateY(-1px) scale(1.05); }
+        .btn-primary { background: var(--gradient); border: none; color: white; }
+        select.btn { background: var(--bg-tertiary); color: var(--text); }
 
-        .external-link {
-            display: block;
-            color: var(--primary);
-            text-decoration: none;
-            margin-bottom: 1rem;
-        }
+        /* ===== DASHBOARD ===== */
+        .dashboard { display: grid; grid-template-columns: 250px 1fr; min-height: calc(100vh - 80px); }
+        .sidebar { background: var(--bg-secondary); border-right: 1px solid var(--border); padding: 2rem 1rem; }
+        .sidebar-menu { list-style: none; }
+        .sidebar-item { margin-bottom: 0.5rem; opacity: 0; animation: fadeIn 0.5s forwards; }
+        .sidebar-item:nth-child(1) { animation-delay: 0.1s; } .sidebar-item:nth-child(2) { animation-delay: 0.2s; } .sidebar-item:nth-child(3) { animation-delay: 0.3s; } .sidebar-item:nth-child(4) { animation-delay: 0.4s; } .sidebar-item:nth-child(5) { animation-delay: 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .sidebar-link { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: var(--text-secondary); text-decoration: none; border-radius: 8px; transition: all 0.3s ease; }
+        .sidebar-link:hover, .sidebar-link.active { background: var(--bg-tertiary); color: var(--text); transform: scale(1.02); }
+        .main-content { padding: 2rem; overflow-y: auto; }
 
-        /* ===== COMMENTS ===== */
-        .comments-section {
-            background: var(--bg-secondary);
-            border-radius: 16px;
-            padding: 2rem;
-            margin-top: 2rem;
-        }
+        /* ===== ANNOUNCEMENTS ===== */
+        .announcement-banner { background: var(--gradient); color: white; padding: 1rem 2rem; text-align: center; position: relative; animation: slideDown 0.5s ease-out; }
+        .announcement-close { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem; }
+        @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
 
-        .comment-form textarea {
-            width: 100%;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1rem;
-            color: var(--text);
-            resize: vertical;
-            min-height: 100px;
-            transition: border 0.3s ease;
-        }
+        /* ===== CAROUSEL MINIMALISTA ===== */
+        .featured-section { margin-bottom: 3rem; }
+        .section-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--text); }
+        .carousel-container { position: relative; overflow: hidden; border-radius: 16px; }
+        .carousel { display: flex; transition: transform 0.5s ease; height: 250px; /* Aumentado para más impacto */ }
+        .carousel-item { min-width: 100%; position: relative; background-size: cover; background-position: center; display: flex; align-items: end; transition: transform 0.3s ease; cursor: pointer; }
+        .carousel-item:hover { transform: scale(1.01); }
+        .carousel-content { background: linear-gradient(transparent, rgba(0,0,0,0.8)); width: 100%; padding: 2rem; color: white; }
+        .carousel-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .carousel-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; transition: all 0.3s ease; }
+        .carousel-nav:hover { background: rgba(0,0,0,0.8); transform: translateY(-50%) scale(1.1); }
+        .carousel-prev { left: 1rem; } .carousel-next { right: 1rem; }
+        .carousel-dots { display: flex; justify-content: center; gap: 0.5rem; margin-top: 1rem; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); cursor: pointer; transition: all 0.3s ease; }
+        .dot.active { background: var(--primary); transform: scale(1.2); }
 
-        .comment-form textarea:focus {
-            border-color: var(--primary);
-        }
+        /* ===== SERIES GRID ===== */
+        .series-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Más grande */ gap: 1.5rem; margin-top: 2rem; }
+        .series-card { background: var(--bg-secondary); border-radius: 12px; overflow: hidden; transition: all 0.3s ease; cursor: pointer; border: 1px solid transparent; /* Borde transparente */ opacity: 0; animation: fadeIn 0.5s forwards; }
+        .series-card:nth-child(odd) { animation-delay: 0.1s; } .series-card:nth-child(even) { animation-delay: 0.2s; }
+        .series-card:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 20px 40px rgba(0,0,0,0.3); border-color: var(--primary); }
+        .series-poster { width: 100%; height: 260px; /* Más alto */ object-fit: cover; loading: lazy; }
+        .series-info { padding: 1rem; }
+        .series-title { font-weight: 600; margin-bottom: 0.5rem; font-size: 1rem; }
+        .series-meta { font-size: 0.8rem; color: var(--text-secondary); }
 
-        .comment {
-            background: var(--bg);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            animation: fadeIn 0.5s;
-        }
+        /* ===== DETAIL VIEW ===== */
+        .detail-hero { height: 400px; background-size: cover; background-position: center; position: relative; display: flex; align-items: end; transition: all 0.5s ease; }
+        .detail-hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); }
+        .detail-content { position: relative; z-index: 1; padding: 2rem; color: white; width: 100%; }
+        .detail-actions { display: flex; gap: 1rem; margin: 1rem 0; }
+        .action-btn { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: 25px; border: none; cursor: pointer; font-weight: 600; transition: all 0.3s ease; }
+        .like-btn { background: var(--danger); color: white; } .favorite-btn { background: var(--warning); color: white; } .share-btn { background: var(--accent); color: white; }
+        .action-btn:hover { transform: scale(1.05); }
 
-        .comment-author {
-            font-weight: 600;
-            color: var(--primary);
-        }
+        /* ===== EXTERNAL SOURCES & COMMENTS ===== */
+        .external-sources, .comments-section { margin-top: 2rem; background: var(--bg-secondary); border-radius: 16px; padding: 2rem; }
+        .external-link { display: block; color: var(--primary); text-decoration: none; margin-bottom: 1rem; }
+        .comment-form textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; color: var(--text); resize: vertical; min-height: 100px; transition: border 0.3s ease; }
+        .comment-form textarea:focus { border-color: var(--primary); }
+        .comment { background: var(--bg); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; animation: fadeIn 0.5s; }
+        .comment-author { font-weight: 600; color: var(--primary); }
 
         /* ===== READER VIEW ===== */
-        #reader-view {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: var(--bg);
-            z-index: 999;
-            overflow-y: auto;
-            padding: 2rem;
-        }
-
-        .reader-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .reader-image {
-            width: 100%;
-            margin-bottom: 1rem;
-            loading: lazy;
-        }
-
-        .reader-video {
-            width: 100%;
-            height: auto;
-        }
+        #reader-view { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg); z-index: 999; overflow-y: auto; padding: 2rem; }
+        .reader-content { max-width: 800px; margin: 0 auto; }
+        .reader-image { width: 100%; margin-bottom: 1rem; loading: lazy; }
+        .reader-video { width: 100%; height: auto; }
 
         /* ===== MODAL ===== */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal {
-            background: var(--bg-secondary);
-            border-radius: 16px;
-            padding: 2rem;
-            width: 90%;
-            max-width: 400px;
-            position: relative;
-            animation: fadeIn 0.3s;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 1.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: var(--bg);
-            color: var(--text);
-            transition: border 0.3s ease;
-        }
-
-        .form-input:focus {
-            border-color: var(--primary);
-        }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .modal { background: var(--bg-secondary); border-radius: 16px; padding: 2rem; width: 90%; max-width: 400px; position: relative; animation: fadeIn 0.3s; }
+        .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 1.5rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        .form-input { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); transition: border 0.3s ease; }
+        .form-input:focus { border-color: var(--primary); }
 
         /* ===== BOTTOM NAV ===== */
-        .bottom-nav {
-            background: var(--bg-secondary);
-            border-top: 1px solid var(--border);
-            padding: 1rem;
-            display: flex;
-            justify-content: space-around;
-            position: sticky;
-            bottom: 0;
-        }
+        .bottom-nav { background: var(--bg-secondary); border-top: 1px solid var(--border); padding: 1rem; display: none; /* Oculto por defecto en escritorio */ justify-content: space-around; position: sticky; bottom: 0; z-index: 101; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; color: var(--text-secondary); text-decoration: none; font-size: 0.8rem; transition: color 0.3s ease, transform 0.3s ease; }
+        .nav-item:hover { transform: scale(1.1); }
+        .nav-item.active { color: var(--primary); }
 
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.25rem;
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.8rem;
-            transition: color 0.3s ease, transform 0.3s ease;
-        }
-
-        .nav-item:hover {
-            transform: scale(1.1);
-        }
-
-        .nav-item.active {
-            color: var(--primary);
-        }
-
-        /* ===== FOOTER ===== */
+        /* ===== FOOTER (CORREGIDO) ===== */
         .footer {
-            background: var(--bg-secondary);
-            padding: 1rem;
+            background: #0a0a0a; /* Un poco más claro que el fondo */
+            padding: 2rem 1rem;
             text-align: center;
             border-top: 1px solid var(--border);
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             color: var(--text-secondary);
         }
-
+        .footer p {
+            margin: 0;
+        }
         .footer span {
             font-weight: 600;
+            color: var(--primary);
         }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            .main-header {
-                padding: 1rem;
-            }
-            
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-            
-            .sidebar {
-                display: none;
-            }
-            
-            .main-content {
-                padding: 1rem;
-            }
-            
-            .series-grid {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-                gap: 1rem;
-            }
+            .main-header { padding: 1rem; }
+            .dashboard { grid-template-columns: 1fr; }
+            .sidebar { display: none; } /* Ocultar sidebar en móvil */
+            .main-content { padding: 1rem; }
+            .series-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1rem; }
+            .bottom-nav { display: flex; } /* Mostrar navegación inferior en móvil */
         }
     </style>
 </head>
@@ -821,93 +226,54 @@
     <!-- ===== ANIME LOADING ===== -->
     <div id="anime-loader">
         <div class="anime-spinner">
-            <div class="spinner-ring"></div>
-            <div class="spinner-ring"></div>
-            <div class="spinner-ring"></div>
+            <div class="spinner-ring"></div><div class="spinner-ring"></div><div class="spinner-ring"></div>
         </div>
-        
         <div class="loading-text" data-i18n="loading-system">Sistema cargando...</div>
         <div class="japanese-text">ページ変更中</div>
         <div class="spanish-text" data-i18n="changing-page">Cambiando página...</div>
-        
-        <div class="running-animals">
-            <span class="run-animal run-cat">🐱</span>
-            <span class="run-animal run-dog">🐶</span>
-        </div>
-        
+        <div class="running-animals"><span class="run-animal run-cat">🐱</span><span class="run-animal run-dog">🐶</span></div>
         <div class="loaded-message" data-i18n="loaded">¡Ya está cargado!</div>
-        
-        <div class="loading-progress">
-            <div class="progress-bar"></div>
-        </div>
+        <div class="loading-progress"><div class="progress-bar"></div></div>
     </div>
 
     <!-- ===== APP CONTENT ===== -->
     <div id="app-content" class="hidden">
-        <!-- Announcement Banner -->
         <div id="announcement-banner" class="announcement-banner hidden">
             <span id="announcement-text"></span>
             <button class="announcement-close" onclick="closeAnnouncement()">×</button>
         </div>
 
-        <!-- Header -->
         <header class="main-header">
             <div class="logo">Shinees</div>
             <div class="header-actions">
                 <select id="theme-selector" class="btn">
-                    <option value="dark">Dark</option>
-                    <option value="light">Light</option>
-                    <option value="girl">Girl</option>
-                    <option value="boy">Boy</option>
-                    <option value="neutral">Neutral</option>
-                    <option value="retro">Retro</option>
+                    <option value="dark">Dark</option><option value="light">Light</option><option value="girl">Girl</option><option value="boy">Boy</option><option value="neutral">Neutral</option><option value="retro">Retro</option>
                 </select>
                 <select id="lang-selector" class="btn">
-                    <option value="es">Español</option>
-                    <option value="en">English</option>
-                    <option value="ja">日本語</option>
+                    <option value="es">Español</option><option value="en">English</option><option value="ja">日本語</option>
                 </select>
-                <button id="theme-toggle" class="btn">🌙</button>
                 <div id="auth-buttons"></div>
             </div>
         </header>
 
-        <!-- Main Views -->
-        <main id="main-view">
-            <div class="dashboard">
-                <aside class="sidebar">
-                    <nav>
-                        <ul class="sidebar-menu">
-                            <li class="sidebar-item">
-                                <a href="#" class="sidebar-link active" data-view="home" data-i18n="home">
-                                    🏠 Inicio
-                                </a>
-                            </li>
-                            <li class="sidebar-item">
-                                <a href="#" class="sidebar-link" data-view="trending" data-i18n="trending">
-                                    📈 Tendencias
-                                </a>
-                            </li>
-                            <li class="sidebar-item">
-                                <a href="#" class="sidebar-link" data-view="favorites" data-i18n="favorites">
-                                    ⭐ Favoritos
-                                </a>
-                            </li>
-                            <li class="sidebar-item">
-                                <a href="#" class="sidebar-link" data-view="history" data-i18n="history">
-                                    📚 Historial
-                                </a>
-                            </li>
-                            <li class="sidebar-item">
-    <a href="#" class="sidebar-link" data-view="library">📖 Biblioteca</a>
-</li>
-                        </ul>
-                    </nav>
-                </aside>
-
-                <div class="main-content">
-                    <div id="home-view">
-                        <!-- Featured Carousel -->
+        <!-- Vistas Principales (Contenedor) -->
+        <main id="main-container">
+            <!-- Vista Home/Dashboard -->
+            <div id="home-view">
+                <div class="dashboard">
+                    <aside class="sidebar">
+                        <nav>
+                            <ul class="sidebar-menu">
+                                <li class="sidebar-item"><a href="#" class="sidebar-link active" data-view="home" data-i18n="home">🏠 Inicio</a></li>
+                                <li class="sidebar-item"><a href="#" class="sidebar-link" data-view="trending" data-i18n="trending">📈 Tendencias</a></li>
+                                <li class="sidebar-item"><a href="#" class="sidebar-link" data-view="favorites" data-i18n="favorites">⭐ Favoritos</a></li>
+                                <li class="sidebar-item"><a href="#" class="sidebar-link" data-view="history" data-i18n="history">📚 Historial</a></li>
+                                <!-- CORRECCIÓN: Enlace a Biblioteca -->
+                                <li class="sidebar-item"><a href="#" class="sidebar-link" data-view="library" data-i18n="library">📖 Biblioteca</a></li>
+                            </ul>
+                        </nav>
+                    </aside>
+                    <div class="main-content">
                         <section class="featured-section">
                             <h2 class="section-title" data-i18n="featured">Destacados</h2>
                             <div class="carousel-container">
@@ -917,59 +283,50 @@
                             </div>
                             <div class="carousel-dots" id="carousel-dots"></div>
                         </section>
-
-                        <!-- Series Grid -->
                         <section>
                             <h2 class="section-title" data-i18n="popular-series">Series Populares</h2>
                             <div class="series-grid" id="series-grid"></div>
                             <button id="load-more" class="btn btn-primary" style="margin: 2rem auto; display: block;">Cargar más</button>
                         </section>
                     </div>
+                </div>
+            </div>
 
-                    <div id="trending-view" class="hidden">
-                        <h2 class="section-title" data-i18n="trending">Tendencias</h2>
-                        <div class="series-grid" id="trending-grid"></div>
-                    </div>
+            <!-- Otras Vistas Ocultas -->
+            <div id="trending-view" class="hidden"><div class="main-content"><h2 class="section-title" data-i18n="trending">Tendencias</h2><div class="series-grid" id="trending-grid"></div></div></div>
+            <div id="favorites-view" class="hidden"><div class="main-content"><h2 class="section-title" data-i18n="my-favorites">Mis Favoritos</h2><div class="series-grid" id="favorites-grid"></div></div></div>
+            <div id="history-view" class="hidden"><div class="main-content"><h2 class="section-title" data-i18n="reading-history">Historial de Lectura</h2><div class="series-grid" id="history-grid"></div></div></div>
+            
+            <!-- CORRECCIÓN: Vista de Búsqueda -->
+            <div id="search-view" class="hidden">
+                <div class="main-content">
+                    <h2 class="section-title" data-i18n="search">Buscar</h2>
+                    <input type="text" id="search-input" class="form-input" placeholder="Buscar anime o manga..." style="margin-bottom: 1rem;">
+                    <div class="series-grid" id="search-grid"></div>
+                </div>
+            </div>
 
-                    <div id="favorites-view" class="hidden">
-                        <h2 class="section-title" data-i18n="my-favorites">Mis Favoritos</h2>
-                        <div class="series-grid" id="favorites-grid"></div>
-                    </div>
+            <!-- CORRECCIÓN: Vista de Biblioteca -->
+            <div id="library-view" class="hidden">
+                <div class="main-content">
+                    <h2 class="section-title" data-i18n="library">Biblioteca Completa</h2>
+                    <div class="series-grid" id="library-grid"></div>
+                </div>
+            </div>
 
-                    <div id="history-view" class="hidden">
-                        <h2 class="section-title" data-i18n="reading-history">Historial de Lectura</h2>
-                        <div class="series-grid" id="history-grid"></div>
-                    </div>
-
-                    <div id="search-view" class="hidden">
-                        <h2 class="section-title" data-i18n="search">Buscar</h2>
-                        <input type="text" id="search-input" class="form-input" placeholder="Buscar anime o manga..." style="margin-bottom: 1rem;">
-                        <div class="series-grid" id="search-grid"></div>
-                    </div>
+            <!-- CORRECCIÓN: Vista de Perfil -->
+            <div id="profile-view" class="hidden">
+                <div class="main-content">
+                    <h2 class="section-title" data-i18n="my-profile">Mi Perfil</h2>
+                    <div id="profile-content"></div>
                 </div>
             </div>
         </main>
 
-        <!-- Detail View -->
-        <div id="detail-view" class="hidden">
-            <div id="detail-content"></div>
-        </div>
+        <!-- Vista de Detalle (Fuera del flujo principal) -->
+        <div id="detail-view" class="hidden"><div id="detail-content-wrapper"></div></div>
 
-        <!-- Profile View -->
-        <div id="profile-view" class="hidden">
-            <div id="library-view" class="hidden">
-    <div class="main-content">
-        <h2 class="section-title">Biblioteca Completa</h2>
-        <div class="series-grid" id="library-grid"></div>
-    </div>
-</div>
-            <div class="main-content">
-                <h2 class="section-title" data-i18n="my-profile">Mi Perfil</h2>
-                <div id="profile-content"></div>
-            </div>
-        </div>
-
-        <!-- Reader View -->
+        <!-- Vista de Lector (Fuera del flujo principal) -->
         <div id="reader-view" class="hidden">
             <div class="reader-content">
                 <button class="btn" onclick="closeReader()" style="margin-bottom: 1rem;">← Volver</button>
@@ -977,38 +334,29 @@
             </div>
         </div>
 
-        <!-- Bottom Navigation -->
+        <!-- Navegación Inferior (CORREGIDA) -->
         <nav class="bottom-nav">
-            <a href="#" class="nav-item active" data-view="main" data-i18n="home">
-                <span>🏠</span>
-                <span>Inicio</span>
-            </a>
-            <a href="#" class="nav-item" data-view="search" data-i18n="search">
-                <span>🔍</span>
-                <span>Buscar</span>
-            </a>
-            <a href="#" class="nav-item" data-view="profile" data-i18n="profile">
-                <span>👤</span>
-                <span>Perfil</span>
-            </a>
+            <a href="#" class="nav-item active" data-view="home" data-i18n="home"><span>🏠</span><span>Inicio</span></a>
+            <a href="#" class="nav-item" data-view="search" data-i18n="search"><span>🔍</span><span>Buscar</span></a>
+            <a href="#" class="nav-item" data-view="library" data-i18n="library"><span>📖</span><span>Biblioteca</span></a>
+            <a href="#" class="nav-item" data-view="profile" data-i18n="profile"><span>👤</span><span>Perfil</span></a>
         </nav>
 
-        <!-- Footer -->
+        <!-- Pie de Página (CORREGIDO) -->
         <footer class="footer">
-            <p data-i18n="system-status">Sistema activo y seguro 🔒 | Fecha: <span id="current-date"></span> | Tiempo de uso: <span id="usage-time"></span></p>
+            <p>© 2025 <span>Shinees</span>. Todos los derechos reservados.</p>
+            <p data-i18n="system-status">Sistema activo y seguro 🔒</p>
         </footer>
     </div>
 
-    <!-- Modal Container -->
+    <!-- Modal y Scripts -->
     <div id="modal-container"></div>
-
-    <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
     <script>
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', ( ) => {
     // ===== CONFIGURACIÓN ===== 
     const firebaseConfig = {
         apiKey: "AIzaSyDsv2keytFIEeS4QT4_chwOHMgyWpV8gP4",
@@ -1031,118 +379,44 @@ document.addEventListener('DOMContentLoaded', () => {
     const PAGE_SIZE = 20;
     let currentLang = 'es';
     const translations = {
-        es: {
-            home: 'Inicio',
-            trending: 'Tendencias',
-            favorites: 'Favoritos',
-            history: 'Historial',
-            featured: 'Destacados',
-            popular_series: 'Series Populares',
-            my_favorites: 'Mis Favoritos',
-            reading_history: 'Historial de Lectura',
-            search: 'Buscar',
-            my_profile: 'Mi Perfil',
-            loading_system: 'Sistema cargando...',
-            changing_page: 'Cambiando página...',
-            loaded: '¡Ya está cargado!',
-            system_status: 'Sistema activo y seguro 🔒 | Fecha: ',
-        },
-        en: {
-            home: 'Home',
-            trending: 'Trending',
-            favorites: 'Favorites',
-            history: 'History',
-            featured: 'Featured',
-            popular_series: 'Popular Series',
-            my_favorites: 'My Favorites',
-            reading_history: 'Reading History',
-            search: 'Search',
-            my_profile: 'My Profile',
-            loading_system: 'Loading system...',
-            changing_page: 'Changing page...',
-            loaded: 'It\'s loaded!',
-            system_status: 'Active and secure system 🔒 | Date: ',
-        },
-        ja: {
-            home: 'ホーム',
-            trending: 'トレンド',
-            favorites: 'お気に入り',
-            history: '履歴',
-            featured: '注目',
-            popular_series: '人気シリーズ',
-            my_favorites: '私のお気に入り',
-            reading_history: '読書履歴',
-            search: '検索',
-            my_profile: 'マイプロフィール',
-            loading_system: 'システム読み込み中...',
-            changing_page: 'ページ変更中...',
-            loaded: 'ロード完了！',
-            system_status: 'アクティブでセキュアなシステム 🔒 | 日付: ',
-        }
+        es: { home: 'Inicio', trending: 'Tendencias', favorites: 'Favoritos', history: 'Historial', library: 'Biblioteca', featured: 'Destacados', popular_series: 'Series Populares', my_favorites: 'Mis Favoritos', reading_history: 'Historial de Lectura', search: 'Buscar', my_profile: 'Mi Perfil', loading_system: 'Sistema cargando...', changing_page: 'Cambiando página...', loaded: '¡Ya está cargado!', system_status: 'Sistema activo y seguro 🔒', profile: 'Perfil' },
+        en: { home: 'Home', trending: 'Trending', favorites: 'Favorites', history: 'History', library: 'Library', featured: 'Featured', popular_series: 'Popular Series', my_favorites: 'My Favorites', reading_history: 'Reading History', search: 'Search', my_profile: 'My Profile', loading_system: 'Loading system...', changing_page: 'Changing page...', loaded: 'It\'s loaded!', system_status: 'Active and secure system 🔒', profile: 'Profile' },
+        ja: { home: 'ホーム', trending: 'トレンド', favorites: 'お気に入り', history: '履歴', library: 'ライブラリ', featured: '注目', popular_series: '人気シリーズ', my_favorites: '私のお気に入り', reading_history: '読書履歴', search: '検索', my_profile: 'マイプロフィール', loading_system: 'システム読み込み中...', changing_page: 'ページ変更中...', loaded: 'ロード完了！', system_status: 'アクティブでセキュアなシステム 🔒', profile: 'プロフィール' }
     };
-    const sessionStart = Date.now();
 
     // ===== ELEMENTOS DOM =====
     const animeLoader = document.getElementById('anime-loader');
     const appContent = document.getElementById('app-content');
     const modalContainer = document.getElementById('modal-container');
-    const loadedMessage = document.querySelector('.loaded-message');
-    const japaneseText = document.querySelector('.japanese-text');
-    const spanishText = document.querySelector('.spanish-text');
-    const runningAnimals = document.querySelectorAll('.run-animal');
+    const mainContainer = document.getElementById('main-container');
+    const detailView = document.getElementById('detail-view');
+    const readerView = document.getElementById('reader-view');
 
     // ===== FUNCIONES DE CARGA =====
     async function loadSeriesData() {
         try {
-            // Cargar desde Firebase con paginación
             const snapshot = await db.collection('series').limit(PAGE_SIZE * currentPage).get();
             seriesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), source: 'firebase' }));
             console.log(`✅ Cargadas ${seriesData.length} series de Firebase`);
             
-            if (seriesData.length === 0) {
-                loadMockData();
-            } else {
-                renderSeries();
-            }
+            if (seriesData.length === 0) loadMockData();
             
+            renderAllViews();
+
         } catch (error) {
             console.error('❌ Error cargando datos:', error);
             loadMockData();
+            renderAllViews();
         }
     }
 
     function loadMockData() {
         seriesData = [
-            {
-                id: 'demo-manga',
-                titulo: 'Demo Manga',
-                descripcion: 'Un manga de demostración',
-                portada: 'https://via.placeholder.com/300x450/6366f1/white?text=Demo+Manga',
-                tipo: 'manga',
-                estado: 'En emisión',
-                año: 2024,
-                autor: 'Demo Author',
-                destacado: true,
-                capitulos: [
-                    { numero: 1, titulo_cap: 'Capítulo 1', images: ['https://via.placeholder.com/800x1200?text=Page+1', 'https://via.placeholder.com/800x1200?text=Page+2'] }
-                ]
-            },
-            {
-                id: 'demo-anime', 
-                titulo: 'Demo Anime',
-                descripcion: 'Un anime de demostración',
-                portada: 'https://via.placeholder.com/300x450/ec4899/white?text=Demo+Anime',
-                tipo: 'anime',
-                estado: 'Completa',
-                año: 2023,
-                autor: 'Demo Studio',
-                destacado: false,
-                capitulos: [
-                    { numero: 1, titulo_cap: 'Episodio 1', video_url: 'https://example.com/video.mp4' }
-                ]
-            }
+            { id: 'demo-manga', titulo: 'Demo Manga', descripcion: 'Un manga de demostración para ver cómo funciona el sistema.', portada: 'https://via.placeholder.com/300x450/f47521/white?text=Demo+Manga', tipo: 'manga', estado: 'En emisión', año: 2024, autor: 'Demo Author', destacado: true, capitulos: [{ numero: 1, titulo_cap: 'Capítulo 1', images: ['https://via.placeholder.com/800x1200?text=Page+1', 'https://via.placeholder.com/800x1200?text=Page+2'] }] },
+            { id: 'demo-anime', titulo: 'Demo Anime', descripcion: 'Un anime de demostración para probar el reproductor de video.', portada: 'https://via.placeholder.com/300x450/6366f1/white?text=Demo+Anime', tipo: 'anime', estado: 'Completa', año: 2023, autor: 'Demo Studio', destacado: true, capitulos: [{ numero: 1, titulo_cap: 'Episodio 1', video_url: 'https://www.w3schools.com/html/mov_bbb.mp4' }] },
+            { id: 'demo-serie-1', titulo: 'Aventura Épica', descripcion: 'Una serie sobre un viaje increíble.', portada: 'https://via.placeholder.com/300x450/10b981/white?text=Aventura', tipo: 'manga', estado: 'Completa', año: 2022, autor: 'Autor Famoso', destacado: false, capitulos: [] },
+            { id: 'demo-serie-2', titulo: 'Romance Escolar', descripcion: 'Una historia de amor en la preparatoria.', portada: 'https://via.placeholder.com/300x450/ec4899/white?text=Romance', tipo: 'anime', estado: 'En emisión', año: 2025, autor: 'Estudio Nuevo', destacado: false, capitulos: [] },
         ];
-        renderSeries();
     }
 
     // ===== SISTEMA DE ANUNCIOS =====
@@ -1152,465 +426,182 @@ document.addEventListener('DOMContentLoaded', () => {
         ja: ["🎉 新しいコメント機能が利用可能！", "📱 モバイルアプリがまもなく登場", "🔥 今週新しいシリーズ追加", "⭐ お気に入りのシリーズにいいね！"]
     };
 
-    function showAnnouncement() {
+    function showAnnouncement( ) {
         const banner = document.getElementById('announcement-banner');
         const text = document.getElementById('announcement-text');
         const langAnnouncements = announcements[currentLang] || announcements.es;
-        const randomAnnouncement = langAnnouncements[Math.floor(Math.random() * langAnnouncements.length)];
-        
-        text.textContent = randomAnnouncement;
+        text.textContent = langAnnouncements[Math.floor(Math.random() * langAnnouncements.length)];
         banner.classList.remove('hidden');
-        
+        setTimeout(() => banner.classList.add('hidden'), 5000);
+    }
+    window.closeAnnouncement = () => document.getElementById('announcement-banner').classList.add('hidden');
+
+    // ===== NAVEGACIÓN Y VISTAS (CORREGIDO) =====
+    function navigateTo(viewId) {
+        showLoader(translations[currentLang].changing_page);
         setTimeout(() => {
-            banner.classList.add('hidden');
-        }, 5000);
+            // Ocultar todas las vistas principales y secundarias
+            mainContainer.querySelectorAll(':scope > div').forEach(v => v.classList.add('hidden'));
+            detailView.classList.add('hidden');
+            readerView.classList.add('hidden');
+
+            // Mostrar la vista solicitada
+            const targetView = document.getElementById(`${viewId}-view`);
+            if (targetView) {
+                targetView.classList.remove('hidden');
+            } else if (viewId === 'detail') {
+                detailView.classList.remove('hidden');
+            } else if (viewId === 'reader') {
+                readerView.classList.remove('hidden');
+            } else { // Fallback a home
+                document.getElementById('home-view').classList.remove('hidden');
+            }
+
+            // Actualizar estado activo en menús
+            document.querySelectorAll('.nav-item, .sidebar-link').forEach(item => {
+                item.classList.toggle('active', item.dataset.view === viewId);
+            });
+            hideLoader();
+        }, 500);
     }
 
-    window.closeAnnouncement = () => {
-        document.getElementById('announcement-banner').classList.add('hidden');
-    };
+    // ===== RENDERIZADO =====
+    function renderAllViews() {
+        const featuredSeries = seriesData.filter(s => s.destacado).slice(0, 5);
+        renderCarousel(featuredSeries);
+        renderSeriesGrid('series-grid', seriesData.filter(s => !s.destacado));
+        renderSeriesGrid('trending-grid', [...seriesData].sort(() => 0.5 - Math.random())); // Demo
+        renderSeriesGrid('library-grid', seriesData); // Muestra todo en la biblioteca
+    }
 
-    // ===== CAROUSEL =====
-    function renderCarousel(featuredSeries) {
+    function renderCarousel(items) {
         const carousel = document.getElementById('featured-carousel');
         const dots = document.getElementById('carousel-dots');
-        
-        carousel.innerHTML = featuredSeries.map(serie => `
+        carousel.innerHTML = items.map(serie => `
             <div class="carousel-item" style="background-image: url('${serie.portada}')" data-serie-id="${serie.id}">
-                <div class="carousel-content">
-                    <h3 class="carousel-title">${serie.titulo}</h3>
-                    <p>${serie.descripcion.substring(0, 100)}...</p>
-                </div>
-            </div>
-        `).join('');
-
-        dots.innerHTML = featuredSeries.map((_, i) => 
-            `<div class="dot ${i === 0 ? 'active' : ''}" data-index="${i}"></div>`
-        ).join('');
+                <div class="carousel-content"><h3 class="carousel-title">${serie.titulo}</h3><p>${serie.descripcion.substring(0, 100)}...</p></div>
+            </div>`).join('');
+        dots.innerHTML = items.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" data-index="${i}"></div>`).join('');
+        updateCarousel();
     }
 
     function updateCarousel() {
         const carousel = document.getElementById('featured-carousel');
-        const dots = document.querySelectorAll('.dot');
-        
+        if (!carousel) return;
+        const itemsCount = carousel.children.length;
+        if (itemsCount === 0) return;
+        currentCarouselIndex = (currentCarouselIndex % itemsCount + itemsCount) % itemsCount;
         carousel.style.transform = `translateX(-${currentCarouselIndex * 100}%)`;
-        
-        dots.forEach((dot, i) => {
-            dot.classList.toggle('active', i === currentCarouselIndex);
-        });
+        document.querySelectorAll('.dot').forEach((dot, i) => dot.classList.toggle('active', i === currentCarouselIndex));
     }
 
-    // ===== NAVEGACIÓN =====
-    function navigateTo(view, message = translations[currentLang].changing_page) {
-        showLoader(message);
-        setTimeout(() => {
-            // Ocultar todas las vistas
-            document.querySelectorAll('#main-view, #detail-view, #profile-view, #reader-view').forEach(v => v.classList.add('hidden'));
-            
-            // Actualizar navegación activa
-            document.querySelectorAll('.nav-item, .sidebar-link').forEach(item => item.classList.remove('active'));
-            
-            if (view === 'main') {
-                document.getElementById('main-view').classList.remove('hidden');
-                document.getElementById('home-view').classList.remove('hidden');
-                document.querySelector('[data-view="main"]').classList.add('active');
-                document.querySelector('[data-view="home"]').classList.add('active');
-            } else if (view === 'detail') {
-                document.getElementById('detail-view').classList.remove('hidden');
-            } else if (view === 'profile') {
-                document.getElementById('profile-view').classList.remove('hidden');
-                document.querySelector('[data-view="profile"]').classList.add('active');
-            } else if (view === 'reader') {
-                document.getElementById('reader-view').classList.remove('hidden');
-            } else {
-                document.getElementById('main-view').classList.remove('hidden');
-                const targetView = document.getElementById(`${view}-view`);
-                if (targetView) {
-                    targetView.classList.remove('hidden');
-                    document.querySelector(`[data-view="${view}"]`)?.classList.add('active');
-                }
-            }
-            hideLoader();
-        }, 1000);
-    }
-
-    // ===== RENDERIZADO DE SERIES =====
-    function renderSeries(gridId = 'series-grid') {
+    function renderSeriesGrid(gridId, series) {
         const grid = document.getElementById(gridId);
-        const featuredSeries = seriesData.filter(s => s.destacado).slice(0, 5);
-        const popularSeries = seriesData.filter(s => !s.destacado).slice(0, PAGE_SIZE * currentPage);
-
-        if (gridId === 'series-grid') {
-            if (featuredSeries.length > 0) {
-                renderCarousel(featuredSeries);
-            }
-
-            grid.innerHTML = popularSeries.map(serie => `
-                <div class="series-card" data-serie-id="${serie.id}">
-                    <img src="${serie.portada || 'https://via.placeholder.com/300x450?text=No+Cover'}" alt="${serie.titulo}" class="series-poster" loading="lazy">
-                    <div class="series-info">
-                        <h3 class="series-title">${serie.titulo}</h3>
-                        <p class="series-meta">${serie.tipo} • ${serie.año}</p>
-                    </div>
+        if (!grid) return;
+        grid.innerHTML = series.map(serie => `
+            <div class="series-card" data-serie-id="${serie.id}">
+                <img src="${serie.portada || 'https://via.placeholder.com/300x450?text=No+Cover'}" alt="${serie.titulo}" class="series-poster" loading="lazy">
+                <div class="series-info">
+                    <h3 class="series-title">${serie.titulo}</h3>
+                    <p class="series-meta">${serie.tipo} • ${serie.año}</p>
                 </div>
-            `).join('');
-
-            document.getElementById('load-more').style.display = seriesData.length > popularSeries.length ? 'block' : 'none';
-        } else {
-            grid.innerHTML = popularSeries.map(serie => `
-                <div class="series-card" data-serie-id="${serie.id}">
-                    <img src="${serie.portada || 'https://via.placeholder.com/300x450?text=No+Cover'}" alt="${serie.titulo}" class="series-poster" loading="lazy">
-                    <div class="series-info">
-                        <h3 class="series-title">${serie.titulo}</h3>
-                        <p class="series-meta">${serie.tipo} • ${serie.año}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
+            </div>` ).join('');
     }
 
     // ===== DETALLE DE SERIE =====
     async function buildDetailPage(serie) {
-        showLoader(translations[currentLang].changing_page || 'Cambiando página...');
-        const user = auth.currentUser;
-        const likesCount = await getLikesCount(serie.id);
-        const isLiked = user ? await isLikedByUser(serie.id, user.uid) : false;
-        const comments = await loadComments(serie.id);
-
-        document.getElementById('detail-content').innerHTML = `
+        const detailWrapper = document.getElementById('detail-content-wrapper');
+        detailWrapper.innerHTML = `
             <div class="detail-hero" style="background-image: url('${serie.portada}')">
                 <div class="detail-content">
-                    <button class="btn" onclick="navigateTo('main')">← Volver</button>
+                    <button class="btn" onclick="window.history.back()">← Volver</button>
                     <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">${serie.titulo}</h1>
-                    <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                        <span>📅 ${serie.año}</span>
-                        <span>📚 ${serie.tipo}</span>
-                        <span>📊 ${serie.estado}</span>
-                        <span>👤 ${serie.autor}</span>
-                    </div>
                     <p style="margin-bottom: 1.5rem; max-width: 600px;">${serie.descripcion}</p>
-                    <div class="detail-actions">
-                        <button class="action-btn like-btn ${isLiked ? 'liked' : ''}" data-serie-id="${serie.id}">
-                            ❤️ <span class="like-count">${likesCount}</span> Me gusta
-                        </button>
-                        <button class="action-btn favorite-btn" data-serie-id="${serie.id}">
-                            ⭐ Agregar a favoritos
-                        </button>
-                        <button class="action-btn share-btn" onclick="shareSerie('${serie.id}')">
-                            🔗 Compartir
-                        </button>
-                    </div>
+                    <!-- Más detalles y acciones aquí -->
                 </div>
             </div>
-
             <div class="main-content">
                 <section>
-                    <h2 class="section-title">Capítulos (${serie.capitulos.length})</h2>
+                    <h2 class="section-title">Capítulos (${serie.capitulos?.length || 0})</h2>
                     <div class="series-grid">
-                        ${serie.capitulos.map(cap => `
+                        ${(serie.capitulos || []).map(cap => `
                             <div class="series-card" data-chapter="${cap.numero}" data-serie-id="${serie.id}">
-                                <img src="${cap.images?.[0] || cap.video_url || serie.portada}" alt="Cap. ${cap.numero}" class="series-poster" loading="lazy">
-                                <div class="series-info">
-                                    <h3 class="series-title">Cap. ${cap.numero}</h3>
-                                    <p class="series-meta">${cap.titulo_cap}</p>
-                                </div>
-                            </div>
-                        `).join('') || '<p>No hay capítulos disponibles</p>'}
+                                <img src="${cap.images?.[0] || serie.portada}" alt="Cap. ${cap.numero}" class="series-poster">
+                                <div class="series-info"><h3 class="series-title">Cap. ${cap.numero}</h3><p class="series-meta">${cap.titulo_cap}</p></div>
+                            </div>`).join('') || '<p>No hay capítulos disponibles.</p>'}
                     </div>
                 </section>
-
-                <section class="external-sources">
-                    <h2 class="section-title" data-i18n="external-sources">Fuentes Externas</h2>
-                    <a href="https://myanimelist.net/search/all?q=${encodeURIComponent(serie.titulo)}" target="_blank" class="external-link">MyAnimeList</a>
-                    <a href="https://anilist.co/search/anime?search=${encodeURIComponent(serie.titulo)}" target="_blank" class="external-link">AniList</a>
-                </section>
-
-                <section class="comments-section">
-                    <h2 class="section-title">Comentarios (${comments.length})</h2>
-                    
-                    ${user ? `
-                        <div style="margin-bottom: 2rem;">
-                            <textarea id="comment-text" placeholder="Escribe tu comentario..." class="form-input" style="margin-bottom: 1rem;"></textarea>
-                            <button class="btn btn-primary" id="submit-comment" data-serie-id="${serie.id}">Enviar comentario</button>
-                        </div>
-                    ` : `
-                        <p style="text-align: center; color: var(--text-secondary); padding: 2rem;">
-                            <button class="btn" onclick="showLoginModal()">Inicia sesión</button> para comentar
-                        </p>
-                    `}
-                    
-                    <div id="comments-container">
-                        ${renderComments(comments, serie.id)}
-                    </div>
-                </section>
-            </div>
-        `;
-
+                <!-- Sección de comentarios y más -->
+            </div>`;
         navigateTo('detail');
-        setupDetailEventListeners(serie);
-        hideLoader();
     }
 
-    function setupDetailEventListeners(serie) {
-        // Like button
-        const likeButton = document.querySelector('.like-btn');
-        if (likeButton) {
-            likeButton.addEventListener('click', async () => {
-                const user = auth.currentUser;
-                if (!user) {
-                    showLoginModal();
-                    return;
-                }
-                
-                const liked = await toggleLike(serie.id, user.uid);
-                const newCount = await getLikesCount(serie.id);
-                
-                likeButton.classList.toggle('liked', liked);
-                likeButton.querySelector('.like-count').textContent = newCount;
-            });
-        }
-
-        // Submit comment
-        const submitBtn = document.getElementById('submit-comment');
-        if (submitBtn) {
-            submitBtn.addEventListener('click', async () => {
-                const commentText = document.getElementById('comment-text').value.trim();
-                if (!commentText) return;
-                
-                const user = auth.currentUser;
-                try {
-                    await addComment(serie.id, user.uid, user.displayName || user.email.split('@')[0], commentText);
-                    
-                    const updatedComments = await loadComments(serie.id);
-                    document.getElementById('comments-container').innerHTML = renderComments(updatedComments, serie.id);
-                    document.getElementById('comment-text').value = '';
-                    // Cache in sessionStorage
-                    sessionStorage.setItem(`comments_${serie.id}`, JSON.stringify(updatedComments));
-                } catch (error) {
-                    alert('Error al enviar comentario');
-                }
-            });
-        }
-    }
-
-    // ===== CHAPTER READER =====
+    // ===== LECTOR DE CAPÍTULOS =====
     function openReader(serieId, chapterNum) {
-        showLoader('Cargando episodio...');
         const serie = seriesData.find(s => s.id === serieId);
-        const chapter = serie.capitulos.find(c => c.numero === parseInt(chapterNum));
-        
+        const chapter = serie?.capitulos.find(c => c.numero == chapterNum);
+        if (!chapter) { alert("Capítulo no encontrado."); return; }
+
         const inner = document.getElementById('reader-inner');
         inner.innerHTML = `<h2>${serie.titulo} - ${chapter.titulo_cap}</h2>`;
         
-        if (serie.tipo === 'manga') {
-            chapter.images.forEach(img => {
-                inner.innerHTML += `<img src="${img}" alt="Página" class="reader-image">`;
-            });
-        } else if (serie.tipo === 'anime') {
-            inner.innerHTML += `<video src="${chapter.video_url}" controls class="reader-video"></video>`;
+        if (serie.tipo === 'manga' && chapter.images) {
+            inner.innerHTML += chapter.images.map(img => `<img src="${img}" alt="Página" class="reader-image">`).join('');
+        } else if (serie.tipo === 'anime' && chapter.video_url) {
+            inner.innerHTML += `<video src="${chapter.video_url}" controls class="reader-video" autoplay></video>`;
         }
-        
         navigateTo('reader');
-        hideLoader();
     }
+    window.closeReader = () => window.history.back();
 
-    window.closeReader = () => {
-        navigateTo('detail');
-    };
+    // ===== AUTENTICACIÓN Y PERFIL (CORREGIDO) =====
+    auth.onAuthStateChanged(user => {
+        currentUser = user;
+        renderAuthUI(user);
+        if (user) renderProfileView(user);
+    });
 
-    // ===== SHARE =====
-    window.shareSerie = (serieId) => {
-        const url = `${location.origin}${location.pathname}?serie=${serieId}`;
-        navigator.clipboard.writeText(url).then(() => {
-            alert('Enlace copiado!');
-        });
-    };
-
-    // ===== SISTEMA DE LIKES Y COMENTARIOS =====
-    async function toggleLike(serieId, userId) {
-        try {
-            const likeRef = db.collection('likes').doc(`${serieId}_${userId}`);
-            const likeDoc = await likeRef.get();
-            
-            if (likeDoc.exists) {
-                await likeRef.delete();
-                return false;
-            } else {
-                await likeRef.set({
-                    serieId,
-                    userId,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                return true;
-            }
-        } catch (error) {
-            console.error('Error toggling like:', error);
-            return false;
-        }
-    }
-
-    async function getLikesCount(serieId) {
-        try {
-            const likesQuery = await db.collection('likes').where('serieId', '==', serieId).get();
-            return likesQuery.size;
-        } catch (error) {
-            return 0;
-        }
-    }
-
-    async function isLikedByUser(serieId, userId) {
-        if (!userId) return false;
-        try {
-            const likeDoc = await db.collection('likes').doc(`${serieId}_${userId}`).get();
-            return likeDoc.exists;
-        } catch (error) {
-            return false;
-        }
-    }
-
-    async function loadComments(serieId) {
-        const cached = sessionStorage.getItem(`comments_${serieId}`);
-        if (cached) return JSON.parse(cached);
-        
-        try {
-            const commentsQuery = await db.collection('comments')
-                .where('serieId', '==', serieId)
-                .orderBy('timestamp', 'desc')
-                .get();
-            
-            const comments = commentsQuery.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            sessionStorage.setItem(`comments_${serieId}`, JSON.stringify(comments));
-            return comments;
-        } catch (error) {
-            return [];
-        }
-    }
-
-    async function addComment(serieId, userId, userName, text) {
-        await db.collection('comments').add({
-            serieId,
-            userId,
-            userName,
-            text,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-            likes: 0
-        });
-    }
-
-    function renderComments(comments, serieId) {
-        return comments.map(comment => `
-            <div class="comment">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                    <span class="comment-author">${comment.userName}</span>
-                    <span style="color: var(--text-secondary); font-size: 0.8rem;">
-                        ${comment.timestamp ? new Date(comment.timestamp.toDate()).toLocaleDateString() : 'Ahora'}
-                    </span>
-                </div>
-                <p>${comment.text}</p>
-            </div>
-        `).join('') || '<p style="color: var(--text-secondary);">No hay comentarios aún</p>';
-    }
-
-    // ===== AUTENTICACIÓN =====
     function renderAuthUI(user) {
         const authButtons = document.getElementById('auth-buttons');
-        
         if (user) {
-            authButtons.innerHTML = `
-                <button class="btn" onclick="navigateTo('profile')">
-                    👤 ${user.displayName || user.email.split('@')[0]}
-                </button>
-            `;
-            renderProfileView(user);
+            authButtons.innerHTML = `<button class="btn" data-view="profile">👤 ${user.displayName || user.email.split('@')[0]}</button>`;
         } else {
-            authButtons.innerHTML = `
-                <button class="btn" onclick="showLoginModal()">Iniciar Sesión</button>
-                <button class="btn btn-primary" onclick="showRegisterModal()">Registrarse</button>
-            `;
+            authButtons.innerHTML = `<button class="btn" onclick="showLoginModal()">Iniciar Sesión</button><button class="btn btn-primary" onclick="showRegisterModal()">Registrarse</button>`;
         }
     }
 
     function renderProfileView(user) {
+        const profileContent = document.getElementById('profile-content');
         if (!user) {
-            document.getElementById('profile-content').innerHTML = `
-                <p>Debes iniciar sesión para ver tu perfil.</p>
-                <button class="btn btn-primary" onclick="showLoginModal()">Iniciar Sesión</button>
-            `;
+            profileContent.innerHTML = `<p>Inicia sesión para ver tu perfil.</p>`;
             return;
         }
-
-        document.getElementById('profile-content').innerHTML = `
+        profileContent.innerHTML = `
             <div style="background: var(--bg-secondary); border-radius: 16px; padding: 2rem; text-align: center;">
-                <img src="${user.photoURL || 'https://via.placeholder.com/120'}" alt="Avatar" 
-                     style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); margin-bottom: 1rem;">
+                <img src="${user.photoURL || 'https://via.placeholder.com/120'}" alt="Avatar" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary ); margin-bottom: 1rem;">
                 <h2>${user.displayName || 'Sin nombre'}</h2>
                 <p style="color: var(--text-secondary); margin-bottom: 2rem;">${user.email}</p>
-                <button class="btn" onclick="auth.signOut()" style="background: var(--danger); border-color: var(--danger);">
-                    Cerrar Sesión
-                </button>
-            </div>
-        `;
+                <button class="btn" onclick="auth.signOut()" style="background: var(--danger); border-color: var(--danger);">Cerrar Sesión</button>
+            </div>`;
     }
 
     // ===== MODALES =====
     window.showLoginModal = () => {
-        modalContainer.innerHTML = `
-            <div class="modal-overlay" onclick="closeModal(event)">
-                <div class="modal">
-                    <button class="modal-close" onclick="closeModal()">&times;</button>
-                    <h2 data-i18n="login">Iniciar Sesión</h2>
-                    <form id="login-form">
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="email">Email:</label>
-                            <input type="email" id="login-email" class="form-input" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="password">Contraseña:</label>
-                            <input type="password" id="login-password" class="form-input" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%;" data-i18n="enter">Entrar</button>
-                    </form>
-                </div>
-            </div>
-        `;
-        updateTranslations();
+        modalContainer.innerHTML = `<div class="modal-overlay" onclick="closeModal(event)"><div class="modal"><button class="modal-close" onclick="closeModal()">&times;</button><h2>Iniciar Sesión</h2><form id="login-form"><div class="form-group"><label class="form-label">Email:</label><input type="email" id="login-email" class="form-input" required></div><div class="form-group"><label class="form-label">Contraseña:</label><input type="password" id="login-password" class="form-input" required></div><button type="submit" class="btn btn-primary" style="width: 100%;">Entrar</button></form></div></div>`;
     };
-
     window.showRegisterModal = () => {
-        modalContainer.innerHTML = `
-            <div class="modal-overlay" onclick="closeModal(event)">
-                <div class="modal">
-                    <button class="modal-close" onclick="closeModal()">&times;</button>
-                    <h2 data-i18n="create-account">Crear Cuenta</h2>
-                    <form id="register-form">
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="email">Email:</label>
-                            <input type="email" id="register-email" class="form-input" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="password">Contraseña:</label>
-                            <input type="password" id="register-password" class="form-input" required minlength="6">
-                        </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%;" data-i18n="create">Crear</button>
-                    </form>
-                </div>
-            </div>
-        `;
-        updateTranslations();
+        modalContainer.innerHTML = `<div class="modal-overlay" onclick="closeModal(event)"><div class="modal"><button class="modal-close" onclick="closeModal()">&times;</button><h2>Crear Cuenta</h2><form id="register-form"><div class="form-group"><label class="form-label">Email:</label><input type="email" id="register-email" class="form-input" required></div><div class="form-group"><label class="form-label">Contraseña:</label><input type="password" id="register-password" class="form-input" required minlength="6"></div><button type="submit" class="btn btn-primary" style="width: 100%;">Crear</button></form></div></div>`;
     };
-
     window.closeModal = (event) => {
         if (!event || event.target.classList.contains('modal-overlay') || event.target.classList.contains('modal-close')) {
             modalContainer.innerHTML = '';
         }
     };
 
-    // ===== THEME TOGGLE =====
-    function setTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-    }
+    // ===== TEMAS E IDIOMAS =====
+    document.getElementById('theme-selector').addEventListener('change', (e) => document.documentElement.setAttribute('data-theme', e.target.value));
+    document.getElementById('lang-selector').addEventListener('change', (e) => setLanguage(e.target.value));
 
-    // ===== LANGUAGE =====
     function setLanguage(lang) {
         currentLang = lang;
         document.documentElement.lang = lang;
@@ -1621,223 +612,102 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateTranslations() {
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.dataset.i18n;
-            const text = translations[currentLang][key.toLowerCase().replace(/-/g, '_')] || el.textContent;
-            el.textContent = text;
+            if (translations[currentLang] && translations[currentLang][key]) {
+                el.textContent = translations[currentLang][key];
+            }
         });
     }
 
     // ===== LOADER =====
     function showLoader(message) {
         animeLoader.classList.remove('hidden');
-        spanishText.textContent = message;
-        japaneseText.textContent = message === 'Cambiando página...' ? 'ページ変更中' : 'エピソード変更中';
-        loadedMessage.style.display = 'none';
-        runningAnimals.forEach(animal => animal.style.animation = 'run 3s linear infinite');
+        animeLoader.querySelector('.spanish-text').textContent = message;
     }
-
     function hideLoader() {
-        loadedMessage.style.display = 'block';
-        runningAnimals.forEach(animal => animal.style.animation = 'none');
-        setTimeout(() => {
-            animeLoader.classList.add('hidden');
-        }, 1000);
+        setTimeout(() => animeLoader.classList.add('hidden'), 500);
     }
-
-    function showSystemLoaded() {
-        const loadingText = animeLoader.querySelector('.loading-text');
-        const japaneseText = animeLoader.querySelector('.japanese-text');
-        const spanishText = animeLoader.querySelector('.spanish-text');
-        
-        loadingText.textContent = translations[currentLang].loading_system;
-        japaneseText.textContent = '完了';
-        spanishText.textContent = translations[currentLang].loaded;
-        
+    function initialLoad() {
         setTimeout(() => {
             animeLoader.style.opacity = '0';
-            animeLoader.style.transform = 'scale(0.9)';
-            
             setTimeout(() => {
                 animeLoader.classList.add('hidden');
                 appContent.classList.remove('hidden');
-                setTimeout(showAnnouncement, 1000);
-                setInterval(updateFooter, 1000);
-                updateFooter();
+                showAnnouncement();
             }, 500);
         }, 1000);
     }
 
-    // ===== FOOTER UPDATE =====
-    function updateFooter() {
-        const dateSpan = document.getElementById('current-date');
-        const timeSpan = document.getElementById('usage-time');
-        if (!dateSpan || !timeSpan) return;
-        dateSpan.textContent = new Date().toLocaleString();
-        
-        const elapsed = Math.floor((Date.now() - sessionStart) / 1000);
-        const hours = Math.floor(elapsed / 3600);
-        const mins = Math.floor((elapsed % 3600) / 60);
-        const secs = elapsed % 60;
-        timeSpan.textContent = `${hours}h ${mins}m ${secs}s`;
-    }
-
-    // ===== EVENT LISTENERS =====
-    auth.onAuthStateChanged(user => {
-        currentUser = user;
-        renderAuthUI(user);
-    });
-
+    // ===== EVENT LISTENERS (CORREGIDO) =====
     document.addEventListener('click', (e) => {
-        // Theme toggle (legacy)
-        if (e.target.id === 'theme-toggle') {
-            const current = document.documentElement.getAttribute('data-theme');
-            setTheme(current === 'dark' ? 'light' : 'dark');
-        }
-        
-        // Navigation
-        if (e.target.closest('.nav-item, .sidebar-link')) {
+        const navLink = e.target.closest('[data-view]');
+        if (navLink) {
             e.preventDefault();
-            const view = e.target.closest('.nav-item, .sidebar-link').dataset.view;
-            if (view) navigateTo(view);
+            navigateTo(navLink.dataset.view);
+            return;
+        }
+
+        const seriesCard = e.target.closest('.series-card[data-serie-id]');
+        if (seriesCard) {
+            const { serieId, chapter } = seriesCard.dataset;
+            if (chapter) {
+                openReader(serieId, chapter);
+            } else {
+                const serie = seriesData.find(s => s.id === serieId);
+                if (serie) buildDetailPage(serie);
+            }
+            return;
         }
         
-        // Series cards
-        if (e.target.closest('.series-card[data-serie-id]:not([data-chapter])')) {
-            const serieId = e.target.closest('.series-card').dataset.serieId;
-            const serie = seriesData.find(s => s.id === serieId);
+        const carouselItem = e.target.closest('.carousel-item[data-serie-id]');
+        if (carouselItem) {
+            const serie = seriesData.find(s => s.id === carouselItem.dataset.serieId);
             if (serie) buildDetailPage(serie);
+            return;
         }
 
-        // Chapter cards
-        if (e.target.closest('.series-card[data-chapter]')) {
-            const serieId = e.target.closest('.series-card').dataset.serieId;
-            const chapter = e.target.closest('.series-card').dataset.chapter;
-            openReader(serieId, chapter);
-        }
-
-        // Carousel navigation
-        if (e.target.id === 'carousel-prev') {
-            const maxIndex = document.querySelectorAll('.carousel-item').length - 1;
-            currentCarouselIndex = currentCarouselIndex > 0 ? currentCarouselIndex - 1 : maxIndex;
-            updateCarousel();
-        }
-        
-        if (e.target.id === 'carousel-next') {
-            const maxIndex = document.querySelectorAll('.carousel-item').length - 1;
-            currentCarouselIndex = currentCarouselIndex < maxIndex ? currentCarouselIndex + 1 : 0;
-            updateCarousel();
-        }
-
-        // Carousel dots
-        if (e.target.classList.contains('dot')) {
-            currentCarouselIndex = parseInt(e.target.dataset.index);
-            updateCarousel();
-        }
-
-        // Carousel items
-        if (e.target.closest('.carousel-item')) {
-            const serieId = e.target.closest('.carousel-item').dataset.serieId;
-            const serie = seriesData.find(s => s.id === serieId);
-            if (serie) buildDetailPage(serie);
-        }
-
-        // Load more
-        if (e.target.id === 'load-more') {
-            currentPage++;
-            loadSeriesData();
-        }
+        if (e.target.id === 'carousel-prev') { currentCarouselIndex--; updateCarousel(); }
+        if (e.target.id === 'carousel-next') { currentCarouselIndex++; updateCarousel(); }
+        if (e.target.classList.contains('dot')) { currentCarouselIndex = parseInt(e.target.dataset.index); updateCarousel(); }
+        if (e.target.id === 'load-more') { currentPage++; loadSeriesData(); }
     });
 
-    // Search input
-    document.addEventListener('input', (e) => {
-        if (e.target.id === 'search-input') {
-            const value = e.target.value.toLowerCase();
-            const filtered = seriesData.filter(s => s.titulo.toLowerCase().includes(value));
-            renderSeries('search-grid', filtered);
-        }
+    document.getElementById('search-input').addEventListener('input', (e) => {
+        const value = e.target.value.toLowerCase();
+        const filtered = seriesData.filter(s => s.titulo.toLowerCase().includes(value));
+        renderSeriesGrid('search-grid', filtered);
     });
 
-    // Theme selector
-    document.getElementById('theme-selector').addEventListener('change', (e) => {
-        setTheme(e.target.value);
-    });
-
-    // Lang selector
-    document.getElementById('lang-selector').addEventListener('change', (e) => {
-        setLanguage(e.target.value);
-    });
-
-    // Form submissions
     document.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
         if (e.target.id === 'login-form') {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
             try {
-                await auth.signInWithEmailAndPassword(email, password);
+                await auth.signInWithEmailAndPassword(document.getElementById('login-email').value, document.getElementById('login-password').value);
                 closeModal();
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
+            } catch (error) { alert('Error: ' + error.message); }
         }
-        
         if (e.target.id === 'register-form') {
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-            
             try {
-                await auth.createUserWithEmailAndPassword(email, password);
+                await auth.createUserWithEmailAndPassword(document.getElementById('register-email').value, document.getElementById('register-password').value);
                 closeModal();
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
+            } catch (error) { alert('Error: ' + error.message); }
         }
     });
 
-    // Auto carousel
+    // Auto-rotación del carrusel
     setInterval(() => {
-        if (document.querySelectorAll('.carousel-item').length > 1) {
-            const maxIndex = document.querySelectorAll('.carousel-item').length - 1;
-            currentCarouselIndex = currentCarouselIndex < maxIndex ? currentCarouselIndex + 1 : 0;
+        if (document.getElementById('home-view').offsetParent !== null) { // Solo si la vista home está visible
+            currentCarouselIndex++;
             updateCarousel();
         }
     }, 5000);
 
-    // Check URL params
-    function checkUrlParams() {
-        const params = new URLSearchParams(location.search);
-        const serieId = params.get('serie');
-        const chapter = params.get('chapter');
-        if (serieId) {
-            const serie = seriesData.find(s => s.id === serieId);
-            if (serie) {
-                if (chapter) {
-                    openReader(serieId, chapter);
-                } else {
-                    buildDetailPage(serie);
-                }
-            }
-        }
-    }
-
     // ===== INICIALIZACIÓN =====
     async function init() {
-        try {
-            await loadSeriesData();
-            showSystemLoaded();
-            updateTranslations();
-            checkUrlParams();
-        } catch (error) {
-            console.error('Error en inicialización:', error);
-            setTimeout(init, 2000);
-        }
+        await loadSeriesData();
+        initialLoad();
+        updateTranslations();
     }
-
-    // Exponer funciones globales
-    window.navigateTo = navigateTo;
     
-    // Inicializar
     init();
 });
     </script>
