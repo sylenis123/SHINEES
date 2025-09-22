@@ -4,147 +4,292 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shinees - Anime & Manga Platform</title>
-    
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- ESTILOS MINIMALISTAS Y OPTIMIZADOS --- */
+        /* --- VARIABLES Y ESTILOS GLOBALES OPTIMIZADOS --- */
         :root {
-            --primary: #ff6b1a; --secondary: #23252b; --accent: #f47521; 
-            --text: #ffffff; --text-secondary: #a0a0a0; --bg: #000000; 
-            --bg-secondary: #141519; --bg-card: #1a1b1f; --border: #2a2b30;
-            --radius: 8px; --transition: all 0.3s ease;
+            --primary: #ff6b1a; --primary-dark: #e55a0f; 
+            --bg: #0a0a0a; --bg-secondary: #141414; --bg-card: #1a1a1a;
+            --text: #ffffff; --text-secondary: #a0a0a0; --border: #2a2a2a;
+            --radius: 12px; --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
         
         [data-theme="light"] {
-            --primary: #ff6b1a; --secondary: #ffffff; --text: #23252b; 
-            --text-secondary: #666666; --bg: #f5f5f5; --bg-secondary: #ffffff; 
-            --bg-card: #ffffff; --border: #e0e0e0;
+            --bg: #f5f5f5; --bg-secondary: #ffffff; --bg-card: #ffffff;
+            --text: #1a1a1a; --text-secondary: #666666; --border: #e0e0e0;
         }
         
         [data-theme="girl"] {
-            --primary: #ff69b4; --secondary: #ffc0cb; --text: #4b0082; 
-            --text-secondary: #9370db; --bg: #fff0f5; --bg-secondary: #ffe4e1; 
-            --bg-card: #ffdab9; --border: #ffc0cb;
+            --primary: #ff69b4; --primary-dark: #e0559f;
+            --bg: #fff0f5; --bg-secondary: #ffe4e1; --bg-card: #ffdab9;
+            --text: #4b0082; --text-secondary: #9370db; --border: #ffc0cb;
         }
         
         [data-theme="boy"] {
-            --primary: #1e90ff; --secondary: #00bfff; --text: #ffffff; 
-            --text-secondary: #add8e6; --bg: #191970; --bg-secondary: #4682b4; 
-            --bg-card: #5f9ea0; --border: #00bfff;
+            --primary: #1e90ff; --primary-dark: #0d7ae6;
+            --bg: #0f1a2a; --bg-secondary: #1a2d4a; --bg-card: #243b5a;
+            --text: #ffffff; --text-secondary: #add8e6; --border: #00bfff;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; transition: var(--transition); }
+        html { scroll-behavior: smooth; }
+        body { 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            background: var(--bg); color: var(--text); 
+            min-height: 100vh; line-height: 1.6;
+            overflow-x: hidden;
+        }
         
-        /* HEADER */
-        header { background: var(--bg-secondary); padding: 0 20px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border); }
-        .header-container { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; }
-        .logo { font-size: 2rem; font-weight: bold; background: linear-gradient(45deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-decoration: none; }
-        .nav-link { color: var(--text-secondary); text-decoration: none; transition: var(--transition); padding: 5px 10px; border-radius: var(--radius); }
-        .nav-link:hover { color: var(--primary); background: var(--bg-card); }
-        .search-container { position: relative; flex: 1; max-width: 400px; margin: 0 20px; }
-        .search-input { width: 100%; padding: 10px 15px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); }
-        .search-btn { position: absolute; right: 5px; top: 50%; transform: translateY(-50%); background: var(--primary); border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; }
+        /* --- HEADER MINIMALISTA --- */
+        header { 
+            position: fixed; top: 0; left: 0; right: 0;
+            background: rgba(10, 10, 10, 0.95); 
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border); z-index: 1000;
+            padding: 0 5%;
+            transition: var(--transition);
+        }
+        
+        .header-container { 
+            display: flex; align-items: center; justify-content: space-between; 
+            height: 70px; max-width: 1400px; margin: 0 auto;
+        }
+        
+        .logo { 
+            font-size: 2.2rem; font-weight: 800; 
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-decoration: none; letter-spacing: -1px;
+        }
+        
+        .nav-main { display: flex; gap: 30px; }
+        .nav-link { 
+            color: var(--text-secondary); text-decoration: none; 
+            font-weight: 500; transition: var(--transition); 
+            position: relative; padding: 5px 0;
+        }
+        .nav-link:hover, .nav-link.active { color: var(--primary); }
+        .nav-link.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background: var(--primary); }
+        
+        .search-container { position: relative; width: 300px; }
+        .search-input { 
+            width: 100%; padding: 12px 45px 12px 15px; 
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 30px; color: var(--text); font-size: 0.95rem;
+            transition: var(--transition);
+        }
+        .search-input:focus { outline: none; border-color: var(--primary); }
+        .search-btn { 
+            position: absolute; right: 5px; top: 50%; transform: translateY(-50%); 
+            background: var(--primary); border: none; border-radius: 50%; 
+            width: 32px; height: 32px; cursor: pointer; color: white;
+            display: flex; align-items: center; justify-content: center;
+            transition: var(--transition);
+        }
+        .search-btn:hover { background: var(--primary-dark); transform: translateY(-50%) scale(1.05); }
+        
         .user-menu { display: flex; align-items: center; gap: 15px; }
-        .user-avatar { width: 35px; height: 35px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; color: white; transition: var(--transition); }
-        .user-avatar:hover { transform: scale(1.1); }
-        .theme-toggle { background: none; border: none; color: var(--text); font-size: 20px; cursor: pointer; transition: var(--transition); padding: 5px; border-radius: 50%; }
-        .theme-toggle:hover { transform: rotate(180deg); background: var(--bg-card); }
+        .theme-toggle, .user-avatar { 
+            width: 40px; height: 40px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: var(--transition);
+            background: var(--bg-card); border: 1px solid var(--border);
+        }
+        .theme-toggle:hover, .user-avatar:hover { 
+            transform: scale(1.05); border-color: var(--primary);
+        }
         
-        /* CONTENIDO PRINCIPAL */
-        .hero-carousel { height: 400px; position: relative; overflow: hidden; border-radius: 0 0 var(--radius) var(--radius); }
-        .carousel-slide { position: absolute; width: 100%; height: 100%; opacity: 0; transition: opacity 0.5s; display: flex; align-items: center; padding: 0 40px; }
-        .carousel-slide.active { opacity: 1; }
-        .carousel-content { max-width: 600px; z-index: 2; }
-        .carousel-title { font-size: 2.5rem; font-weight: bold; margin-bottom: 15px; }
-        .carousel-description { color: var(--text-secondary); margin-bottom: 20px; }
-        .carousel-image { position: absolute; right: 0; top: 0; width: 50%; height: 100%; object-fit: cover; mask-image: linear-gradient(to left, transparent, black 30%); }
+        /* --- CONTENIDO PRINCIPAL --- */
+        .main-content { padding-top: 90px; min-height: calc(100vh - 200px); }
         
-        .content-section { padding: 40px 20px; max-width: 1400px; margin: 0 auto; }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .section-title { font-size: 1.8rem; font-weight: bold; }
-        .view-all { color: var(--primary); text-decoration: none; font-weight: 500; }
+        .hero-section { 
+            position: relative; height: 70vh; min-height: 500px; 
+            display: flex; align-items: center; padding: 0 5%;
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, transparent 100%);
+            overflow: hidden;
+        }
         
-        .anime-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
-        .anime-card { background: var(--bg-card); border-radius: var(--radius); overflow: hidden; transition: var(--transition); text-decoration: none; color: var(--text); opacity: 0; transform: translateY(20px); }
-        .anime-card.loaded { opacity: 1; transform: translateY(0); }
-        .anime-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        .anime-card img { width: 100%; height: 250px; object-fit: cover; }
-        .anime-info { padding: 15px; }
-        .anime-title { font-weight: 600; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .anime-meta { font-size: 0.85rem; color: var(--text-secondary); }
+        .hero-content { max-width: 600px; z-index: 2; }
+        .hero-title { font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
+        .hero-description { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 30px; }
+        .hero-actions { display: flex; gap: 15px; }
+        .btn { 
+            padding: 12px 30px; border-radius: 30px; font-weight: 600; 
+            text-decoration: none; transition: var(--transition); display: inline-flex;
+            align-items: center; gap: 10px; border: none; cursor: pointer;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
+        .btn-secondary { background: var(--bg-card); color: var(--text); border: 1px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--primary); transform: translateY(-2px); }
         
-        /* PÁGINA DE DETALLE */
-        .detail-container { padding: 40px 20px; max-width: 1200px; margin: 0 auto; animation: fadeIn 0.5s; }
-        .detail-header { display: flex; gap: 30px; margin-bottom: 40px; }
-        .detail-cover img { width: 250px; border-radius: var(--radius); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .hero-bg { 
+            position: absolute; right: 5%; top: 50%; transform: translateY(-50%); 
+            width: 40%; height: 80%; border-radius: var(--radius);
+            background: linear-gradient(45deg, var(--primary), transparent);
+            opacity: 0.1; z-index: 1;
+        }
+        
+        /* --- SECCIONES DE CONTENIDO --- */
+        .section { padding: 60px 5%; max-width: 1400px; margin: 0 auto; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .section-title { font-size: 2rem; font-weight: 700; }
+        .view-all { color: var(--primary); text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+        
+        .content-grid { 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+            gap: 25px; 
+        }
+        
+        .content-card { 
+            background: var(--bg-card); border-radius: var(--radius); 
+            overflow: hidden; transition: var(--transition); 
+            position: relative; opacity: 0; transform: translateY(20px);
+            border: 1px solid transparent;
+        }
+        .content-card.visible { opacity: 1; transform: translateY(0); }
+        .content-card:hover { 
+            transform: translateY(-5px); border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+        
+        .card-image { 
+            width: 100%; height: 280px; object-fit: cover; 
+            transition: var(--transition);
+        }
+        .content-card:hover .card-image { transform: scale(1.05); }
+        
+        .card-content { padding: 15px; }
+        .card-title { 
+            font-weight: 600; margin-bottom: 5px; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .card-meta { 
+            font-size: 0.85rem; color: var(--text-secondary); 
+            display: flex; justify-content: space-between;
+        }
+        .card-badge { 
+            position: absolute; top: 10px; right: 10px; 
+            background: var(--primary); color: white; 
+            padding: 5px 10px; border-radius: 20px; 
+            font-size: 0.75rem; font-weight: 600;
+        }
+        
+        /* --- PÁGINA DE DETALLE --- */
+        .detail-page { padding: 100px 5% 60px; max-width: 1400px; margin: 0 auto; }
+        .detail-header { display: flex; gap: 40px; margin-bottom: 40px; }
+        .detail-poster { 
+            width: 300px; border-radius: var(--radius); 
+            box-shadow: var(--shadow); flex-shrink: 0;
+        }
         .detail-info { flex: 1; }
-        .detail-meta { color: var(--text-secondary); margin-bottom: 15px; }
-        .detail-actions { display: flex; gap: 15px; margin-top: 20px; }
-        .chapter-list { list-style: none; margin-top: 30px; }
-        .chapter-item { background: var(--bg-card); border-radius: var(--radius); margin-bottom: 10px; transition: var(--transition); }
-        .chapter-item:hover { transform: translateX(5px); border-left: 3px solid var(--primary); }
-        .chapter-item a { display: block; padding: 15px 20px; text-decoration: none; color: var(--text); }
+        .detail-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; }
+        .detail-meta { 
+            display: flex; gap: 15px; color: var(--text-secondary); 
+            margin-bottom: 20px; flex-wrap: wrap;
+        }
+        .detail-meta span { background: var(--bg-secondary); padding: 5px 10px; border-radius: 20px; }
+        .detail-synopsis { line-height: 1.7; margin-bottom: 30px; }
+        .detail-actions { display: flex; gap: 15px; flex-wrap: wrap; }
         
-        /* ADMIN PANEL */
-        .admin-panel { background: var(--bg-card); border-radius: var(--radius); padding: 20px; margin-top: 30px; }
-        .admin-form { display: grid; gap: 15px; margin-top: 15px; }
-        .form-group { display: flex; flex-direction: column; }
-        .form-group label { margin-bottom: 5px; font-weight: 500; }
-        .form-input { padding: 10px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); }
+        .chapters-section { margin-top: 50px; }
+        .chapters-grid { 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+            gap: 15px; margin-top: 20px;
+        }
+        .chapter-card { 
+            background: var(--bg-card); border-radius: var(--radius); 
+            padding: 15px; transition: var(--transition); border: 1px solid var(--border);
+        }
+        .chapter-card:hover { border-color: var(--primary); transform: translateX(5px); }
+        .chapter-title { font-weight: 600; margin-bottom: 5px; }
+        .chapter-meta { font-size: 0.85rem; color: var(--text-secondary); }
         
-        /* LOADING Y ESTADOS */
-        .loading { display: flex; justify-content: center; align-items: center; height: 200px; flex-direction: column; gap: 15px; }
-        .spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-left: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        /* --- LOADING Y ESTADOS --- */
+        .loading { 
+            display: flex; justify-content: center; align-items: center; 
+            height: 300px; flex-direction: column; gap: 20px;
+        }
+        .spinner { 
+            width: 50px; height: 50px; border: 4px solid var(--border); 
+            border-left: 4px solid var(--primary); border-radius: 50%; 
+            animation: spin 1s linear infinite;
+        }
+        .skeleton { 
+            background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-secondary) 50%, var(--bg-card) 75%);
+            background-size: 200% 100%; animation: loading 1.5s infinite;
+            border-radius: var(--radius);
+        }
         
-        /* FOOTER */
-        footer { background: var(--bg-secondary); padding: 40px 20px 20px; margin-top: 60px; border-top: 1px solid var(--border); }
-        .footer-content { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 30px; }
-        .footer-section h3 { margin-bottom: 15px; color: var(--primary); }
+        /* --- FOOTER --- */
+        footer { 
+            background: var(--bg-secondary); padding: 50px 5% 20px; 
+            margin-top: 80px; border-top: 1px solid var(--border);
+        }
+        .footer-content { 
+            max-width: 1400px; margin: 0 auto; 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 40px; margin-bottom: 30px;
+        }
+        .footer-section h3 { margin-bottom: 20px; color: var(--primary); }
         .footer-links { list-style: none; }
-        .footer-links li { margin-bottom: 10px; }
+        .footer-links li { margin-bottom: 12px; }
         .footer-links a { color: var(--text-secondary); text-decoration: none; transition: var(--transition); }
         .footer-links a:hover { color: var(--primary); }
-        .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid var(--border); color: var(--text-secondary); }
+        .footer-bottom { 
+            text-align: center; padding-top: 30px; border-top: 1px solid var(--border); 
+            color: var(--text-secondary); font-size: 0.9rem;
+        }
         
-        /* ANIMACIONES */
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* --- ANIMACIONES --- */
         @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes slideOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+        @keyframes loading { 
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .header-container { flex-wrap: wrap; height: auto; padding: 10px 0; }
-            .search-container { order: 3; width: 100%; margin: 10px 0 0; max-width: 100%; }
-            .hero-carousel { height: 300px; }
-            .carousel-slide { padding: 0 20px; }
-            .carousel-title { font-size: 1.8rem; }
-            .carousel-image { width: 40%; }
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1024px) {
+            .hero-title { font-size: 2.8rem; }
             .detail-header { flex-direction: column; }
-            .detail-cover img { width: 100%; max-width: 250px; margin: 0 auto; }
-            .anime-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
+            .detail-poster { width: 100%; max-width: 300px; margin: 0 auto 30px; }
+        }
+        
+        @media (max-width: 768px) {
+            .header-container { flex-wrap: wrap; height: auto; padding: 15px 0; }
+            .nav-main { order: 3; width: 100%; justify-content: center; margin-top: 15px; }
+            .search-container { order: 2; width: 100%; margin: 15px 0; }
+            .hero-title { font-size: 2.2rem; }
+            .content-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
+            .section { padding: 40px 5%; }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-section { height: auto; padding: 40px 5%; }
+            .hero-title { font-size: 1.8rem; }
+            .hero-actions { flex-direction: column; }
+            .content-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-content { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <!-- SOLO EL CONTENEDOR PRINCIPAL - TODO SE GENERA CON JS -->
     <div id="app">
-        <div class="loading">
-            <div class="spinner"></div>
-            <div>Cargando Shinees...</div>
-        </div>
+        <!-- La aplicación se renderiza completamente con JavaScript -->
     </div>
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // =================================================================
-        // 1. CONFIGURACIÓN DE FIREBASE
+        // 1. CONFIGURACIÓN Y CONSTANTES
         // =================================================================
+        const MAL_CLIENT_ID = '16d000832c5535ee1175473f869415c0';
+        const MAL_API_BASE = 'https://api.myanimelist.net/v2';
+        
+        // Configuración de Firebase
         const FIREBASE_CONFIG = {
             apiKey: "AIzaSyDsv2keytFIEeS4QT4_chwOHMgyWpV8gP4",
             authDomain: "shinees.firebaseapp.com",
@@ -154,15 +299,22 @@
             appId: "1:109623976622:web:c9ab5a1c345f502b71833f",
         };
 
+        // Estado de la aplicación
+        let currentUser = null;
+        let currentTheme = localStorage.getItem('shinees-theme') || 'dark';
+        let currentView = 'home';
+        let currentContentType = 'anime';
+        let searchQuery = '';
+        let isLoading = false;
+        
+        // Datos en caché
+        let cachedAnime = JSON.parse(localStorage.getItem('shinees-cached-anime') || '{}');
+        let cachedManga = JSON.parse(localStorage.getItem('shinees-cached-manga') || '{}');
+        
         // Inicializar Firebase
         firebase.initializeApp(FIREBASE_CONFIG);
         const auth = firebase.auth();
         const db = firebase.firestore();
-        
-        // Estado de la aplicación
-        let currentUser = null;
-        let currentTheme = localStorage.getItem('shinees-theme') || 'dark';
-        let catalogData = [];
         
         // =================================================================
         // 2. FUNCIONES DE UTILIDAD
@@ -170,25 +322,21 @@
         
         // Mostrar notificación
         function showNotification(message, type = 'info') {
-            // Eliminar notificación existente
-            const existing = document.querySelector('.notification');
-            if (existing) existing.remove();
-            
             const notification = document.createElement('div');
-            notification.className = 'notification';
-            notification.innerHTML = message;
-            notification.style.cssText = `
-                position: fixed; top: 80px; right: 20px; 
-                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#ff6b1a'}; 
-                color: white; padding: 12px 20px; border-radius: 8px; 
-                box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 2000; 
-                animation: slideInRight 0.3s forwards;
+            notification.innerHTML = `
+                <div style="
+                    position: fixed; top: 90px; right: 20px; 
+                    background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#ff6b1a'}; 
+                    color: white; padding: 12px 20px; border-radius: 8px; 
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 2000; 
+                    animation: fadeIn 0.3s forwards; max-width: 300px;
+                    font-weight: 500;
+                ">${message}</div>
             `;
             document.body.appendChild(notification);
             
             setTimeout(() => {
-                notification.style.animation = 'slideOutRight 0.3s forwards';
-                setTimeout(() => notification.remove(), 300);
+                notification.remove();
             }, 3000);
         }
         
@@ -208,509 +356,690 @@
             showNotification(`Tema cambiado a: ${nextTheme}`);
         }
         
+        // Formatear número
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toString();
+        }
+        
+        // Generar enlace de Google Drive (simulado)
+        function generateDriveLink(contentId, chapter = null) {
+            // En una implementación real, esto se conectaría a tu base de datos
+            const baseUrl = 'https://drive.google.com/file/d/';
+            if (chapter) {
+                return `${baseUrl}${contentId}_chapter_${chapter}/view`;
+            }
+            return `${baseUrl}${contentId}/view`;
+        }
+        
         // =================================================================
-        // 3. SISTEMA DE RUTAS Y VISTAS
+        // 3. API DE MYANIMELIST
         // =================================================================
         
-        // Renderizar la estructura base de la página
-        function renderBaseLayout() {
+        // Obtener datos de la API de MyAnimeList
+        async function fetchFromMAL(endpoint, params = {}) {
+            const url = new URL(`${MAL_API_BASE}${endpoint}`);
+            Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+            
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'X-MAL-CLIENT-ID': MAL_CLIENT_ID
+                    }
+                });
+                
+                if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
+                return await response.json();
+            } catch (error) {
+                console.error('Error fetching from MAL:', error);
+                throw error;
+            }
+        }
+        
+        // Buscar anime
+        async function searchAnime(query, limit = 20) {
+            const cacheKey = `search_${query}_${limit}`;
+            if (cachedAnime[cacheKey]) return cachedAnime[cacheKey];
+            
+            try {
+                const data = await fetchFromMAL('/anime', { q: query, limit, fields: 'id,title,main_picture,synopsis,mean,rank,popularity,num_episodes,status,media_type' });
+                cachedAnime[cacheKey] = data;
+                localStorage.setItem('shinees-cached-anime', JSON.stringify(cachedAnime));
+                return data;
+            } catch (error) {
+                // Fallback a datos de ejemplo si la API falla
+                return getFallbackAnimeData();
+            }
+        }
+        
+        // Buscar manga
+        async function searchManga(query, limit = 20) {
+            const cacheKey = `search_${query}_${limit}`;
+            if (cachedManga[cacheKey]) return cachedManga[cacheKey];
+            
+            try {
+                const data = await fetchFromMAL('/manga', { q: query, limit, fields: 'id,title,main_picture,synopsis,mean,rank,popularity,num_chapters,status,media_type' });
+                cachedManga[cacheKey] = data;
+                localStorage.setItem('shinees-cached-manga', JSON.stringify(cachedManga));
+                return data;
+            } catch (error) {
+                // Fallback a datos de ejemplo si la API falla
+                return getFallbackMangaData();
+            }
+        }
+        
+        // Obtener detalles de anime
+        async function getAnimeDetails(animeId) {
+            const cacheKey = `anime_${animeId}`;
+            if (cachedAnime[cacheKey]) return cachedAnime[cacheKey];
+            
+            try {
+                const data = await fetchFromMAL(`/anime/${animeId}`, { fields: 'id,title,main_picture,alternative_titles,synopsis,mean,rank,popularity,num_episodes,status,media_type,genres,start_date,end_date,studios,rating' });
+                cachedAnime[cacheKey] = data;
+                localStorage.setItem('shinees-cached-anime', JSON.stringify(cachedAnime));
+                return data;
+            } catch (error) {
+                // Fallback a datos de ejemplo si la API falla
+                return getFallbackAnimeDetails(animeId);
+            }
+        }
+        
+        // Obtener detalles de manga
+        async function getMangaDetails(mangaId) {
+            const cacheKey = `manga_${mangaId}`;
+            if (cachedManga[cacheKey]) return cachedManga[cacheKey];
+            
+            try {
+                const data = await fetchFromMAL(`/manga/${mangaId}`, { fields: 'id,title,main_picture,alternative_titles,synopsis,mean,rank,popularity,num_chapters,status,media_type,genres,start_date,end_date,authors' });
+                cachedManga[cacheKey] = data;
+                localStorage.setItem('shinees-cached-manga', JSON.stringify(cachedManga));
+                return data;
+            } catch (error) {
+                // Fallback a datos de ejemplo si la API falla
+                return getFallbackMangaDetails(mangaId);
+            }
+        }
+        
+        // =================================================================
+        // 4. RENDERIZADO DE LA INTERFAZ
+        // =================================================================
+        
+        // Renderizar la aplicación completa
+        function renderApp() {
             const app = document.getElementById('app');
             app.innerHTML = `
                 <header>
                     <div class="header-container">
-                        <a href="/" class="logo">SHINEES</a>
-                        <nav class="main-nav">
-                            <a href="#" class="nav-link" data-route="home">Inicio</a>
-                            <a href="#" class="nav-link" data-route="catalog">Catálogo</a>
-                            <a href="#" class="nav-link" data-route="manga">Manga</a>
-                            ${currentUser && currentUser.email === 'admin@shinees.com' ? 
-                                '<a href="#" class="nav-link" data-route="admin">Admin</a>' : ''}
+                        <a href="#" class="logo" onclick="app.navigate('home')">SHINEES</a>
+                        
+                        <nav class="nav-main">
+                            <a href="#" class="nav-link ${currentView === 'home' ? 'active' : ''}" onclick="app.navigate('home')">Inicio</a>
+                            <a href="#" class="nav-link ${currentContentType === 'anime' && currentView === 'browse' ? 'active' : ''}" onclick="app.setContentType('anime')">Anime</a>
+                            <a href="#" class="nav-link ${currentContentType === 'manga' && currentView === 'browse' ? 'active' : ''}" onclick="app.setContentType('manga')">Manga</a>
+                            ${currentUser ? `<a href="#" class="nav-link" onclick="app.navigate('favorites')">Favoritos</a>` : ''}
                         </nav>
+                        
                         <div class="search-container">
-                            <input type="text" class="search-input" placeholder="Buscar anime o manga...">
-                            <button class="search-btn">🔍</button>
+                            <input type="text" class="search-input" placeholder="Buscar..." value="${searchQuery}" onkeyup="app.handleSearch(event)">
+                            <button class="search-btn" onclick="app.performSearch()"><i class="fas fa-search"></i></button>
                         </div>
+                        
                         <div class="user-menu">
-                            <button class="theme-toggle">${getThemeIcon()}</button>
-                            ${currentUser ? 
-                                `<div class="user-avatar" title="${currentUser.email}">${currentUser.email.charAt(0).toUpperCase()}</div>` :
-                                '<button class="nav-link" id="login-btn">Iniciar Sesión</button>'
-                            }
+                            <button class="theme-toggle" onclick="app.toggleTheme()">
+                                ${currentTheme === 'dark' ? '🌙' : currentTheme === 'light' ? '☀️' : currentTheme === 'girl' ? '🌸' : '⚡'}
+                            </button>
+                            
+                            ${currentUser ? `
+                                <div class="user-avatar" onclick="app.showUserMenu()">
+                                    ${currentUser.email.charAt(0).toUpperCase()}
+                                </div>
+                            ` : `
+                                <button class="btn btn-secondary" onclick="app.showLogin()" style="padding: 8px 20px; font-size: 0.9rem;">
+                                    <i class="fas fa-sign-in-alt"></i> Entrar
+                                </button>
+                            `}
                         </div>
                     </div>
                 </header>
-                <main id="main-content">
-                    <!-- El contenido dinámico va aquí -->
+                
+                <main class="main-content" id="main-content">
+                    ${renderContent()}
                 </main>
+                
                 <footer>
                     <div class="footer-content">
                         <div class="footer-section">
-                            <h3>Navegación</h3>
+                            <h3>Explorar</h3>
                             <ul class="footer-links">
-                                <li><a href="#" data-route="home">Inicio</a></li>
-                                <li><a href="#" data-route="catalog">Catálogo</a></li>
-                                <li><a href="#" data-route="manga">Manga</a></li>
+                                <li><a href="#" onclick="app.navigate('home')">Inicio</a></li>
+                                <li><a href="#" onclick="app.setContentType('anime')">Anime</a></li>
+                                <li><a href="#" onclick="app.setContentType('manga')">Manga</a></li>
                             </ul>
                         </div>
+                        
                         <div class="footer-section">
                             <h3>Cuenta</h3>
                             <ul class="footer-links">
-                                <li><a href="#" id="footer-profile">Mi Perfil</a></li>
-                                <li><a href="#" id="footer-logout">Cerrar sesión</a></li>
+                                ${currentUser ? `
+                                    <li><a href="#" onclick="app.showUserMenu()">Mi Perfil</a></li>
+                                    <li><a href="#" onclick="app.logout()">Cerrar Sesión</a></li>
+                                ` : `
+                                    <li><a href="#" onclick="app.showLogin()">Iniciar Sesión</a></li>
+                                    <li><a href="#" onclick="app.showRegister()">Registrarse</a></li>
+                                `}
                             </ul>
                         </div>
+                        
                         <div class="footer-section">
                             <h3>Shinees</h3>
                             <ul class="footer-links">
-                                <li><a href="#">Sobre nosotros</a></li>
-                                <li><a href="#">Términos de uso</a></li>
+                                <li><a href="#">Sobre Nosotros</a></li>
+                                <li><a href="#">Términos de Uso</a></li>
                                 <li><a href="#">Contacto</a></li>
                             </ul>
                         </div>
                     </div>
+                    
                     <div class="footer-bottom">
                         <p>© 2024 Shinees Platform. Todos los derechos reservados.</p>
                     </div>
                 </footer>
             `;
             
-            // Aplicar tema actual
+            // Aplicar el tema actual
             applyTheme(currentTheme);
             
-            // Agregar event listeners
-            setupEventListeners();
+            // Animar elementos al cargar
+            setTimeout(() => {
+                animateElements();
+            }, 100);
         }
         
-        // Obtener ícono del tema actual
-        function getThemeIcon() {
-            const icons = { 'dark': '🌙', 'light': '☀️', 'girl': '🌸', 'boy': '⚡' };
-            return icons[currentTheme] || '🌙';
+        // Renderizar contenido según la vista actual
+        function renderContent() {
+            if (isLoading) {
+                return `
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <div>Cargando...</div>
+                    </div>
+                `;
+            }
+            
+            switch(currentView) {
+                case 'home':
+                    return renderHomePage();
+                case 'browse':
+                    return renderBrowsePage();
+                case 'detail':
+                    return renderDetailPage();
+                case 'favorites':
+                    return renderFavoritesPage();
+                default:
+                    return renderHomePage();
+            }
         }
         
         // Renderizar página de inicio
         function renderHomePage() {
-            const mainContent = document.getElementById('main-content');
-            const trending = catalogData.filter(item => item.destacado);
-            const recent = [...catalogData].sort((a, b) => new Date(b.fecha) - new Date(a.fecha)).slice(0, 12);
-            
-            mainContent.innerHTML = `
-                <div class="hero-carousel">
-                    ${trending.map((item, index) => `
-                        <div class="carousel-slide ${index === 0 ? 'active' : ''}">
-                            <div class="carousel-content">
-                                <h1 class="carousel-title">${item.titulo}</h1>
-                                <p class="carousel-description">${item.descripcion}</p>
-                                <a href="#" class="nav-link" data-route="detail" data-id="${item.id}" style="display: inline-block; background: var(--primary); color: white; padding: 10px 20px; border-radius: 20px;">Ver Ahora</a>
-                            </div>
-                            <img src="${item.portada}" class="carousel-image" alt="${item.titulo}">
+            return `
+                <section class="hero-section">
+                    <div class="hero-content">
+                        <h1 class="hero-title">Descubre el mundo del <span style="color: var(--primary)">anime y manga</span></h1>
+                        <p class="hero-description">Miles de series y cómics japoneses a tu disposición. Encuentra tus favoritos y descubre nuevas joyas.</p>
+                        <div class="hero-actions">
+                            <button class="btn btn-primary" onclick="app.setContentType('anime')">
+                                <i class="fas fa-play"></i> Ver Anime
+                            </button>
+                            <button class="btn btn-secondary" onclick="app.setContentType('manga')">
+                                <i class="fas fa-book"></i> Leer Manga
+                            </button>
                         </div>
-                    `).join('')}
-                </div>
-                
-                <section class="content-section">
-                    <div class="section-header">
-                        <h2 class="section-title">🔥 Tendencias</h2>
-                        <a href="#" class="view-all" data-route="catalog">Ver todo</a>
                     </div>
-                    <div class="anime-grid">
-                        ${trending.map(item => `
-                            <a href="#" class="anime-card" data-route="detail" data-id="${item.id}">
-                                <img src="${item.portada}" alt="${item.titulo}" loading="lazy">
-                                <div class="anime-info">
-                                    <div class="anime-title">${item.titulo}</div>
-                                    <div class="anime-meta">${item.tipo} • ${item.estado}</div>
-                                </div>
-                            </a>
-                        `).join('')}
+                    <div class="hero-bg"></div>
+                </section>
+                
+                <section class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">Anime Popular</h2>
+                        <a href="#" class="view-all" onclick="app.setContentType('anime')">
+                            Ver todo <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="content-grid" id="popular-anime">
+                        <!-- Se llena con JavaScript -->
                     </div>
                 </section>
                 
-                <section class="content-section">
+                <section class="section">
                     <div class="section-header">
-                        <h2 class="section-title">🆕 Recientes</h2>
-                        <a href="#" class="view-all" data-route="catalog">Ver todo</a>
+                        <h2 class="section-title">Manga Destacado</h2>
+                        <a href="#" class="view-all" onclick="app.setContentType('manga')">
+                            Ver todo <i class="fas fa-arrow-right"></i>
+                        </a>
                     </div>
-                    <div class="anime-grid">
-                        ${recent.map(item => `
-                            <a href="#" class="anime-card" data-route="detail" data-id="${item.id}">
-                                <img src="${item.portada}" alt="${item.titulo}" loading="lazy">
-                                <div class="anime-info">
-                                    <div class="anime-title">${item.titulo}</div>
-                                    <div class="anime-meta">${item.tipo} • ${item.estado}</div>
-                                </div>
-                            </a>
-                        `).join('')}
+                    
+                    <div class="content-grid" id="popular-manga">
+                        <!-- Se llena con JavaScript -->
                     </div>
                 </section>
             `;
-            
-            // Iniciar carrusel automático
-            initCarousel();
-            
-            // Animar tarjetas
-            animateCards();
         }
         
-        // Renderizar página de detalle
-        function renderDetailPage(itemId) {
-            const item = catalogData.find(i => i.id === itemId);
-            if (!item) {
-                showNotification('Contenido no encontrado', 'error');
-                renderHomePage();
-                return;
-            }
-            
-            const mainContent = document.getElementById('main-content');
-            mainContent.innerHTML = `
-                <div class="detail-container">
-                    <div class="detail-header">
-                        <div class="detail-cover">
-                            <img src="${item.portada}" alt="${item.titulo}">
-                        </div>
-                        <div class="detail-info">
-                            <div class="detail-meta">${item.tipo} • ${item.genero} • ${item.estado}</div>
-                            <h1>${item.titulo}</h1>
-                            <p>${item.descripcion}</p>
-                            <div class="detail-actions">
-                                <a href="${item.enlace || '#'}" class="nav-link" style="background: var(--primary); color: white; padding: 10px 20px; border-radius: 20px;">▶ Ver Ahora</a>
-                                <button class="nav-link" style="background: var(--bg-card);">+ Mi Lista</button>
-                            </div>
+        // Renderizar página de exploración
+        function renderBrowsePage() {
+            const title = currentContentType === 'anime' ? 'Anime' : 'Manga';
+            return `
+                <section class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">${title} ${searchQuery ? `- "${searchQuery}"` : ''}</h2>
+                        <div style="display: flex; gap: 15px; align-items: center;">
+                            <select onchange="app.changeSort(event)" style="padding: 8px 12px; background: var(--bg-card); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius);">
+                                <option value="popularity">Popularidad</option>
+                                <option value="score">Puntuación</option>
+                                <option value="title">Título</option>
+                                <option value="newest">Más nuevos</option>
+                            </select>
                         </div>
                     </div>
                     
-                    <div class="detail-body">
-                        <h2>Capítulos/Episodios</h2>
-                        <ul class="chapter-list">
-                            ${item.capitulos ? item.capitulos.map((cap, index) => `
-                                <li class="chapter-item">
-                                    <a href="${cap.enlace}" target="_blank">
-                                        ${item.tipo === 'Manga' ? 'Capítulo' : 'Episodio'} ${index + 1}: ${cap.titulo || ''}
-                                    </a>
-                                </li>
-                            `).join('') : '<p>No hay capítulos disponibles</p>'}
-                        </ul>
+                    <div class="content-grid" id="browse-content">
+                        <!-- Se llena con JavaScript -->
                     </div>
+                    
+                    <div style="text-align: center; margin-top: 40px;">
+                        <button class="btn btn-secondary" onclick="app.loadMore()" id="load-more-btn">
+                            <i class="fas fa-plus"></i> Cargar más
+                        </button>
+                    </div>
+                </section>
+            `;
+        }
+        
+        // Renderizar página de detalles
+        function renderDetailPage() {
+            return `
+                <div class="detail-page" id="detail-content">
+                    <!-- Se llena con JavaScript -->
                 </div>
             `;
         }
         
-        // Renderizar panel de administración
-        function renderAdminPanel() {
-            if (!currentUser || currentUser.email !== 'admin@shinees.com') {
-                showNotification('Acceso denegado', 'error');
-                renderHomePage();
-                return;
+        // Renderizar página de favoritos
+        function renderFavoritesPage() {
+            return `
+                <section class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">Mis Favoritos</h2>
+                    </div>
+                    
+                    ${currentUser ? `
+                        <div class="content-grid" id="favorites-content">
+                            <p style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-secondary);">
+                                Aún no tienes favoritos. ¡Explora nuestro catálogo y añade tus series favoritas!
+                            </p>
+                        </div>
+                    ` : `
+                        <div style="text-align: center; padding: 60px 20px;">
+                            <h3>Inicia sesión para ver tus favoritos</h3>
+                            <p style="color: var(--text-secondary); margin: 20px 0 30px;">Guarda tus series y mangas favoritos para acceder rápidamente a ellos.</p>
+                            <button class="btn btn-primary" onclick="app.showLogin()">Iniciar Sesión</button>
+                        </div>
+                    `}
+                </section>
+            `;
+        }
+        
+        // =================================================================
+        // 5. FUNCIONALIDADES PRINCIPALES
+        // =================================================================
+        
+        // Navegar entre vistas
+        function navigate(view, params = {}) {
+            currentView = view;
+            if (params.contentType) currentContentType = params.contentType;
+            if (params.query) searchQuery = params.query;
+            
+            renderApp();
+            
+            // Cargar datos según la vista
+            switch(view) {
+                case 'home':
+                    loadHomePageData();
+                    break;
+                case 'browse':
+                    loadBrowsePageData();
+                    break;
+                case 'detail':
+                    if (params.id) loadDetailData(params.id);
+                    break;
+            }
+        }
+        
+        // Establecer tipo de contenido (anime/manga)
+        function setContentType(type) {
+            currentContentType = type;
+            navigate('browse');
+        }
+        
+        // Manejar búsqueda
+        function handleSearch(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            } else {
+                searchQuery = event.target.value;
+            }
+        }
+        
+        // Realizar búsqueda
+        function performSearch() {
+            if (searchQuery.trim()) {
+                navigate('browse', { query: searchQuery });
+            }
+        }
+        
+        // Cargar datos de la página de inicio
+        async function loadHomePageData() {
+            isLoading = true;
+            renderApp();
+            
+            try {
+                // Cargar anime popular
+                const animeData = await searchAnime('', 8);
+                renderContentGrid('popular-anime', animeData.data || [], 'anime');
+                
+                // Cargar manga popular
+                const mangaData = await searchManga('', 8);
+                renderContentGrid('popular-manga', mangaData.data || [], 'manga');
+            } catch (error) {
+                console.error('Error loading home page data:', error);
+                showNotification('Error al cargar los datos', 'error');
             }
             
-            const mainContent = document.getElementById('main-content');
-            mainContent.innerHTML = `
-                <div class="content-section">
-                    <h1>Panel de Administración</h1>
-                    <p>Gestiona el contenido de Shinees</p>
-                    
-                    <div class="admin-panel">
-                        <h3>Agregar Nuevo Contenido</h3>
-                        <form class="admin-form" id="add-content-form">
-                            <div class="form-group">
-                                <label>Título</label>
-                                <input type="text" class="form-input" name="titulo" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Descripción</label>
-                                <textarea class="form-input" name="descripcion" rows="3" required></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label>URL de la Portada (Google Drive)</label>
-                                <input type="url" class="form-input" name="portada" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Tipo</label>
-                                <select class="form-input" name="tipo" required>
-                                    <option value="Anime">Anime</option>
-                                    <option value="Manga">Manga</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Género</label>
-                                <input type="text" class="form-input" name="genero" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Estado</label>
-                                <select class="form-input" name="estado" required>
-                                    <option value="En emisión">En emisión</option>
-                                    <option value="Finalizado">Finalizado</option>
-                                    <option value="Próximamente">Próximamente</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>¿Destacado?</label>
-                                <select class="form-input" name="destacado">
-                                    <option value="false">No</option>
-                                    <option value="true">Sí</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="nav-link" style="background: var(--primary); color: white; margin-top: 10px;">Agregar Contenido</button>
-                        </form>
-                    </div>
-                    
-                    <div class="admin-panel" style="margin-top: 30px;">
-                        <h3>Contenido Existente</h3>
-                        <div class="anime-grid">
-                            ${catalogData.map(item => `
-                                <div class="anime-card">
-                                    <img src="${item.portada}" alt="${item.titulo}">
-                                    <div class="anime-info">
-                                        <div class="anime-title">${item.titulo}</div>
-                                        <div class="anime-meta">${item.tipo} • ${item.estado}</div>
-                                        <button class="nav-link" style="margin-top: 10px; font-size: 0.8rem;" data-id="${item.id}">Editar</button>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                </div>
-            `;
+            isLoading = false;
+            renderApp();
+        }
+        
+        // Cargar datos de la página de exploración
+        async function loadBrowsePageData() {
+            isLoading = true;
+            renderApp();
             
-            // Agregar funcionalidad al formulario
-            document.getElementById('add-content-form').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const formData = new FormData(e.target);
-                const contentData = Object.fromEntries(formData.entries());
-                
-                // Generar ID único
-                contentData.id = generateId();
-                contentData.fecha = new Date().toISOString();
-                
-                try {
-                    // Aquí iría la lógica para guardar en Firestore
-                    showNotification('Contenido agregado correctamente', 'success');
-                    e.target.reset();
-                    
-                    // Recargar los datos
-                    await loadCatalogData();
-                    renderAdminPanel();
-                } catch (error) {
-                    showNotification('Error al agregar contenido: ' + error.message, 'error');
+            try {
+                let data;
+                if (currentContentType === 'anime') {
+                    data = await searchAnime(searchQuery, 20);
+                } else {
+                    data = await searchManga(searchQuery, 20);
                 }
-            });
-        }
-        
-        // =================================================================
-        // 4. FUNCIONALIDADES DE LA APLICACIÓN
-        // =================================================================
-        
-        // Inicializar carrusel automático
-        function initCarousel() {
-            const slides = document.querySelectorAll('.carousel-slide');
-            if (slides.length <= 1) return;
+                
+                renderContentGrid('browse-content', data.data || [], currentContentType);
+            } catch (error) {
+                console.error('Error loading browse page data:', error);
+                showNotification('Error al cargar los datos', 'error');
+            }
             
-            let currentIndex = 0;
-            setInterval(() => {
-                slides[currentIndex].classList.remove('active');
-                currentIndex = (currentIndex + 1) % slides.length;
-                slides[currentIndex].classList.add('active');
-            }, 5000);
+            isLoading = false;
+            renderApp();
         }
         
-        // Animar tarjetas al cargar
-        function animateCards() {
-            const cards = document.querySelectorAll('.anime-card');
+        // Cargar datos de la página de detalles
+        async function loadDetailData(contentId) {
+            isLoading = true;
+            renderApp();
+            
+            try {
+                let data;
+                if (currentContentType === 'anime') {
+                    data = await getAnimeDetails(contentId);
+                } else {
+                    data = await getMangaDetails(contentId);
+                }
+                
+                renderDetailContent(data);
+            } catch (error) {
+                console.error('Error loading detail data:', error);
+                showNotification('Error al cargar los detalles', 'error');
+                navigate('home');
+            }
+            
+            isLoading = false;
+            renderApp();
+        }
+        
+        // Renderizar grid de contenido
+        function renderContentGrid(containerId, items, type) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            container.innerHTML = items.map(item => {
+                const title = item.node?.title || item.title;
+                const image = item.node?.main_picture?.medium || item.main_picture?.medium || 'https://via.placeholder.com/200x300/1a1a1a/ffffff?text=No+Image';
+                
+                return `
+                    <div class="content-card" onclick="app.navigate('detail', { id: ${item.node?.id || item.id}, contentType: '${type}' })">
+                        <img src="${image}" alt="${title}" class="card-image">
+                        <div class="card-content">
+                            <div class="card-title">${title}</div>
+                            <div class="card-meta">
+                                <span>${type === 'anime' ? 'Anime' : 'Manga'}</span>
+                                <span>⭐ ${item.node?.mean || item.mean || 'N/A'}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Animar las tarjetas
+            setTimeout(() => {
+                const cards = container.querySelectorAll('.content-card');
+                cards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.classList.add('visible');
+                    }, index * 100);
+                });
+            }, 50);
+        }
+        
+        // Renderizar contenido de detalles
+        function renderDetailContent(data) {
+            const container = document.getElementById('detail-content');
+            if (!container) return;
+            
+            const title = data.title;
+            const image = data.main_picture?.large || data.main_picture?.medium || 'https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image';
+            const synopsis = data.synopsis || 'Descripción no disponible.';
+            
+            // Generar capítulos/episodios (simulado)
+            const numChapters = currentContentType === 'anime' ? data.num_episodes : data.num_chapters;
+            const chapters = Array.from({length: Math.min(numChapters || 10, 50)}, (_, i) => ({
+                title: `${currentContentType === 'anime' ? 'Episodio' : 'Capítulo'} ${i + 1}`,
+                link: generateDriveLink(data.id, i + 1)
+            }));
+            
+            container.innerHTML = `
+                <div class="detail-header">
+                    <img src="${image}" alt="${title}" class="detail-poster">
+                    
+                    <div class="detail-info">
+                        <h1 class="detail-title">${title}</h1>
+                        
+                        <div class="detail-meta">
+                            <span>⭐ ${data.mean || 'N/A'}</span>
+                            <span>👥 ${formatNumber(data.popularity || 0)}</span>
+                            <span>${data.media_type || 'Unknown'}</span>
+                            <span>${data.status || 'Unknown'}</span>
+                        </div>
+                        
+                        <p class="detail-synopsis">${synopsis}</p>
+                        
+                        <div class="detail-actions">
+                            <button class="btn btn-primary" onclick="app.playContent(${data.id})">
+                                <i class="fas fa-play"></i> ${currentContentType === 'anime' ? 'Ver Ahora' : 'Leer Ahora'}
+                            </button>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-plus"></i> Mi Lista
+                            </button>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-share"></i> Compartir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chapters-section">
+                    <h2>${currentContentType === 'anime' ? 'Episodios' : 'Capítulos'}</h2>
+                    
+                    <div class="chapters-grid">
+                        ${chapters.map(chapter => `
+                            <div class="chapter-card" onclick="window.open('${chapter.link}', '_blank')">
+                                <div class="chapter-title">${chapter.title}</div>
+                                <div class="chapter-meta">Disponible en Google Drive</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Animar elementos al cargar
+        function animateElements() {
+            const cards = document.querySelectorAll('.content-card');
             cards.forEach((card, index) => {
                 setTimeout(() => {
-                    card.classList.add('loaded');
+                    card.classList.add('visible');
                 }, index * 100);
             });
         }
         
-        // Generar ID único
-        function generateId() {
-            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        // =================================================================
+        // 6. AUTENTICACIÓN Y USUARIO
+        // =================================================================
+        
+        // Mostrar modal de login
+        function showLogin() {
+            // Implementación simplificada - en una app real sería un modal completo
+            const email = prompt('Ingresa tu email:');
+            if (!email) return;
+            
+            const password = prompt('Ingresa tu contraseña:');
+            if (!password) return;
+            
+            // Aquí iría la autenticación real con Firebase
+            showNotification(`Bienvenido ${email} (simulado)`);
+            currentUser = { email };
+            renderApp();
         }
         
-        // Cargar datos del catálogo (simulado - en producción vendría de Firestore)
-        async function loadCatalogData() {
-            // Datos de ejemplo - en producción esto vendría de Firestore
-            catalogData = [
-                {
-                    id: 'demon-slayer',
-                    titulo: 'Demon Slayer: Kimetsu no Yaiba',
-                    descripcion: 'Tanjiro Kamado es un joven que se convierte en cazador de demonios para encontrar una cura para su hermana y vengar a su familia.',
-                    portada: 'https://drive.google.com/thumbnail?id=1abc123def456', // Ejemplo de enlace Drive
-                    tipo: 'Anime',
-                    genero: 'Acción, Fantasía',
-                    estado: 'En emisión',
-                    destacado: true,
-                    fecha: '2023-01-15',
-                    enlace: 'https://drive.google.com/file/d/1abc123def456/view', // Enlace al video
-                    capitulos: [
-                        { titulo: 'Crueldad', enlace: 'https://drive.google.com/file/d/1abc123def456/view' },
-                        { titulo: 'El instructor Sakonji Urokodaki', enlace: 'https://drive.google.com/file/d/1abc123def457/view' }
-                    ]
-                },
-                {
-                    id: 'jujutsu-kaisen',
-                    titulo: 'Jujutsu Kaisen',
-                    descripcion: 'Yuji Itadori se traga un objeto maldito y se convierte en el anfitrión de una poderosa maldición.',
-                    portada: 'https://drive.google.com/thumbnail?id=2def456ghi789',
-                    tipo: 'Anime',
-                    genero: 'Acción, Sobrenatural',
-                    estado: 'En emisión',
-                    destacado: true,
-                    fecha: '2023-02-20',
-                    enlace: 'https://drive.google.com/file/d/2def456ghi789/view',
-                    capitulos: [
-                        { titulo: 'Ryomen Sukuna', enlace: 'https://drive.google.com/file/d/2def456ghi789/view' },
-                        { titulo: 'Para mí', enlace: 'https://drive.google.com/file/d/2def456ghi790/view' }
-                    ]
-                }
-            ];
-            
-            return catalogData;
+        // Cerrar sesión
+        function logout() {
+            currentUser = null;
+            showNotification('Sesión cerrada');
+            renderApp();
         }
         
         // =================================================================
-        // 5. CONFIGURACIÓN DE EVENT LISTENERS
+        // 7. DATOS DE EJEMPLO (FALLBACK)
         // =================================================================
         
-        function setupEventListeners() {
-            // Navegación por rutas
-            document.addEventListener('click', (e) => {
-                if (e.target.matches('[data-route]')) {
-                    e.preventDefault();
-                    const route = e.target.getAttribute('data-route');
-                    const id = e.target.getAttribute('data-id');
-                    
-                    if (route === 'home') renderHomePage();
-                    else if (route === 'detail') renderDetailPage(id);
-                    else if (route === 'admin') renderAdminPanel();
-                    else if (route === 'catalog') {
-                        // Implementar vista de catálogo completo
-                        renderHomePage();
-                    }
-                }
-                
-                // Login
-                if (e.target.id === 'login-btn' || e.target.id === 'footer-profile') {
-                    renderLoginModal();
-                }
-                
-                // Logout
-                if (e.target.id === 'footer-logout') {
-                    auth.signOut();
-                    showNotification('Sesión cerrada', 'info');
-                }
-                
-                // Cambio de tema
-                if (e.target.classList.contains('theme-toggle')) {
-                    toggleTheme();
-                }
-            });
-            
-            // Búsqueda
-            document.querySelector('.search-btn').addEventListener('click', () => {
-                const query = document.querySelector('.search-input').value.trim();
-                if (query) {
-                    showNotification(`Buscando: "${query}"`);
-                    // Implementar búsqueda
-                }
-            });
-            
-            document.querySelector('.search-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    const query = e.target.value.trim();
-                    if (query) {
-                        showNotification(`Buscando: "${query}"`);
-                        // Implementar búsqueda
-                    }
-                }
-            });
+        function getFallbackAnimeData() {
+            return {
+                data: [
+                    { node: { id: 1, title: 'Attack on Titan', mean: 8.5, popularity: 1500000, main_picture: { medium: 'https://via.placeholder.com/200x300/1a1a1a/ffffff?text=AOT' } } },
+                    { node: { id: 2, title: 'Demon Slayer', mean: 8.7, popularity: 1400000, main_picture: { medium: 'https://via.placeholder.com/200x300/1a1a1a/ffffff?text=DS' } } },
+                    { node: { id: 3, title: 'Jujutsu Kaisen', mean: 8.6, popularity: 1300000, main_picture: { medium: 'https://via.placeholder.com/200x300/1a1a1a/ffffff?text=JJK' } } },
+                    { node: { id: 4, title: 'One Piece', mean: 8.8, popularity: 1200000, main_picture: { medium: 'https://via.placeholder.com/200x300/1a1a1a/ffffff?text=OP' } } }
+                ]
+            };
         }
         
-        // Renderizar modal de login
-        function renderLoginModal() {
-            const modal = document.createElement('div');
-            modal.className = 'modal-overlay';
-            modal.style.cssText = `
-                position: fixed; inset: 0; background: rgba(0,0,0,0.7); 
-                display: flex; justify-content: center; align-items: center; z-index: 2000;
-            `;
-            modal.innerHTML = `
-                <div class="admin-panel" style="max-width: 400px; width: 90%; position: relative;">
-                    <button class="theme-toggle" style="position: absolute; top: 10px; right: 10px;">✕</button>
-                    <h2>Iniciar Sesión</h2>
-                    <form class="admin-form" id="login-form">
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" class="form-input" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Contraseña</label>
-                            <input type="password" class="form-input" name="password" required>
-                        </div>
-                        <button type="submit" class="nav-link" style="background: var(--primary); color: white;">Entrar</button>
-                    </form>
-                    <p style="text-align: center; margin-top: 15px; color: var(--text-secondary);">
-                        ¿No tienes cuenta? <a href="#" style="color: var(--primary);" id="show-register">Regístrate</a>
-                    </p>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-            
-            // Cerrar modal
-            modal.querySelector('.theme-toggle').addEventListener('click', () => {
-                modal.remove();
-            });
-            
-            // Login
-            document.getElementById('login-form').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const formData = new FormData(e.target);
-                const email = formData.get('email');
-                const password = formData.get('password');
-                
-                try {
-                    await auth.signInWithEmailAndPassword(email, password);
-                    modal.remove();
-                    showNotification('¡Bienvenido!', 'success');
-                } catch (error) {
-                    showNotification('Error: ' + error.message, 'error');
-                }
-            });
+        function getFallbackMangaData() {
+            return {
+                data: [
+                    { node: { id: 1, title: 'Berserk', mean: 9.3, popularity: 800000, main_picture: { medium: 'https://via.placeholder.com/200x300/1a1a1a/ffffff?text=Berserk' } } },
+                    { node: { id: 2, title: 'One Punch Man', mean: 8.9, popularity: 900000, main_picture: { medium: 'https://via.placeholder.com/200x300/1a1a1a/ffffff?text=OPM' } } },
+                    { node: { id: 3, title: 'Tokyo Ghoul', mean: 8.2, popularity: 700000, main_picture: { medium: 'https://via.placeholder.com/200x300/1a1a1a/ffffff?text=TG' } } },
+                    { node: { id: 4, title: 'My Hero Academia', mean: 8.1, popularity: 850000, main_picture: { medium: 'https://via.placeholder.com/200x300/1a1a1a/ffffff?text=MHA' } } }
+                ]
+            };
+        }
+        
+        function getFallbackAnimeDetails(id) {
+            return {
+                id: id,
+                title: 'Attack on Titan',
+                main_picture: { large: 'https://via.placeholder.com/300x450/1a1a1a/ffffff?text=AOT' },
+                mean: 8.5,
+                popularity: 1500000,
+                num_episodes: 75,
+                status: 'Finished Airing',
+                media_type: 'TV',
+                synopsis: 'En un mundo donde la humanidad vive dentro de ciudades rodeadas por enormes muros para protegerse de titanes gigantescos que devoran humanos, la historia sigue a Eren Yeager, quien jura exterminar a los titanes después de que destruyen su ciudad natal y matan a su madre.'
+            };
+        }
+        
+        function getFallbackMangaDetails(id) {
+            return {
+                id: id,
+                title: 'Berserk',
+                main_picture: { large: 'https://via.placeholder.com/300x450/1a1a1a/ffffff?text=Berserk' },
+                mean: 9.3,
+                popularity: 800000,
+                num_chapters: 380,
+                status: 'Currently Publishing',
+                media_type: 'Manga',
+                synopsis: 'Guts, un mercenario conocido como el "Espadachín Negro", está marcado por un destino cruel. En su búsqueda de venganza contra su antiguo amigo Griffith, líder de la Banda del Halcón, se enfrenta a horrores inimaginables en un mundo oscuro y brutal.'
+            };
         }
         
         // =================================================================
-        // 6. INICIALIZACIÓN DE LA APLICACIÓN
+        // 8. INICIALIZACIÓN Y API PÚBLICA
         // =================================================================
         
-        async function initApp() {
-            try {
-                // Cargar datos del catálogo
-                await loadCatalogData();
-                
-                // Renderizar la interfaz
-                renderBaseLayout();
-                renderHomePage();
-                
-                // Configurar autenticación
-                auth.onAuthStateChanged(user => {
-                    currentUser = user;
-                    renderBaseLayout();
-                    renderHomePage();
-                    
-                    if (user) {
-                        showNotification(`Bienvenido ${user.email}`, 'success');
-                    }
-                });
-                
-            } catch (error) {
-                console.error('Error inicializando la app:', error);
-                showNotification('Error al cargar la aplicación', 'error');
+        // API pública para los controladores de eventos
+        window.app = {
+            navigate,
+            setContentType,
+            handleSearch,
+            performSearch,
+            toggleTheme,
+            showLogin,
+            logout,
+            playContent: (id) => {
+                window.open(generateDriveLink(id), '_blank');
+            },
+            changeSort: (event) => {
+                showNotification(`Ordenando por: ${event.target.value}`);
+                // En una implementación real, esto recargaría los datos ordenados
+            },
+            loadMore: () => {
+                showNotification('Cargando más contenido...');
+                // En una implementación real, esto cargaría más resultados
+            },
+            showUserMenu: () => {
+                showNotification(`Usuario: ${currentUser?.email}`);
             }
+        };
+        
+        // Inicializar la aplicación
+        function init() {
+            applyTheme(currentTheme);
+            renderApp();
+            loadHomePageData();
+            
+            // Escuchar cambios de autenticación (simulado)
+            // En una app real, esto se conectaría a Firebase Auth
+            setTimeout(() => {
+                // Simular usuario no autenticado por defecto
+                currentUser = null;
+                renderApp();
+            }, 1000);
         }
         
-        // Iniciar la aplicación
-        initApp();
+        // Iniciar la aplicación cuando el DOM esté listo
+        init();
     });
     </script>
 </body>
