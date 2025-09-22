@@ -5,19 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shinees - Anime & Manga Platform</title>
     
-    <!-- Scripts de Firebase (importante que estén en el <head>) -->
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     
     <style>
-        /* --- FUENTES Y ESTILOS GLOBALES OPTIMIZADOS --- */
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap');
-        
+        /* --- ESTILOS MINIMALISTAS Y OPTIMIZADOS --- */
         :root {
-            --primary: #ff6b1a; --secondary: #23252b; --accent: #f47521; --text: #ffffff; 
-            --text-secondary: #a0a0a0; --bg: #000000; --bg-secondary: #141519; 
-            --bg-card: #1a1b1f; --border: #2a2b30; --radius: 8px;
-            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --primary: #ff6b1a; --secondary: #23252b; --accent: #f47521; 
+            --text: #ffffff; --text-secondary: #a0a0a0; --bg: #000000; 
+            --bg-secondary: #141519; --bg-card: #1a1b1f; --border: #2a2b30;
+            --radius: 8px; --transition: all 0.3s ease;
         }
         
         [data-theme="light"] {
@@ -38,761 +37,153 @@
             --bg-card: #5f9ea0; --border: #00bfff;
         }
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        html {
-            scroll-behavior: smooth;
-        }
-        
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: var(--bg); 
-            color: var(--text); 
-            min-height: 100vh;
-            transition: var(--transition);
-            overflow-x: hidden;
-        }
-        
-        /* --- HEADER Y NAVEGACIÓN OPTIMIZADOS --- */
-        header { 
-            background: var(--bg-secondary); 
-            padding: 0 20px; 
-            position: sticky; 
-            top: 0; 
-            z-index: 1000; 
-            border-bottom: 1px solid var(--border);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-        
-        .header-container { 
-            max-width: 1400px; 
-            margin: 0 auto; 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            height: 60px; 
-        }
-        
-        .logo-3d { 
-            font-family: 'Bebas Neue', cursive; 
-            font-size: 2.5rem; 
-            font-weight: bold; 
-            background: linear-gradient(45deg, var(--primary), var(--accent)); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            text-shadow: 0 0 30px rgba(255, 107, 26, 0.5); 
-            animation: float 3s ease-in-out infinite; 
-            cursor: pointer; 
-            transition: var(--transition); 
-            perspective: 1000px; 
-            text-decoration: none; 
-            display: block;
-        }
-        
-        .main-nav { 
-            display: flex; 
-            gap: 30px; 
-            align-items: center; 
-        }
-        
-        .nav-link { 
-            color: var(--text-secondary); 
-            text-decoration: none; 
-            font-size: 14px; 
-            font-weight: 500; 
-            transition: var(--transition); 
-            position: relative; 
-            padding: 5px 0;
-        }
-        
-        .nav-link:hover { 
-            color: var(--primary); 
-        }
-        
-        .nav-link::after { 
-            content: ''; 
-            position: absolute; 
-            bottom: -5px; 
-            left: 0; 
-            width: 0; 
-            height: 2px; 
-            background: var(--primary); 
-            transition: width 0.3s; 
-        }
-        
-        .nav-link:hover::after { 
-            width: 100%; 
-        }
-        
-        .search-container { 
-            position: relative; 
-            flex: 1; 
-            max-width: 400px; 
-            margin: 0 30px; 
-        }
-        
-        .search-input { 
-            width: 100%; 
-            padding: 8px 40px 8px 15px; 
-            background: var(--bg-card); 
-            border: 1px solid var(--border); 
-            border-radius: var(--radius); 
-            color: var(--text); 
-            font-size: 14px; 
-            transition: var(--transition); 
-        }
-        
-        .search-input:focus { 
-            outline: none; 
-            border-color: var(--primary); 
-            box-shadow: 0 0 10px rgba(255, 107, 26, 0.2); 
-        }
-        
-        .search-btn { 
-            position: absolute; 
-            right: 5px; 
-            top: 50%; 
-            transform: translateY(-50%); 
-            background: var(--primary); 
-            border: none; 
-            border-radius: 50%; 
-            width: 30px; 
-            height: 30px; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            transition: var(--transition); 
-        }
-        
-        .search-btn:hover { 
-            background: var(--accent); 
-            transform: translateY(-50%) scale(1.1);
-        }
-        
-        .user-menu { 
-            display: flex; 
-            align-items: center; 
-            gap: 15px; 
-        }
-        
-        .user-avatar { 
-            width: 35px; 
-            height: 35px; 
-            border-radius: 50%; 
-            background: var(--primary); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            cursor: pointer; 
-            transition: var(--transition); 
-            font-weight: bold; 
-            color: white;
-        }
-        
-        .user-avatar:hover { 
-            transform: scale(1.1); 
-            box-shadow: 0 0 15px rgba(255, 107, 26, 0.5);
-        }
-        
-        .theme-toggle { 
-            background: none; 
-            border: none; 
-            color: var(--text); 
-            font-size: 20px; 
-            cursor: pointer; 
-            transition: var(--transition); 
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .theme-toggle:hover { 
-            transform: rotate(180deg); 
-            background: var(--bg-card);
-        }
-        
-        /* --- PÁGINA PRINCIPAL: CARRUSEL Y GRIDS OPTIMIZADOS --- */
-        .hero-carousel { 
-            position: relative; 
-            height: 450px; 
-            overflow: hidden; 
-            background: var(--bg-secondary); 
-            border-radius: 0 0 var(--radius) var(--radius);
-        }
-        
-        .carousel-slide { 
-            position: absolute; 
-            width: 100%; 
-            height: 100%; 
-            opacity: 0; 
-            transition: opacity 1s; 
-            display: flex; 
-            align-items: center; 
-        }
-        
-        .carousel-slide.active { 
-            opacity: 1; 
-        }
-        
-        .carousel-content { 
-            position: relative; 
-            z-index: 2; 
-            padding: 0 60px; 
-            max-width: 600px; 
-        }
-        
-        .carousel-title { 
-            font-size: 3rem; 
-            font-weight: bold; 
-            margin-bottom: 20px; 
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        }
-        
-        .carousel-description { 
-            font-size: 1.1rem; 
-            margin-bottom: 30px; 
-            color: var(--text-secondary); 
-            line-height: 1.5;
-        }
-        
-        .watch-btn { 
-            background: var(--primary); 
-            color: white; 
-            border: none; 
-            padding: 12px 30px; 
-            border-radius: 25px; 
-            font-size: 16px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: var(--transition); 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 10px; 
-            text-decoration: none; 
-        }
-        
-        .watch-btn:hover { 
-            background: var(--accent); 
-            transform: scale(1.05); 
-            box-shadow: 0 5px 15px rgba(255, 107, 26, 0.4);
-        }
-        
-        .carousel-image { 
-            position: absolute; 
-            right: 0; 
-            top: 0; 
-            width: 60%; 
-            height: 100%; 
-            object-fit: cover; 
-            mask-image: linear-gradient(to right, transparent, black 30%); 
-            -webkit-mask-image: linear-gradient(to right, transparent, black 30%); 
-        }
-        
-        .content-section { 
-            padding: 40px 20px; 
-            max-width: 1400px; 
-            margin: 0 auto; 
-        }
-        
-        .section-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 20px; 
-        }
-        
-        .section-title { 
-            font-size: 1.8rem; 
-            font-weight: bold; 
-        }
-        
-        .view-all { 
-            color: var(--primary); 
-            text-decoration: none; 
-            font-weight: 500; 
-            display: flex; 
-            align-items: center; 
-            gap: 5px; 
-            transition: gap 0.3s; 
-        }
-        
-        .view-all:hover { 
-            gap: 10px; 
-        }
-        
-        .anime-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
-            gap: 20px; 
-        }
-        
-        .anime-card { 
-            background: var(--bg-card); 
-            border-radius: var(--radius); 
-            overflow: hidden; 
-            transition: var(--transition); 
-            cursor: pointer; 
-            position: relative; 
-            opacity: 0; 
-            text-decoration: none; 
-            color: var(--text); 
-            transform: translateY(20px);
-            border: 1px solid transparent;
-        }
-        
-        .anime-card:hover { 
-            transform: translateY(-10px); 
-            box-shadow: 0 10px 30px rgba(255, 107, 26, 0.3); 
-            border-color: var(--primary);
-        }
-        
-        .anime-card img { 
-            width: 100%; 
-            height: 250px; 
-            object-fit: cover; 
-            transition: var(--transition);
-        }
-        
-        .anime-card:hover img {
-            transform: scale(1.05);
-        }
-        
-        .anime-info { 
-            padding: 15px; 
-        }
-        
-        .anime-title { 
-            font-weight: 600; 
-            margin-bottom: 5px; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            white-space: nowrap; 
-        }
-        
-        .anime-meta { 
-            font-size: 12px; 
-            color: var(--text-secondary); 
-        }
-        
-        .anime-badge { 
-            position: absolute; 
-            top: 10px; 
-            right: 10px; 
-            background: var(--primary); 
-            color: white; 
-            padding: 5px 10px; 
-            border-radius: 20px; 
-            font-size: 11px; 
-            font-weight: 600; 
-        }
-        
-        /* --- PÁGINA DE DETALLES OPTIMIZADA --- */
-        .detail-container { 
-            padding: 40px 20px; 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            animation: fadeInUp 0.5s; 
-        }
-        
-        .detail-header { 
-            display: flex; 
-            gap: 30px; 
-            margin-bottom: 40px; 
-        }
-        
-        .detail-cover img { 
-            width: 250px; 
-            border-radius: var(--radius); 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-        }
-        
-        .detail-info h1 { 
-            font-size: 3rem; 
-            margin-bottom: 10px; 
-        }
-        
-        .detail-meta { 
-            display: flex; 
-            gap: 15px; 
-            color: var(--text-secondary); 
-            margin-bottom: 20px; 
-        }
-        
-        .detail-actions { 
-            display: flex; 
-            gap: 15px; 
-            margin-top: 20px; 
-        }
-        
-        .chapter-list { 
-            list-style: none; 
-            margin-top: 40px; 
-        }
-        
-        .chapter-item { 
-            background: var(--bg-card); 
-            border: 1px solid var(--border); 
-            border-radius: var(--radius); 
-            margin-bottom: 10px; 
-            transition: var(--transition); 
-        }
-        
-        .chapter-item:hover { 
-            border-color: var(--primary); 
-            transform: translateX(5px); 
-        }
-        
-        .chapter-item a { 
-            display: block; 
-            padding: 15px 20px; 
-            text-decoration: none; 
-            color: var(--text); 
-        }
-        
-        /* --- LOADING ÚNICO Y MEJORADO --- */
-        .loading-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 300px;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .shine-loading {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: conic-gradient(var(--primary), transparent);
-            animation: rotate 1s linear infinite;
-            position: relative;
-        }
-        
-        .shine-loading::before {
-            content: '';
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--bg);
-            top: 5px;
-            left: 5px;
-        }
-        
-        .loading-text {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-        }
-        
-        /* --- FOOTER OPTIMIZADO --- */
-        footer { 
-            background: var(--bg-secondary); 
-            padding: 40px 20px 20px; 
-            margin-top: 60px; 
-            border-top: 1px solid var(--border); 
-        }
-        
-        .footer-content { 
-            max-width: 1400px; 
-            margin: 0 auto; 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
-            gap: 40px; 
-            margin-bottom: 30px; 
-        }
-        
-        .footer-section h3 { 
-            margin-bottom: 15px; 
-            color: var(--primary); 
-        }
-        
-        .footer-links { 
-            list-style: none; 
-        }
-        
-        .footer-links li { 
-            margin-bottom: 10px; 
-        }
-        
-        .footer-links a { 
-            color: var(--text-secondary); 
-            text-decoration: none; 
-            transition: var(--transition); 
-        }
-        
-        .footer-links a:hover { 
-            color: var(--primary); 
-        }
-        
-        .footer-bottom { 
-            text-align: center; 
-            padding-top: 20px; 
-            border-top: 1px solid var(--border); 
-            color: var(--text-secondary); 
-        }
-        
-        .social-links { 
-            display: flex; 
-            gap: 15px; 
-        }
-        
-        .social-link { 
-            width: 40px; 
-            height: 40px; 
-            background: var(--bg-card); 
-            border-radius: 50%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            transition: var(--transition); 
-            text-decoration: none; 
-        }
-        
-        .social-link:hover { 
-            background: var(--primary); 
-            transform: translateY(-5px);
-        }
-        
-        /* --- ANIMACIONES OPTIMIZADAS Y RESPONSIVE --- */
-        @media (max-width: 768px) { 
-            .main-nav { display: none; } 
-            .search-container { margin: 0 10px; } 
-            .carousel-content { padding: 0 20px; } 
-            .carousel-title { font-size: 2rem; } 
-            .anime-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; } 
-            .detail-header { flex-direction: column; } 
-            .detail-cover img { width: 100%; max-width: 250px; margin: 0 auto; } 
-            .detail-info h1 { font-size: 2.2rem; } 
-        }
-        
-        @keyframes float { 
-            0%, 100% { transform: translateY(0) rotateX(0); } 
-            50% { transform: translateY(-10px) rotateX(5deg); } 
-        }
-        
-        @keyframes rotate { 
-            0% { transform: rotate(0); } 
-            100% { transform: rotate(360deg); } 
-        }
-        
-        @keyframes slideInLeft { 
-            from { transform: translateX(-50px); opacity: 0; } 
-            to { transform: translateX(0); opacity: 1; } 
-        }
-        
-        @keyframes fadeInUp { 
-            from { opacity: 0; transform: translateY(30px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-        
-        @keyframes slideInRight { 
-            from { transform: translateX(100%); opacity: 0; } 
-            to { transform: translateX(0); opacity: 1; } 
-        }
-        
-        @keyframes slideOutRight { 
-            from { transform: translateX(0); opacity: 1; } 
-            to { transform: translateX(100%); opacity: 0; } 
-        }
-        
-        /* --- MODALES MEJORADOS --- */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            animation: fadeIn 0.3s;
-        }
-        
-        .modal-content {
-            background: var(--bg-card);
-            padding: 2rem;
-            border-radius: 16px;
-            width: 90%;
-            max-width: 400px;
-            position: relative;
-            animation: scaleIn 0.3s;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            border: 1px solid var(--border);
-        }
-        
-        .modal-close-button {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: var(--transition);
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .modal-close-button:hover {
-            background: var(--bg-secondary);
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes scaleIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; transition: var(--transition); }
+        
+        /* HEADER */
+        header { background: var(--bg-secondary); padding: 0 20px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border); }
+        .header-container { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; }
+        .logo { font-size: 2rem; font-weight: bold; background: linear-gradient(45deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-decoration: none; }
+        .nav-link { color: var(--text-secondary); text-decoration: none; transition: var(--transition); padding: 5px 10px; border-radius: var(--radius); }
+        .nav-link:hover { color: var(--primary); background: var(--bg-card); }
+        .search-container { position: relative; flex: 1; max-width: 400px; margin: 0 20px; }
+        .search-input { width: 100%; padding: 10px 15px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); }
+        .search-btn { position: absolute; right: 5px; top: 50%; transform: translateY(-50%); background: var(--primary); border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; }
+        .user-menu { display: flex; align-items: center; gap: 15px; }
+        .user-avatar { width: 35px; height: 35px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; color: white; transition: var(--transition); }
+        .user-avatar:hover { transform: scale(1.1); }
+        .theme-toggle { background: none; border: none; color: var(--text); font-size: 20px; cursor: pointer; transition: var(--transition); padding: 5px; border-radius: 50%; }
+        .theme-toggle:hover { transform: rotate(180deg); background: var(--bg-card); }
+        
+        /* CONTENIDO PRINCIPAL */
+        .hero-carousel { height: 400px; position: relative; overflow: hidden; border-radius: 0 0 var(--radius) var(--radius); }
+        .carousel-slide { position: absolute; width: 100%; height: 100%; opacity: 0; transition: opacity 0.5s; display: flex; align-items: center; padding: 0 40px; }
+        .carousel-slide.active { opacity: 1; }
+        .carousel-content { max-width: 600px; z-index: 2; }
+        .carousel-title { font-size: 2.5rem; font-weight: bold; margin-bottom: 15px; }
+        .carousel-description { color: var(--text-secondary); margin-bottom: 20px; }
+        .carousel-image { position: absolute; right: 0; top: 0; width: 50%; height: 100%; object-fit: cover; mask-image: linear-gradient(to left, transparent, black 30%); }
+        
+        .content-section { padding: 40px 20px; max-width: 1400px; margin: 0 auto; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .section-title { font-size: 1.8rem; font-weight: bold; }
+        .view-all { color: var(--primary); text-decoration: none; font-weight: 500; }
+        
+        .anime-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+        .anime-card { background: var(--bg-card); border-radius: var(--radius); overflow: hidden; transition: var(--transition); text-decoration: none; color: var(--text); opacity: 0; transform: translateY(20px); }
+        .anime-card.loaded { opacity: 1; transform: translateY(0); }
+        .anime-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .anime-card img { width: 100%; height: 250px; object-fit: cover; }
+        .anime-info { padding: 15px; }
+        .anime-title { font-weight: 600; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .anime-meta { font-size: 0.85rem; color: var(--text-secondary); }
+        
+        /* PÁGINA DE DETALLE */
+        .detail-container { padding: 40px 20px; max-width: 1200px; margin: 0 auto; animation: fadeIn 0.5s; }
+        .detail-header { display: flex; gap: 30px; margin-bottom: 40px; }
+        .detail-cover img { width: 250px; border-radius: var(--radius); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .detail-info { flex: 1; }
+        .detail-meta { color: var(--text-secondary); margin-bottom: 15px; }
+        .detail-actions { display: flex; gap: 15px; margin-top: 20px; }
+        .chapter-list { list-style: none; margin-top: 30px; }
+        .chapter-item { background: var(--bg-card); border-radius: var(--radius); margin-bottom: 10px; transition: var(--transition); }
+        .chapter-item:hover { transform: translateX(5px); border-left: 3px solid var(--primary); }
+        .chapter-item a { display: block; padding: 15px 20px; text-decoration: none; color: var(--text); }
+        
+        /* ADMIN PANEL */
+        .admin-panel { background: var(--bg-card); border-radius: var(--radius); padding: 20px; margin-top: 30px; }
+        .admin-form { display: grid; gap: 15px; margin-top: 15px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { margin-bottom: 5px; font-weight: 500; }
+        .form-input { padding: 10px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); }
+        
+        /* LOADING Y ESTADOS */
+        .loading { display: flex; justify-content: center; align-items: center; height: 200px; flex-direction: column; gap: 15px; }
+        .spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-left: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        
+        /* FOOTER */
+        footer { background: var(--bg-secondary); padding: 40px 20px 20px; margin-top: 60px; border-top: 1px solid var(--border); }
+        .footer-content { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 30px; }
+        .footer-section h3 { margin-bottom: 15px; color: var(--primary); }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-links a { color: var(--text-secondary); text-decoration: none; transition: var(--transition); }
+        .footer-links a:hover { color: var(--primary); }
+        .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid var(--border); color: var(--text-secondary); }
+        
+        /* ANIMACIONES */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .header-container { flex-wrap: wrap; height: auto; padding: 10px 0; }
+            .search-container { order: 3; width: 100%; margin: 10px 0 0; max-width: 100%; }
+            .hero-carousel { height: 300px; }
+            .carousel-slide { padding: 0 20px; }
+            .carousel-title { font-size: 1.8rem; }
+            .carousel-image { width: 40%; }
+            .detail-header { flex-direction: column; }
+            .detail-cover img { width: 100%; max-width: 250px; margin: 0 auto; }
+            .anime-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
         }
     </style>
 </head>
 <body>
-    <!-- HEADER (se mantiene en todas las vistas) -->
-    <header>
-        <div class="header-container">
-            <a href="/" class="logo-3d">SHINEES</a>
-            <nav class="main-nav">
-                <a href="#" class="nav-link">Browse</a>
-                <a href="#" class="nav-link">Manga</a>
-            </nav>
-            <div class="search-container">
-                <input type="text" class="search-input" placeholder="Buscar..." id="searchInput">
-                <button class="search-btn">🔍</button>
-            </div>
-            <div class="user-menu">
-                <!-- Contenido dinámico por JS -->
-            </div>
+    <!-- SOLO EL CONTENEDOR PRINCIPAL - TODO SE GENERA CON JS -->
+    <div id="app">
+        <div class="loading">
+            <div class="spinner"></div>
+            <div>Cargando Shinees...</div>
         </div>
-    </header>
-
-    <!-- CONTENEDOR PRINCIPAL (Aquí se renderizará todo) -->
-    <div id="main-container">
-        <!-- El contenido se genera aquí por JavaScript -->
     </div>
-
-    <!-- FOOTER (se mantiene en todas las vistas) -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section"><h3>Navegación</h3><ul class="footer-links"><li><a href="/">Inicio</a></li><li><a href="#">Catálogo</a></li></ul></div>
-            <div class="footer-section"><h3>Cuenta</h3><ul class="footer-links"><li><a href="#" id="footer-profile-link">Mi Perfil</a></li><li><a href="#" id="footer-logout-link">Cerrar sesión</a></li></ul></div>
-            <div class="footer-section"><h3>Conecta</h3><div class="social-links"><a href="#" class="social-link">📘</a><a href="#" class="social-link">🐦</a></div></div>
-            <div class="footer-section"><h3>Información</h3><ul class="footer-links"><li><a href="#">Sobre nosotros</a></li><li><a href="#">Términos de uso</a></li></ul></div>
-        </div>
-        <div class="footer-bottom"><p>© 2024 Shinees Platform. Todos los derechos reservados.</p></div>
-    </footer>
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // =================================================================
-        // 1. CONFIGURACIÓN Y VARIABLES GLOBALES
+        // 1. CONFIGURACIÓN DE FIREBASE
         // =================================================================
         const FIREBASE_CONFIG = {
             apiKey: "AIzaSyDsv2keytFIEeS4QT4_chwOHMgyWpV8gP4",
             authDomain: "shinees.firebaseapp.com",
             projectId: "shinees",
-        };
-        
-        // Configuración para datos de ejemplo (en lugar de Google Drive)
-        const SAMPLE_DATA = {
-            series: [
-                {
-                    id: "demon-slayer",
-                    titulo: "Demon Slayer: Kimetsu no Yaiba",
-                    descripcion: "Tanjiro Kamado es un joven que se convierte en cazador de demonios para encontrar una cura para su hermana y vengar a su familia.",
-                    portada: "https://via.placeholder.com/300x450/ff6b1a/ffffff?text=Demon+Slayer",
-                    tipo: "Anime",
-                    año: "2019",
-                    estado: "En emisión",
-                    destacado: true,
-                    episodios: [
-                        { titulo: "Episodio 1: Crueldad" },
-                        { titulo: "Episodio 2: El instructor Sakonji Urokodaki" },
-                        { titulo: "Episodio 3: Sabito y Makomo" }
-                    ]
-                },
-                {
-                    id: "jujutsu-kaisen",
-                    titulo: "Jujutsu Kaisen",
-                    descripcion: "Yuji Itadori se traga un objeto maldito y se convierte en el anfitrión de una poderosa maldición.",
-                    portada: "https://via.placeholder.com/300x450/1e90ff/ffffff?text=Jujutsu+Kaisen",
-                    tipo: "Anime",
-                    año: "2020",
-                    estado: "En emisión",
-                    destacado: true,
-                    episodios: [
-                        { titulo: "Episodio 1: Ryomen Sukuna" },
-                        { titulo: "Episodio 2: Para mí" },
-                        { titulo: "Episodio 3: Chica de acero" }
-                    ]
-                },
-                {
-                    id: "attack-on-titan",
-                    titulo: "Attack on Titan",
-                    descripcion: "La humanidad vive en ciudades rodeadas por enormes muros que los protegen de los titanes.",
-                    portada: "https://via.placeholder.com/300x450/ff69b4/ffffff?text=Attack+on+Titan",
-                    tipo: "Anime",
-                    año: "2013",
-                    estado: "Finalizado",
-                    destacado: false,
-                    episodios: [
-                        { titulo: "Episodio 1: A la humanidad, 2000 años después" },
-                        { titulo: "Episodio 2: Ese día" },
-                        { titulo: "Episodio 3: Una luz tenue en la desesperación" }
-                    ]
-                }
-            ]
+            storageBucket: "shinees.appspot.com",
+            messagingSenderId: "109623976622",
+            appId: "1:109623976622:web:c9ab5a1c345f502b71833f",
         };
 
-        // Inicialización de Firebase
+        // Inicializar Firebase
         firebase.initializeApp(FIREBASE_CONFIG);
         const auth = firebase.auth();
-        const mainContainer = document.getElementById('main-container');
+        const db = firebase.firestore();
         
         // Estado de la aplicación
         let currentUser = null;
-        let currentTheme = localStorage.getItem('theme') || 'dark';
-        let isLoading = false;
-
+        let currentTheme = localStorage.getItem('shinees-theme') || 'dark';
+        let catalogData = [];
+        
         // =================================================================
         // 2. FUNCIONES DE UTILIDAD
         // =================================================================
         
-        // Mostrar notificaciones mejoradas
+        // Mostrar notificación
         function showNotification(message, type = 'info') {
+            // Eliminar notificación existente
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
+            
             const notification = document.createElement('div');
-            const bgColor = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#ff6b1a';
-            
+            notification.className = 'notification';
+            notification.innerHTML = message;
             notification.style.cssText = `
-                position: fixed; 
-                top: 80px; 
-                right: 20px; 
-                background: ${bgColor}; 
-                color: white; 
-                padding: 15px 20px; 
-                border-radius: 10px; 
-                box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
-                z-index: 2000; 
+                position: fixed; top: 80px; right: 20px; 
+                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#ff6b1a'}; 
+                color: white; padding: 12px 20px; border-radius: 8px; 
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 2000; 
                 animation: slideInRight 0.3s forwards;
-                max-width: 300px;
-                word-wrap: break-word;
             `;
-            
-            notification.textContent = message;
             document.body.appendChild(notification);
             
             setTimeout(() => {
@@ -800,481 +191,524 @@
                 setTimeout(() => notification.remove(), 300);
             }, 3000);
         }
-
-        // Mostrar/ocultar loading
-        function setLoading(loading) {
-            isLoading = loading;
-            if (loading) {
-                mainContainer.innerHTML = `
-                    <div class="loading-container">
-                        <div class="shine-loading"></div>
-                        <div class="loading-text">Cargando contenido...</div>
-                    </div>
-                `;
-            }
-        }
-
-        // =================================================================
-        // 3. GESTIÓN DE TEMAS DINÁMICOS
-        // =================================================================
+        
+        // Aplicar tema
         function applyTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             currentTheme = theme;
-            localStorage.setItem('theme', theme);
-            
-            // Actualizar icono del botón de tema
-            const themeBtn = document.querySelector('.theme-toggle');
-            if (themeBtn) {
-                const icons = { 'dark': '🌙', 'light': '☀️', 'girl': '🌸', 'boy': '⚡' };
-                themeBtn.textContent = icons[theme];
-            }
+            localStorage.setItem('shinees-theme', theme);
         }
-
+        
+        // Cambiar tema
         function toggleTheme() {
             const themes = ['dark', 'light', 'girl', 'boy'];
             const currentIndex = themes.indexOf(currentTheme);
             const nextTheme = themes[(currentIndex + 1) % themes.length];
             applyTheme(nextTheme);
+            showNotification(`Tema cambiado a: ${nextTheme}`);
         }
-
+        
         // =================================================================
-        // 4. SISTEMA DE AUTENTICACIÓN DINÁMICO
+        // 3. SISTEMA DE RUTAS Y VISTAS
         // =================================================================
-        function updateUserInterface() {
-            const userMenu = document.querySelector('.user-menu');
-            if (!userMenu) return;
-            
-            if (currentUser) {
-                userMenu.innerHTML = `
-                    <button class="theme-toggle">${currentTheme === 'dark' ? '🌙' : currentTheme === 'light' ? '☀️' : currentTheme === 'girl' ? '🌸' : '⚡'}</button>
-                    <div class="user-avatar" id="user-avatar-btn" title="${currentUser.email}">
-                        ${currentUser.email.charAt(0).toUpperCase()}
+        
+        // Renderizar la estructura base de la página
+        function renderBaseLayout() {
+            const app = document.getElementById('app');
+            app.innerHTML = `
+                <header>
+                    <div class="header-container">
+                        <a href="/" class="logo">SHINEES</a>
+                        <nav class="main-nav">
+                            <a href="#" class="nav-link" data-route="home">Inicio</a>
+                            <a href="#" class="nav-link" data-route="catalog">Catálogo</a>
+                            <a href="#" class="nav-link" data-route="manga">Manga</a>
+                            ${currentUser && currentUser.email === 'admin@shinees.com' ? 
+                                '<a href="#" class="nav-link" data-route="admin">Admin</a>' : ''}
+                        </nav>
+                        <div class="search-container">
+                            <input type="text" class="search-input" placeholder="Buscar anime o manga...">
+                            <button class="search-btn">🔍</button>
+                        </div>
+                        <div class="user-menu">
+                            <button class="theme-toggle">${getThemeIcon()}</button>
+                            ${currentUser ? 
+                                `<div class="user-avatar" title="${currentUser.email}">${currentUser.email.charAt(0).toUpperCase()}</div>` :
+                                '<button class="nav-link" id="login-btn">Iniciar Sesión</button>'
+                            }
+                        </div>
                     </div>
-                `;
-            } else {
-                userMenu.innerHTML = `
-                    <button class="theme-toggle">${currentTheme === 'dark' ? '🌙' : currentTheme === 'light' ? '☀️' : currentTheme === 'girl' ? '🌸' : '⚡'}</button>
-                    <button class="watch-btn" id="login-btn-header" style="padding: 8px 20px; font-size: 14px;">Iniciar Sesión</button>
-                `;
-            }
-            
-            // Reasignar event listeners
-            const themeBtn = userMenu.querySelector('.theme-toggle');
-            if (themeBtn) {
-                themeBtn.addEventListener('click', toggleTheme);
-            }
-        }
-
-        // =================================================================
-        // 5. SISTEMA DE MODALES MEJORADO
-        // =================================================================
-        function renderModal(title, content, onClose = null) {
-            // Cerrar modal existente si hay uno
-            const existingModal = document.querySelector('.modal-overlay');
-            if (existingModal) existingModal.remove();
-            
-            const modalContainer = document.createElement('div');
-            modalContainer.className = 'modal-overlay';
-            modalContainer.innerHTML = `
-                <div class="modal-content">
-                    <button class="modal-close-button">&times;</button>
-                    <h2 style="margin-bottom: 1.5rem;">${title}</h2>
-                    ${content}
-                </div>
+                </header>
+                <main id="main-content">
+                    <!-- El contenido dinámico va aquí -->
+                </main>
+                <footer>
+                    <div class="footer-content">
+                        <div class="footer-section">
+                            <h3>Navegación</h3>
+                            <ul class="footer-links">
+                                <li><a href="#" data-route="home">Inicio</a></li>
+                                <li><a href="#" data-route="catalog">Catálogo</a></li>
+                                <li><a href="#" data-route="manga">Manga</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-section">
+                            <h3>Cuenta</h3>
+                            <ul class="footer-links">
+                                <li><a href="#" id="footer-profile">Mi Perfil</a></li>
+                                <li><a href="#" id="footer-logout">Cerrar sesión</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-section">
+                            <h3>Shinees</h3>
+                            <ul class="footer-links">
+                                <li><a href="#">Sobre nosotros</a></li>
+                                <li><a href="#">Términos de uso</a></li>
+                                <li><a href="#">Contacto</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="footer-bottom">
+                        <p>© 2024 Shinees Platform. Todos los derechos reservados.</p>
+                    </div>
+                </footer>
             `;
             
-            document.body.appendChild(modalContainer);
+            // Aplicar tema actual
+            applyTheme(currentTheme);
             
-            // Event listeners para cerrar modal
-            const closeBtn = modalContainer.querySelector('.modal-close-button');
-            const closeModal = () => {
-                modalContainer.style.animation = 'fadeOut 0.3s forwards';
-                setTimeout(() => {
-                    modalContainer.remove();
-                    if (onClose) onClose();
-                }, 300);
-            };
-            
-            closeBtn.addEventListener('click', closeModal);
-            modalContainer.addEventListener('click', (e) => {
-                if (e.target === modalContainer) closeModal();
-            });
-            
-            // Prevenir que el contenido del modal cierre el modal al hacer clic
-            modalContainer.querySelector('.modal-content').addEventListener('click', (e) => {
-                e.stopPropagation();
-            });
+            // Agregar event listeners
+            setupEventListeners();
         }
-
-        function renderLoginModal() {
-            renderModal('Iniciar Sesión', `
-                <form id="login-form">
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; margin-bottom: 0.5rem;">Email:</label>
-                        <input type="email" id="login-email" class="search-input" required />
-                    </div>
-                    <div style="margin-bottom: 1.5rem;">
-                        <label style="display: block; margin-bottom: 0.5rem;">Contraseña:</label>
-                        <input type="password" id="login-password" class="search-input" required />
-                    </div>
-                    <button type="submit" class="watch-btn" style="width:100%;">Entrar</button>
-                    <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
-                        ¿No tienes cuenta? <a href="#" id="show-register" style="color: var(--primary);">Regístrate aquí</a>
-                    </p>
-                </form>
-            `);
-            
-            // Agregar funcionalidad para cambiar a registro
-            document.getElementById('show-register').addEventListener('click', (e) => {
-                e.preventDefault();
-                renderRegisterModal();
-            });
+        
+        // Obtener ícono del tema actual
+        function getThemeIcon() {
+            const icons = { 'dark': '🌙', 'light': '☀️', 'girl': '🌸', 'boy': '⚡' };
+            return icons[currentTheme] || '🌙';
         }
-
-        function renderRegisterModal() {
-            renderModal('Crear Cuenta', `
-                <form id="register-form">
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; margin-bottom: 0.5rem;">Nombre:</label>
-                        <input type="text" id="register-name" class="search-input" required />
-                    </div>
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; margin-bottom: 0.5rem;">Email:</label>
-                        <input type="email" id="register-email" class="search-input" required />
-                    </div>
-                    <div style="margin-bottom: 1.5rem;">
-                        <label style="display: block; margin-bottom: 0.5rem;">Contraseña:</label>
-                        <input type="password" id="register-password" class="search-input" required />
-                    </div>
-                    <button type="submit" class="watch-btn" style="width:100%;">Registrarse</button>
-                    <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
-                        ¿Ya tienes cuenta? <a href="#" id="show-login" style="color: var(--primary);">Inicia sesión aquí</a>
-                    </p>
-                </form>
-            `);
+        
+        // Renderizar página de inicio
+        function renderHomePage() {
+            const mainContent = document.getElementById('main-content');
+            const trending = catalogData.filter(item => item.destacado);
+            const recent = [...catalogData].sort((a, b) => new Date(b.fecha) - new Date(a.fecha)).slice(0, 12);
             
-            // Agregar funcionalidad para cambiar a login
-            document.getElementById('show-login').addEventListener('click', (e) => {
-                e.preventDefault();
-                renderLoginModal();
-            });
-        }
-
-        function renderProfileModal() {
-            renderModal('Mi Perfil', `
-                <div style="text-align: center;">
-                    <div class="user-avatar" style="width: 80px; height: 80px; font-size: 2rem; margin: 0 auto 1rem;">
-                        ${currentUser.email.charAt(0).toUpperCase()}
-                    </div>
-                    <h3>${currentUser.displayName || currentUser.email}</h3>
-                    <p style="color: var(--text-secondary);">${currentUser.email}</p>
-                    <hr style="border-color: var(--border); margin: 1.5rem 0;">
-                    <button class="watch-btn" id="logout-btn" style="background: #ef4444; width: 100%;">Cerrar Sesión</button>
-                </div>
-            `);
-        }
-
-        // =================================================================
-        // 6. RENDERIZADO DE VISTAS OPTIMIZADO
-        // =================================================================
-        function renderHomePage(seriesData) {
-            const trendingSeries = seriesData.filter(serie => serie.destacado);
-            const otherSeries = seriesData.filter(serie => !serie.destacado);
-            
-            mainContainer.innerHTML = `
+            mainContent.innerHTML = `
                 <div class="hero-carousel">
-                    ${trendingSeries.map((serie, index) => `
+                    ${trending.map((item, index) => `
                         <div class="carousel-slide ${index === 0 ? 'active' : ''}">
                             <div class="carousel-content">
-                                <h1 class="carousel-title">${serie.titulo}</h1>
-                                <p class="carousel-description">${serie.descripcion.substring(0, 150)}...</p>
-                                <a href="?serie=${serie.id}" class="watch-btn">▶ Ver Ahora</a>
+                                <h1 class="carousel-title">${item.titulo}</h1>
+                                <p class="carousel-description">${item.descripcion}</p>
+                                <a href="#" class="nav-link" data-route="detail" data-id="${item.id}" style="display: inline-block; background: var(--primary); color: white; padding: 10px 20px; border-radius: 20px;">Ver Ahora</a>
                             </div>
-                            <img src="${serie.portada}" class="carousel-image" alt="${serie.titulo}">
+                            <img src="${item.portada}" class="carousel-image" alt="${item.titulo}">
                         </div>
                     `).join('')}
                 </div>
-                <main>
-                    <section class="content-section">
-                        <div class="section-header">
-                            <h2 class="section-title">🔥 Tendencias Ahora</h2>
-                            <a href="#" class="view-all">Ver todo →</a>
-                        </div>
-                        <div class="anime-grid" id="trending-grid">
-                            ${trendingSeries.map(serie => `
-                                <a href="?serie=${serie.id}" class="anime-card" data-id="${serie.id}">
-                                    <img src="${serie.portada}" alt="${serie.titulo}">
-                                    <div class="anime-info">
-                                        <div class="anime-title">${serie.titulo}</div>
-                                        <div class="anime-meta">${serie.tipo} • ${serie.año}</div>
-                                    </div>
-                                </a>
-                            `).join('')}
-                        </div>
-                    </section>
-                    
-                    <section class="content-section">
-                        <div class="section-header">
-                            <h2 class="section-title">📚 Todo el Catálogo</h2>
-                            <a href="#" class="view-all">Ver todo →</a>
-                        </div>
-                        <div class="anime-grid" id="catalog-grid">
-                            ${otherSeries.map((serie, index) => `
-                                <a href="?serie=${serie.id}" class="anime-card" data-id="${serie.id}" style="animation-delay: ${index * 0.05}s">
-                                    <img src="${serie.portada}" alt="${serie.titulo}">
-                                    <div class="anime-info">
-                                        <div class="anime-title">${serie.titulo}</div>
-                                        <div class="anime-meta">${serie.tipo} • ${serie.año}</div>
-                                    </div>
-                                </a>
-                            `).join('')}
-                        </div>
-                    </section>
-                </main>
+                
+                <section class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">🔥 Tendencias</h2>
+                        <a href="#" class="view-all" data-route="catalog">Ver todo</a>
+                    </div>
+                    <div class="anime-grid">
+                        ${trending.map(item => `
+                            <a href="#" class="anime-card" data-route="detail" data-id="${item.id}">
+                                <img src="${item.portada}" alt="${item.titulo}" loading="lazy">
+                                <div class="anime-info">
+                                    <div class="anime-title">${item.titulo}</div>
+                                    <div class="anime-meta">${item.tipo} • ${item.estado}</div>
+                                </div>
+                            </a>
+                        `).join('')}
+                    </div>
+                </section>
+                
+                <section class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">🆕 Recientes</h2>
+                        <a href="#" class="view-all" data-route="catalog">Ver todo</a>
+                    </div>
+                    <div class="anime-grid">
+                        ${recent.map(item => `
+                            <a href="#" class="anime-card" data-route="detail" data-id="${item.id}">
+                                <img src="${item.portada}" alt="${item.titulo}" loading="lazy">
+                                <div class="anime-info">
+                                    <div class="anime-title">${item.titulo}</div>
+                                    <div class="anime-meta">${item.tipo} • ${item.estado}</div>
+                                </div>
+                            </a>
+                        `).join('')}
+                    </div>
+                </section>
             `;
             
-            // Inicializar carrusel
+            // Iniciar carrusel automático
             initCarousel();
             
             // Animar tarjetas
-            document.querySelectorAll('.anime-card').forEach((card, index) => {
-                card.style.animation = `fadeInUp 0.5s ${index * 0.05}s forwards`;
-            });
+            animateCards();
         }
-
-        function initCarousel() {
-            const slides = document.querySelectorAll('.carousel-slide');
-            if (slides.length <= 1) return;
+        
+        // Renderizar página de detalle
+        function renderDetailPage(itemId) {
+            const item = catalogData.find(i => i.id === itemId);
+            if (!item) {
+                showNotification('Contenido no encontrado', 'error');
+                renderHomePage();
+                return;
+            }
             
-            let currentSlide = 0;
-            
-            setInterval(() => {
-                slides[currentSlide].classList.remove('active');
-                currentSlide = (currentSlide + 1) % slides.length;
-                slides[currentSlide].classList.add('active');
-            }, 5000);
-        }
-
-        function renderDetailPage(serieData) {
-            mainContainer.innerHTML = `
+            const mainContent = document.getElementById('main-content');
+            mainContent.innerHTML = `
                 <div class="detail-container">
                     <div class="detail-header">
                         <div class="detail-cover">
-                            <img src="${serieData.portada}" alt="${serieData.titulo}">
+                            <img src="${item.portada}" alt="${item.titulo}">
                         </div>
                         <div class="detail-info">
-                            <div class="detail-meta">
-                                <span>${serieData.tipo}</span> • 
-                                <span>${serieData.estado}</span> • 
-                                <span>${serieData.año}</span>
-                            </div>
-                            <h1>${serieData.titulo}</h1>
-                            <p style="line-height: 1.6; margin-bottom: 20px;">${serieData.descripcion}</p>
+                            <div class="detail-meta">${item.tipo} • ${item.genero} • ${item.estado}</div>
+                            <h1>${item.titulo}</h1>
+                            <p>${item.descripcion}</p>
                             <div class="detail-actions">
-                                <button class="watch-btn">▶ Empezar a ver</button>
-                                <button class="watch-btn" style="background: var(--bg-card); color: var(--text);">
-                                    ${currentUser ? '✓ En biblioteca' : '+ Añadir a biblioteca'}
-                                </button>
+                                <a href="${item.enlace || '#'}" class="nav-link" style="background: var(--primary); color: white; padding: 10px 20px; border-radius: 20px;">▶ Ver Ahora</a>
+                                <button class="nav-link" style="background: var(--bg-card);">+ Mi Lista</button>
                             </div>
                         </div>
                     </div>
+                    
                     <div class="detail-body">
-                        <h2 style="margin-bottom: 20px;">Episodios</h2>
+                        <h2>Capítulos/Episodios</h2>
                         <ul class="chapter-list">
-                            ${(serieData.episodios || []).map((ep, index) => `
+                            ${item.capitulos ? item.capitulos.map((cap, index) => `
                                 <li class="chapter-item">
-                                    <a href="#">
-                                        <strong>Episodio ${index + 1}:</strong> ${ep.titulo}
+                                    <a href="${cap.enlace}" target="_blank">
+                                        ${item.tipo === 'Manga' ? 'Capítulo' : 'Episodio'} ${index + 1}: ${cap.titulo || ''}
                                     </a>
                                 </li>
-                            `).join('')}
+                            `).join('') : '<p>No hay capítulos disponibles</p>'}
                         </ul>
                     </div>
                 </div>
             `;
         }
-
-        function renderErrorPage(message) {
-            mainContainer.innerHTML = `
-                <div class="content-section" style="text-align: center; padding: 80px 20px;">
-                    <h1 style="font-size: 4rem; margin-bottom: 20px; color: var(--primary);">404</h1>
-                    <h2 style="margin-bottom: 20px;">Algo salió mal</h2>
-                    <p style="color: var(--text-secondary); margin-bottom: 30px;">${message}</p>
-                    <a href="/" class="watch-btn">Volver al inicio</a>
+        
+        // Renderizar panel de administración
+        function renderAdminPanel() {
+            if (!currentUser || currentUser.email !== 'admin@shinees.com') {
+                showNotification('Acceso denegado', 'error');
+                renderHomePage();
+                return;
+            }
+            
+            const mainContent = document.getElementById('main-content');
+            mainContent.innerHTML = `
+                <div class="content-section">
+                    <h1>Panel de Administración</h1>
+                    <p>Gestiona el contenido de Shinees</p>
+                    
+                    <div class="admin-panel">
+                        <h3>Agregar Nuevo Contenido</h3>
+                        <form class="admin-form" id="add-content-form">
+                            <div class="form-group">
+                                <label>Título</label>
+                                <input type="text" class="form-input" name="titulo" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Descripción</label>
+                                <textarea class="form-input" name="descripcion" rows="3" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>URL de la Portada (Google Drive)</label>
+                                <input type="url" class="form-input" name="portada" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Tipo</label>
+                                <select class="form-input" name="tipo" required>
+                                    <option value="Anime">Anime</option>
+                                    <option value="Manga">Manga</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Género</label>
+                                <input type="text" class="form-input" name="genero" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Estado</label>
+                                <select class="form-input" name="estado" required>
+                                    <option value="En emisión">En emisión</option>
+                                    <option value="Finalizado">Finalizado</option>
+                                    <option value="Próximamente">Próximamente</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>¿Destacado?</label>
+                                <select class="form-input" name="destacado">
+                                    <option value="false">No</option>
+                                    <option value="true">Sí</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="nav-link" style="background: var(--primary); color: white; margin-top: 10px;">Agregar Contenido</button>
+                        </form>
+                    </div>
+                    
+                    <div class="admin-panel" style="margin-top: 30px;">
+                        <h3>Contenido Existente</h3>
+                        <div class="anime-grid">
+                            ${catalogData.map(item => `
+                                <div class="anime-card">
+                                    <img src="${item.portada}" alt="${item.titulo}">
+                                    <div class="anime-info">
+                                        <div class="anime-title">${item.titulo}</div>
+                                        <div class="anime-meta">${item.tipo} • ${item.estado}</div>
+                                        <button class="nav-link" style="margin-top: 10px; font-size: 0.8rem;" data-id="${item.id}">Editar</button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
                 </div>
             `;
-        }
-
-        // =================================================================
-        // 7. ROUTING Y GESTIÓN DE ESTADO
-        // =================================================================
-        async function router() {
-            setLoading(true);
             
-            const params = new URLSearchParams(window.location.search);
-            const serieId = params.get('serie');
-
-            try {
-                if (serieId) {
-                    // Buscar serie por ID
-                    const serieData = SAMPLE_DATA.series.find(serie => serie.id === serieId);
+            // Agregar funcionalidad al formulario
+            document.getElementById('add-content-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const contentData = Object.fromEntries(formData.entries());
+                
+                // Generar ID único
+                contentData.id = generateId();
+                contentData.fecha = new Date().toISOString();
+                
+                try {
+                    // Aquí iría la lógica para guardar en Firestore
+                    showNotification('Contenido agregado correctamente', 'success');
+                    e.target.reset();
                     
-                    if (serieData) {
-                        renderDetailPage(serieData);
-                        showNotification(`Cargando ${serieData.titulo}...`, 'success');
-                    } else {
-                        renderErrorPage('La serie que buscas no existe.');
-                        showNotification('Serie no encontrada', 'error');
-                    }
-                } else {
-                    // Página principal
-                    renderHomePage(SAMPLE_DATA.series);
-                    showNotification('Catálogo cargado correctamente', 'success');
+                    // Recargar los datos
+                    await loadCatalogData();
+                    renderAdminPanel();
+                } catch (error) {
+                    showNotification('Error al agregar contenido: ' + error.message, 'error');
                 }
-            } catch (error) {
-                console.error('Error en el router:', error);
-                renderErrorPage('Ha ocurrido un error al cargar el contenido.');
-                showNotification('Error al cargar la página', 'error');
-            } finally {
-                setLoading(false);
-            }
+            });
         }
-
+        
         // =================================================================
-        // 8. MANEJO DE EVENTOS Y SINCRONIZACIÓN
+        // 4. FUNCIONALIDADES DE LA APLICACIÓN
         // =================================================================
         
-        // Escuchar cambios de autenticación
-        auth.onAuthStateChanged(user => {
-            currentUser = user;
-            updateUserInterface();
+        // Inicializar carrusel automático
+        function initCarousel() {
+            const slides = document.querySelectorAll('.carousel-slide');
+            if (slides.length <= 1) return;
             
-            // Sincronizar con la interfaz si es necesario
-            if (window.location.pathname === '/' || window.location.search.includes('serie')) {
-                router();
-            }
-        });
-
-        // Delegación de eventos para mejor rendimiento
-        document.addEventListener('click', async (e) => {
-            // Login desde header
-            if (e.target.id === 'login-btn-header') {
-                renderLoginModal();
-                return;
-            }
+            let currentIndex = 0;
+            setInterval(() => {
+                slides[currentIndex].classList.remove('active');
+                currentIndex = (currentIndex + 1) % slides.length;
+                slides[currentIndex].classList.add('active');
+            }, 5000);
+        }
+        
+        // Animar tarjetas al cargar
+        function animateCards() {
+            const cards = document.querySelectorAll('.anime-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('loaded');
+                }, index * 100);
+            });
+        }
+        
+        // Generar ID único
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+        
+        // Cargar datos del catálogo (simulado - en producción vendría de Firestore)
+        async function loadCatalogData() {
+            // Datos de ejemplo - en producción esto vendría de Firestore
+            catalogData = [
+                {
+                    id: 'demon-slayer',
+                    titulo: 'Demon Slayer: Kimetsu no Yaiba',
+                    descripcion: 'Tanjiro Kamado es un joven que se convierte en cazador de demonios para encontrar una cura para su hermana y vengar a su familia.',
+                    portada: 'https://drive.google.com/thumbnail?id=1abc123def456', // Ejemplo de enlace Drive
+                    tipo: 'Anime',
+                    genero: 'Acción, Fantasía',
+                    estado: 'En emisión',
+                    destacado: true,
+                    fecha: '2023-01-15',
+                    enlace: 'https://drive.google.com/file/d/1abc123def456/view', // Enlace al video
+                    capitulos: [
+                        { titulo: 'Crueldad', enlace: 'https://drive.google.com/file/d/1abc123def456/view' },
+                        { titulo: 'El instructor Sakonji Urokodaki', enlace: 'https://drive.google.com/file/d/1abc123def457/view' }
+                    ]
+                },
+                {
+                    id: 'jujutsu-kaisen',
+                    titulo: 'Jujutsu Kaisen',
+                    descripcion: 'Yuji Itadori se traga un objeto maldito y se convierte en el anfitrión de una poderosa maldición.',
+                    portada: 'https://drive.google.com/thumbnail?id=2def456ghi789',
+                    tipo: 'Anime',
+                    genero: 'Acción, Sobrenatural',
+                    estado: 'En emisión',
+                    destacado: true,
+                    fecha: '2023-02-20',
+                    enlace: 'https://drive.google.com/file/d/2def456ghi789/view',
+                    capitulos: [
+                        { titulo: 'Ryomen Sukuna', enlace: 'https://drive.google.com/file/d/2def456ghi789/view' },
+                        { titulo: 'Para mí', enlace: 'https://drive.google.com/file/d/2def456ghi790/view' }
+                    ]
+                }
+            ];
             
-            // Perfil de usuario
-            if (e.target.id === 'user-avatar-btn' && currentUser) {
-                renderProfileModal();
-                return;
-            }
-            
-            // Enlaces de perfil/cierre de sesión en footer
-            if (e.target.id === 'footer-profile-link') {
-                currentUser ? renderProfileModal() : renderLoginModal();
-                return;
-            }
-            
-            if (e.target.id === 'footer-logout-link' || e.target.id === 'logout-btn') {
-                e.preventDefault();
-                await auth.signOut();
-                document.querySelector('.modal-overlay')?.remove();
-                showNotification('Has cerrado sesión.', 'info');
-                return;
-            }
-            
-            // Navegación entre series
-            if (e.target.closest('.anime-card')) {
-                e.preventDefault();
-                const serieId = e.target.closest('.anime-card').dataset.id;
-                history.pushState({}, '', `?serie=${serieId}`);
-                router();
-                return;
-            }
+            return catalogData;
+        }
+        
+        // =================================================================
+        // 5. CONFIGURACIÓN DE EVENT LISTENERS
+        // =================================================================
+        
+        function setupEventListeners() {
+            // Navegación por rutas
+            document.addEventListener('click', (e) => {
+                if (e.target.matches('[data-route]')) {
+                    e.preventDefault();
+                    const route = e.target.getAttribute('data-route');
+                    const id = e.target.getAttribute('data-id');
+                    
+                    if (route === 'home') renderHomePage();
+                    else if (route === 'detail') renderDetailPage(id);
+                    else if (route === 'admin') renderAdminPanel();
+                    else if (route === 'catalog') {
+                        // Implementar vista de catálogo completo
+                        renderHomePage();
+                    }
+                }
+                
+                // Login
+                if (e.target.id === 'login-btn' || e.target.id === 'footer-profile') {
+                    renderLoginModal();
+                }
+                
+                // Logout
+                if (e.target.id === 'footer-logout') {
+                    auth.signOut();
+                    showNotification('Sesión cerrada', 'info');
+                }
+                
+                // Cambio de tema
+                if (e.target.classList.contains('theme-toggle')) {
+                    toggleTheme();
+                }
+            });
             
             // Búsqueda
-            if (e.target.closest('.search-btn')) {
-                const query = document.getElementById('searchInput').value.trim();
+            document.querySelector('.search-btn').addEventListener('click', () => {
+                const query = document.querySelector('.search-input').value.trim();
                 if (query) {
-                    showNotification(`Buscando: "${query}"...`);
-                    // Aquí iría la lógica de búsqueda real
+                    showNotification(`Buscando: "${query}"`);
+                    // Implementar búsqueda
                 }
-                return;
-            }
+            });
             
-            // Navegación con botones de vista
-            if (e.target.classList.contains('view-all')) {
-                e.preventDefault();
-                showNotification('Explorando todo el catálogo...');
-                // Aquí iría la lógica para mostrar todo el catálogo
-            }
-        });
-
-        // Manejo de formularios
-        document.addEventListener('submit', async (e) => {
+            document.querySelector('.search-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const query = e.target.value.trim();
+                    if (query) {
+                        showNotification(`Buscando: "${query}"`);
+                        // Implementar búsqueda
+                    }
+                }
+            });
+        }
+        
+        // Renderizar modal de login
+        function renderLoginModal() {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.style.cssText = `
+                position: fixed; inset: 0; background: rgba(0,0,0,0.7); 
+                display: flex; justify-content: center; align-items: center; z-index: 2000;
+            `;
+            modal.innerHTML = `
+                <div class="admin-panel" style="max-width: 400px; width: 90%; position: relative;">
+                    <button class="theme-toggle" style="position: absolute; top: 10px; right: 10px;">✕</button>
+                    <h2>Iniciar Sesión</h2>
+                    <form class="admin-form" id="login-form">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" class="form-input" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Contraseña</label>
+                            <input type="password" class="form-input" name="password" required>
+                        </div>
+                        <button type="submit" class="nav-link" style="background: var(--primary); color: white;">Entrar</button>
+                    </form>
+                    <p style="text-align: center; margin-top: 15px; color: var(--text-secondary);">
+                        ¿No tienes cuenta? <a href="#" style="color: var(--primary);" id="show-register">Regístrate</a>
+                    </p>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Cerrar modal
+            modal.querySelector('.theme-toggle').addEventListener('click', () => {
+                modal.remove();
+            });
+            
             // Login
-            if (e.target.id === 'login-form') {
+            document.getElementById('login-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const email = e.target.querySelector('#login-email').value;
-                const password = e.target.querySelector('#login-password').value;
+                const formData = new FormData(e.target);
+                const email = formData.get('email');
+                const password = formData.get('password');
                 
                 try {
                     await auth.signInWithEmailAndPassword(email, password);
-                    document.querySelector('.modal-overlay')?.remove();
+                    modal.remove();
                     showNotification('¡Bienvenido!', 'success');
                 } catch (error) {
-                    showNotification(`Error: ${error.message}`, 'error');
+                    showNotification('Error: ' + error.message, 'error');
                 }
-                return;
-            }
-            
-            // Registro
-            if (e.target.id === 'register-form') {
-                e.preventDefault();
-                const name = e.target.querySelector('#register-name').value;
-                const email = e.target.querySelector('#register-email').value;
-                const password = e.target.querySelector('#register-password').value;
-                
-                try {
-                    await auth.createUserWithEmailAndPassword(email, password);
-                    // Actualizar perfil con nombre
-                    await auth.currentUser.updateProfile({ displayName: name });
-                    document.querySelector('.modal-overlay')?.remove();
-                    showNotification('¡Cuenta creada exitosamente!', 'success');
-                } catch (error) {
-                    showNotification(`Error: ${error.message}`, 'error');
-                }
-                return;
-            }
-        });
-
-        // Búsqueda con Enter
-        document.getElementById('searchInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const query = e.target.value.trim();
-                if (query) showNotification(`Buscando: "${query}"...`);
-            }
-        });
-
-        // Manejo del historial del navegador
-        window.addEventListener('popstate', router);
-
-        // =================================================================
-        // 9. INICIALIZACIÓN DE LA APLICACIÓN
-        // =================================================================
-        function initApp() {
-            // Aplicar tema guardado
-            applyTheme(currentTheme);
-            
-            // Cargar la vista inicial
-            router();
-            
-            // Mostrar mensaje de bienvenida
-            setTimeout(() => {
-                showNotification('¡Bienvenido a Shinees!', 'info');
-            }, 1000);
+            });
         }
-
+        
+        // =================================================================
+        // 6. INICIALIZACIÓN DE LA APLICACIÓN
+        // =================================================================
+        
+        async function initApp() {
+            try {
+                // Cargar datos del catálogo
+                await loadCatalogData();
+                
+                // Renderizar la interfaz
+                renderBaseLayout();
+                renderHomePage();
+                
+                // Configurar autenticación
+                auth.onAuthStateChanged(user => {
+                    currentUser = user;
+                    renderBaseLayout();
+                    renderHomePage();
+                    
+                    if (user) {
+                        showNotification(`Bienvenido ${user.email}`, 'success');
+                    }
+                });
+                
+            } catch (error) {
+                console.error('Error inicializando la app:', error);
+                showNotification('Error al cargar la aplicación', 'error');
+            }
+        }
+        
         // Iniciar la aplicación
         initApp();
     });
