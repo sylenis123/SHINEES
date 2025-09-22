@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         messagingSenderId: "109623976622",
         appId: "1:109623976622:web:c9ab5a1c345f502b71833f",
     };
-    const GOOGLE_DRIVE_API_KEY = https://drive.google.com/drive/folders/1q8QgkBUGao1gLr_ploP_u5vmWhEyTx8z?usp=drive_link"; // <-- ¡IMPORTANTE!
+    const GOOGLE_DRIVE_API_KEY = "https://drive.google.com/drive/folders/1q8QgkBUGao1gLr_ploP_u5vmWhEyTx8z?usp=sharing"; // <-- ¡IMPORTANTE!
     const DRIVE_FOLDER_ID = "capitulos"; // <-- ¡IMPORTANTE!
 
     // Inicialización de servicios
