@@ -281,26 +281,95 @@
         <!-- La aplicación se renderiza completamente con JavaScript -->
     </div>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
     <script>
+    // =================================================================
+    // CONFIGURACIÓN DE FIREBASE
+    // =================================================================
+    const FIREBASE_CONFIG = {
+        apiKey: "AIzaSyDsv2keytFIEeS4QT4_chwOHMgyWpV8gP4",
+        authDomain: "shinees.firebaseapp.com",
+        projectId: "shinees",
+        storageBucket: "shinees.appspot.com",
+        messagingSenderId: "109623976622",
+        appId: "1:109623976622:web:c9ab5a1c345f502b71833f",
+    };
+
+    // Inicializar Firebase
+    firebase.initializeApp(FIREBASE_CONFIG);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // =================================================================
+    // MÓDULO DE AUTENTICACIÓN (auth.js)
+    // =================================================================
+    const AuthModule = (() => {
+        let currentUser = null;
+        
+        // Escuchar cambios de autenticación
+        auth.onAuthStateChanged((user) => {
+            currentUser = user;
+            if (window.app && window.app.updateAuthState) {
+                window.app.updateAuthState(user);
+            }
+        });
+        
+        // Iniciar sesión
+        const login = async (email, password) => {
+            try {
+                const result = await auth.signInWithEmailAndPassword(email, password);
+                return { success: true, user: result.user };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        };
+        
+        // Registrar nuevo usuario
+        const register = async (email, password, displayName = '') => {
+            try {
+                const result = await auth.createUserWithEmailAndPassword(email, password);
+                if (displayName) {
+                    await result.user.updateProfile({ displayName });
+                }
+                return { success: true, user: result.user };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        };
+        
+        // Cerrar sesión
+        const logout = async () => {
+            try {
+                await auth.signOut();
+                return { success: true };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        };
+        
+        // Obtener usuario actual
+        const getCurrentUser = () => currentUser;
+        
+        return {
+            login,
+            register,
+            logout,
+            getCurrentUser
+        };
+    })();
+
+    // =================================================================
+    // APLICACIÓN PRINCIPAL
+    // =================================================================
     document.addEventListener('DOMContentLoaded', () => {
-        // =================================================================
-        // 1. CONFIGURACIÓN Y CONSTANTES
-        // =================================================================
         const MAL_CLIENT_ID = '16d000832c5535ee1175473f869415c0';
         const MAL_API_BASE = 'https://api.myanimelist.net/v2';
         
-        // Configuración de Firebase
-        const FIREBASE_CONFIG = {
-            apiKey: "AIzaSyDsv2keytFIEeS4QT4_chwOHMgyWpV8gP4",
-            authDomain: "shinees.firebaseapp.com",
-            projectId: "shinees",
-            storageBucket: "shinees.appspot.com",
-            messagingSenderId: "109623976622",
-            appId: "1:109623976622:web:c9ab5a1c345f502b71833f",
-        };
-
         // Estado de la aplicación
-        let currentUser = null;
         let currentTheme = localStorage.getItem('shinees-theme') || 'dark';
         let currentView = 'home';
         let currentContentType = 'anime';
@@ -311,27 +380,25 @@
         let cachedAnime = JSON.parse(localStorage.getItem('shinees-cached-anime') || '{}');
         let cachedManga = JSON.parse(localStorage.getItem('shinees-cached-manga') || '{}');
         
-        // Inicializar Firebase
-        firebase.initializeApp(FIREBASE_CONFIG);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        
         // =================================================================
-        // 2. FUNCIONES DE UTILIDAD
+        // FUNCIONES DE UTILIDAD
         // =================================================================
         
         // Mostrar notificación
         function showNotification(message, type = 'info') {
+            // Eliminar notificación existente
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
+            
             const notification = document.createElement('div');
-            notification.innerHTML = `
-                <div style="
-                    position: fixed; top: 90px; right: 20px; 
-                    background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#ff6b1a'}; 
-                    color: white; padding: 12px 20px; border-radius: 8px; 
-                    box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 2000; 
-                    animation: fadeIn 0.3s forwards; max-width: 300px;
-                    font-weight: 500;
-                ">${message}</div>
+            notification.className = 'notification';
+            notification.innerHTML = message;
+            notification.style.cssText = `
+                position: fixed; top: 90px; right: 20px; 
+                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#ff6b1a'}; 
+                color: white; padding: 12px 20px; border-radius: 8px; 
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 2000; 
+                animation: fadeIn 0.3s forwards; font-weight: 500;
             `;
             document.body.appendChild(notification);
             
@@ -374,7 +441,7 @@
         }
         
         // =================================================================
-        // 3. API DE MYANIMELIST
+        // API DE MYANIMELIST
         // =================================================================
         
         // Obtener datos de la API de MyAnimeList
@@ -403,7 +470,11 @@
             if (cachedAnime[cacheKey]) return cachedAnime[cacheKey];
             
             try {
-                const data = await fetchFromMAL('/anime', { q: query, limit, fields: 'id,title,main_picture,synopsis,mean,rank,popularity,num_episodes,status,media_type' });
+                const data = await fetchFromMAL('/anime', { 
+                    q: query, 
+                    limit, 
+                    fields: 'id,title,main_picture,synopsis,mean,rank,popularity,num_episodes,status,media_type' 
+                });
                 cachedAnime[cacheKey] = data;
                 localStorage.setItem('shinees-cached-anime', JSON.stringify(cachedAnime));
                 return data;
@@ -419,7 +490,11 @@
             if (cachedManga[cacheKey]) return cachedManga[cacheKey];
             
             try {
-                const data = await fetchFromMAL('/manga', { q: query, limit, fields: 'id,title,main_picture,synopsis,mean,rank,popularity,num_chapters,status,media_type' });
+                const data = await fetchFromMAL('/manga', { 
+                    q: query, 
+                    limit, 
+                    fields: 'id,title,main_picture,synopsis,mean,rank,popularity,num_chapters,status,media_type' 
+                });
                 cachedManga[cacheKey] = data;
                 localStorage.setItem('shinees-cached-manga', JSON.stringify(cachedManga));
                 return data;
@@ -435,7 +510,9 @@
             if (cachedAnime[cacheKey]) return cachedAnime[cacheKey];
             
             try {
-                const data = await fetchFromMAL(`/anime/${animeId}`, { fields: 'id,title,main_picture,alternative_titles,synopsis,mean,rank,popularity,num_episodes,status,media_type,genres,start_date,end_date,studios,rating' });
+                const data = await fetchFromMAL(`/anime/${animeId}`, { 
+                    fields: 'id,title,main_picture,alternative_titles,synopsis,mean,rank,popularity,num_episodes,status,media_type,genres,start_date,end_date,studios,rating' 
+                });
                 cachedAnime[cacheKey] = data;
                 localStorage.setItem('shinees-cached-anime', JSON.stringify(cachedAnime));
                 return data;
@@ -451,7 +528,9 @@
             if (cachedManga[cacheKey]) return cachedManga[cacheKey];
             
             try {
-                const data = await fetchFromMAL(`/manga/${mangaId}`, { fields: 'id,title,main_picture,alternative_titles,synopsis,mean,rank,popularity,num_chapters,status,media_type,genres,start_date,end_date,authors' });
+                const data = await fetchFromMAL(`/manga/${mangaId}`, { 
+                    fields: 'id,title,main_picture,alternative_titles,synopsis,mean,rank,popularity,num_chapters,status,media_type,genres,start_date,end_date,authors' 
+                });
                 cachedManga[cacheKey] = data;
                 localStorage.setItem('shinees-cached-manga', JSON.stringify(cachedManga));
                 return data;
@@ -462,11 +541,12 @@
         }
         
         // =================================================================
-        // 4. RENDERIZADO DE LA INTERFAZ
+        // RENDERIZADO DE LA INTERFAZ
         // =================================================================
         
         // Renderizar la aplicación completa
         function renderApp() {
+            const currentUser = AuthModule.getCurrentUser();
             const app = document.getElementById('app');
             app.innerHTML = `
                 <header>
@@ -495,7 +575,7 @@
                                     ${currentUser.email.charAt(0).toUpperCase()}
                                 </div>
                             ` : `
-                                <button class="btn btn-secondary" onclick="app.showLogin()" style="padding: 8px 20px; font-size: 0.9rem;">
+                                <button class="btn btn-secondary" onclick="app.showLoginModal()" style="padding: 8px 20px; font-size: 0.9rem;">
                                     <i class="fas fa-sign-in-alt"></i> Entrar
                                 </button>
                             `}
@@ -525,8 +605,8 @@
                                     <li><a href="#" onclick="app.showUserMenu()">Mi Perfil</a></li>
                                     <li><a href="#" onclick="app.logout()">Cerrar Sesión</a></li>
                                 ` : `
-                                    <li><a href="#" onclick="app.showLogin()">Iniciar Sesión</a></li>
-                                    <li><a href="#" onclick="app.showRegister()">Registrarse</a></li>
+                                    <li><a href="#" onclick="app.showLoginModal()">Iniciar Sesión</a></li>
+                                    <li><a href="#" onclick="app.showRegisterModal()">Registrarse</a></li>
                                 `}
                             </ul>
                         </div>
@@ -669,6 +749,7 @@
         
         // Renderizar página de favoritos
         function renderFavoritesPage() {
+            const currentUser = AuthModule.getCurrentUser();
             return `
                 <section class="section">
                     <div class="section-header">
@@ -685,7 +766,7 @@
                         <div style="text-align: center; padding: 60px 20px;">
                             <h3>Inicia sesión para ver tus favoritos</h3>
                             <p style="color: var(--text-secondary); margin: 20px 0 30px;">Guarda tus series y mangas favoritos para acceder rápidamente a ellos.</p>
-                            <button class="btn btn-primary" onclick="app.showLogin()">Iniciar Sesión</button>
+                            <button class="btn btn-primary" onclick="app.showLoginModal()">Iniciar Sesión</button>
                         </div>
                     `}
                 </section>
@@ -693,7 +774,114 @@
         }
         
         // =================================================================
-        // 5. FUNCIONALIDADES PRINCIPALES
+        // MODALES DE AUTENTICACIÓN
+        // =================================================================
+        
+        // Mostrar modal de login
+        function showLoginModal() {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.style.cssText = `
+                position: fixed; inset: 0; background: rgba(0,0,0,0.7); 
+                display: flex; justify-content: center; align-items: center; z-index: 2000;
+            `;
+            modal.innerHTML = `
+                <div style="background: var(--bg-card); padding: 2rem; border-radius: var(--radius); width: 90%; max-width: 400px; position: relative;">
+                    <button class="theme-toggle" style="position: absolute; top: 10px; right: 10px;" onclick="this.closest('.modal-overlay').remove()">✕</button>
+                    <h2 style="margin-bottom: 1.5rem;">Iniciar Sesión</h2>
+                    <form id="login-form" style="display: grid; gap: 1rem;">
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem;">Email</label>
+                            <input type="email" class="search-input" name="email" required style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem;">Contraseña</label>
+                            <input type="password" class="search-input" name="password" required style="width: 100%;">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar</button>
+                    </form>
+                    <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary);">
+                        ¿No tienes cuenta? <a href="#" style="color: var(--primary);" onclick="app.showRegisterModal()">Regístrate</a>
+                    </p>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Manejar envío del formulario
+            modal.querySelector('#login-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const email = formData.get('email');
+                const password = formData.get('password');
+                
+                const result = await AuthModule.login(email, password);
+                if (result.success) {
+                    modal.remove();
+                    showNotification('¡Bienvenido!', 'success');
+                    renderApp();
+                } else {
+                    showNotification('Error: ' + result.error, 'error');
+                }
+            });
+        }
+        
+        // Mostrar modal de registro
+        function showRegisterModal() {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.style.cssText = `
+                position: fixed; inset: 0; background: rgba(0,0,0,0.7); 
+                display: flex; justify-content: center; align-items: center; z-index: 2000;
+            `;
+            modal.innerHTML = `
+                <div style="background: var(--bg-card); padding: 2rem; border-radius: var(--radius); width: 90%; max-width: 400px; position: relative;">
+                    <button class="theme-toggle" style="position: absolute; top: 10px; right: 10px;" onclick="this.closest('.modal-overlay').remove()">✕</button>
+                    <h2 style="margin-bottom: 1.5rem;">Crear Cuenta</h2>
+                    <form id="register-form" style="display: grid; gap: 1rem;">
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem;">Nombre</label>
+                            <input type="text" class="search-input" name="displayName" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem;">Email</label>
+                            <input type="email" class="search-input" name="email" required style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem;">Contraseña</label>
+                            <input type="password" class="search-input" name="password" required style="width: 100%;">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Registrarse</button>
+                    </form>
+                    <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary);">
+                        ¿Ya tienes cuenta? <a href="#" style="color: var(--primary);" onclick="app.showLoginModal()">Inicia sesión</a>
+                    </p>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Manejar envío del formulario
+            modal.querySelector('#register-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const email = formData.get('email');
+                const password = formData.get('password');
+                const displayName = formData.get('displayName');
+                
+                const result = await AuthModule.register(email, password, displayName);
+                if (result.success) {
+                    modal.remove();
+                    showNotification('¡Cuenta creada exitosamente!', 'success');
+                    renderApp();
+                } else {
+                    showNotification('Error: ' + result.error, 'error');
+                }
+            });
+        }
+        
+        // =================================================================
+        // FUNCIONALIDADES PRINCIPALES
         // =================================================================
         
         // Navegar entre vistas
@@ -914,34 +1102,25 @@
             });
         }
         
-        // =================================================================
-        // 6. AUTENTICACIÓN Y USUARIO
-        // =================================================================
-        
-        // Mostrar modal de login
-        function showLogin() {
-            // Implementación simplificada - en una app real sería un modal completo
-            const email = prompt('Ingresa tu email:');
-            if (!email) return;
-            
-            const password = prompt('Ingresa tu contraseña:');
-            if (!password) return;
-            
-            // Aquí iría la autenticación real con Firebase
-            showNotification(`Bienvenido ${email} (simulado)`);
-            currentUser = { email };
+        // Actualizar estado de autenticación
+        function updateAuthState(user) {
+            // Volver a renderizar la aplicación cuando cambie el estado de autenticación
             renderApp();
         }
         
         // Cerrar sesión
-        function logout() {
-            currentUser = null;
-            showNotification('Sesión cerrada');
-            renderApp();
+        async function logout() {
+            const result = await AuthModule.logout();
+            if (result.success) {
+                showNotification('Sesión cerrada', 'info');
+                navigate('home');
+            } else {
+                showNotification('Error al cerrar sesión: ' + result.error, 'error');
+            }
         }
         
         // =================================================================
-        // 7. DATOS DE EJEMPLO (FALLBACK)
+        // DATOS DE EJEMPLO (FALLBACK)
         // =================================================================
         
         function getFallbackAnimeData() {
@@ -995,7 +1174,7 @@
         }
         
         // =================================================================
-        // 8. INICIALIZACIÓN Y API PÚBLICA
+        // API PÚBLICA
         // =================================================================
         
         // API pública para los controladores de eventos
@@ -1005,8 +1184,10 @@
             handleSearch,
             performSearch,
             toggleTheme,
-            showLogin,
+            showLoginModal,
+            showRegisterModal,
             logout,
+            updateAuthState,
             playContent: (id) => {
                 window.open(generateDriveLink(id), '_blank');
             },
@@ -1019,23 +1200,20 @@
                 // En una implementación real, esto cargaría más resultados
             },
             showUserMenu: () => {
-                showNotification(`Usuario: ${currentUser?.email}`);
+                const user = AuthModule.getCurrentUser();
+                showNotification(`Usuario: ${user?.email}`);
             }
         };
+        
+        // =================================================================
+        // INICIALIZACIÓN
+        // =================================================================
         
         // Inicializar la aplicación
         function init() {
             applyTheme(currentTheme);
             renderApp();
             loadHomePageData();
-            
-            // Escuchar cambios de autenticación (simulado)
-            // En una app real, esto se conectaría a Firebase Auth
-            setTimeout(() => {
-                // Simular usuario no autenticado por defecto
-                currentUser = null;
-                renderApp();
-            }, 1000);
         }
         
         // Iniciar la aplicación cuando el DOM esté listo
