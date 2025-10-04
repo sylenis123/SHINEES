@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shinees - Anime & Manga Platform</title>
+    <title>SHINES - Tu Plataforma de Anime y Manga</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- VARIABLES Y ESTILOS GLOBALES OPTIMIZADOS --- */
+        /* --- VARIABLES Y ESTILOS GLOBALES --- */
         :root {
             --primary: #ff6b1a; --primary-dark: #e55a0f; 
             --bg: #0a0a0a; --bg-secondary: #141414; --bg-card: #1a1a1a;
             --text: #ffffff; --text-secondary: #a0a0a0; --border: #2a2a2a;
-            --radius: 12px; --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --radius: 12px; --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94 );
             --shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
         
@@ -34,22 +34,20 @@
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
         body { 
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
             background: var(--bg); color: var(--text); 
             min-height: 100vh; line-height: 1.6;
-            overflow-x: hidden;
+            transition: background 0.3s, color 0.3s;
         }
         
-        /* --- HEADER MINIMALISTA --- */
+        /* --- HEADER Y NAVEGACIÓN --- */
         header { 
-            position: fixed; top: 0; left: 0; right: 0;
-            background: rgba(10, 10, 10, 0.95); 
+            position: sticky; top: 0;
+            background: rgba(var(--bg-rgb, 10, 10, 10), 0.85); 
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border); z-index: 1000;
             padding: 0 5%;
-            transition: var(--transition);
         }
         
         .header-container { 
@@ -58,1166 +56,361 @@
         }
         
         .logo { 
-            font-size: 2.2rem; font-weight: 800; 
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-decoration: none; letter-spacing: -1px;
+            font-size: 1.8rem; font-weight: 800; 
+            color: var(--primary); text-decoration: none;
         }
         
-        .nav-main { display: flex; gap: 30px; }
-        .nav-link { 
-            color: var(--text-secondary); text-decoration: none; 
-            font-weight: 500; transition: var(--transition); 
-            position: relative; padding: 5px 0;
-        }
-        .nav-link:hover, .nav-link.active { color: var(--primary); }
-        .nav-link.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background: var(--primary); }
-        
-        .search-container { position: relative; width: 300px; }
+        .search-container { position: relative; width: 250px; }
         .search-input { 
-            width: 100%; padding: 12px 45px 12px 15px; 
+            width: 100%; padding: 10px 40px 10px 15px; 
             background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: 30px; color: var(--text); font-size: 0.95rem;
-            transition: var(--transition);
+            border-radius: 20px; color: var(--text);
         }
-        .search-input:focus { outline: none; border-color: var(--primary); }
         .search-btn { 
             position: absolute; right: 5px; top: 50%; transform: translateY(-50%); 
-            background: var(--primary); border: none; border-radius: 50%; 
-            width: 32px; height: 32px; cursor: pointer; color: white;
-            display: flex; align-items: center; justify-content: center;
-            transition: var(--transition);
+            background: transparent; border: none; cursor: pointer; color: var(--text-secondary);
         }
-        .search-btn:hover { background: var(--primary-dark); transform: translateY(-50%) scale(1.05); }
         
         .user-menu { display: flex; align-items: center; gap: 15px; }
-        .theme-toggle, .user-avatar { 
-            width: 40px; height: 40px; border-radius: 50%; 
+        .theme-toggle, .user-avatar-btn { 
+            width: 38px; height: 38px; border-radius: 50%; 
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: var(--transition);
-            background: var(--bg-card); border: 1px solid var(--border);
-        }
-        .theme-toggle:hover, .user-avatar:hover { 
-            transform: scale(1.05); border-color: var(--primary);
+            cursor: pointer; background: var(--bg-card); border: 1px solid var(--border);
         }
         
+        /* --- BARRA LATERAL DE NAVEGACIÓN --- */
+        .sidebar {
+            position: fixed; top: 70px; left: 0;
+            width: 240px; height: calc(100vh - 70px);
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            padding: 20px;
+            display: flex; flex-direction: column;
+        }
+        .nav-main { list-style: none; }
+        .nav-main li { margin-bottom: 10px; }
+        .nav-link {
+            display: flex; align-items: center; gap: 15px;
+            padding: 12px 15px; border-radius: 8px;
+            color: var(--text-secondary); text-decoration: none;
+            font-weight: 500; transition: var(--transition);
+        }
+        .nav-link:hover, .nav-link.active {
+            background: var(--primary); color: white;
+        }
+        .nav-link i { width: 20px; text-align: center; }
+
         /* --- CONTENIDO PRINCIPAL --- */
-        .main-content { padding-top: 90px; min-height: calc(100vh - 200px); }
-        
-        .hero-section { 
-            position: relative; height: 70vh; min-height: 500px; 
-            display: flex; align-items: center; padding: 0 5%;
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, transparent 100%);
-            overflow: hidden;
+        .main-content { 
+            margin-left: 240px; 
+            padding: 30px;
         }
         
-        .hero-content { max-width: 600px; z-index: 2; }
-        .hero-title { font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
-        .hero-description { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 30px; }
-        .hero-actions { display: flex; gap: 15px; }
-        .btn { 
-            padding: 12px 30px; border-radius: 30px; font-weight: 600; 
-            text-decoration: none; transition: var(--transition); display: inline-flex;
-            align-items: center; gap: 10px; border: none; cursor: pointer;
-        }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
-        .btn-secondary { background: var(--bg-card); color: var(--text); border: 1px solid var(--border); }
-        .btn-secondary:hover { border-color: var(--primary); transform: translateY(-2px); }
-        
-        .hero-bg { 
-            position: absolute; right: 5%; top: 50%; transform: translateY(-50%); 
-            width: 40%; height: 80%; border-radius: var(--radius);
-            background: linear-gradient(45deg, var(--primary), transparent);
-            opacity: 0.1; z-index: 1;
-        }
-        
-        /* --- SECCIONES DE CONTENIDO --- */
-        .section { padding: 60px 5%; max-width: 1400px; margin: 0 auto; }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .section-title { font-size: 2rem; font-weight: 700; }
-        .view-all { color: var(--primary); text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+        .section-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 20px; }
         
         .content-grid { 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
-            gap: 25px; 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+            gap: 20px; 
         }
         
         .content-card { 
             background: var(--bg-card); border-radius: var(--radius); 
             overflow: hidden; transition: var(--transition); 
-            position: relative; opacity: 0; transform: translateY(20px);
-            border: 1px solid transparent;
+            cursor: pointer;
         }
-        .content-card.visible { opacity: 1; transform: translateY(0); }
         .content-card:hover { 
-            transform: translateY(-5px); border-color: var(--primary);
-            box-shadow: var(--shadow);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         }
         
-        .card-image { 
-            width: 100%; height: 280px; object-fit: cover; 
-            transition: var(--transition);
-        }
-        .content-card:hover .card-image { transform: scale(1.05); }
-        
+        .card-image { width: 100%; height: 250px; object-fit: cover; }
         .card-content { padding: 15px; }
         .card-title { 
-            font-weight: 600; margin-bottom: 5px; 
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            font-weight: 600; white-space: nowrap; 
+            overflow: hidden; text-overflow: ellipsis;
         }
-        .card-meta { 
-            font-size: 0.85rem; color: var(--text-secondary); 
-            display: flex; justify-content: space-between;
-        }
-        .card-badge { 
-            position: absolute; top: 10px; right: 10px; 
-            background: var(--primary); color: white; 
-            padding: 5px 10px; border-radius: 20px; 
-            font-size: 0.75rem; font-weight: 600;
-        }
-        
+
         /* --- PÁGINA DE DETALLE --- */
-        .detail-page { padding: 100px 5% 60px; max-width: 1400px; margin: 0 auto; }
-        .detail-header { display: flex; gap: 40px; margin-bottom: 40px; }
-        .detail-poster { 
-            width: 300px; border-radius: var(--radius); 
-            box-shadow: var(--shadow); flex-shrink: 0;
+        .detail-header { display: flex; gap: 30px; margin-bottom: 30px; }
+        .detail-poster { width: 250px; border-radius: var(--radius); flex-shrink: 0; }
+        .detail-info h1 { font-size: 2.2rem; margin-bottom: 15px; }
+        .detail-actions { display: flex; gap: 15px; margin: 20px 0; }
+        .btn { 
+            padding: 10px 20px; border-radius: 20px; font-weight: 600; 
+            text-decoration: none; border: none; cursor: pointer;
         }
-        .detail-info { flex: 1; }
-        .detail-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; }
-        .detail-meta { 
-            display: flex; gap: 15px; color: var(--text-secondary); 
-            margin-bottom: 20px; flex-wrap: wrap;
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: var(--bg-card); color: var(--text); border: 1px solid var(--border); }
+
+        .chapters-list .chapter-item {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--bg-card); padding: 15px; border-radius: 8px;
+            margin-bottom: 10px; border-left: 3px solid transparent;
+            transition: var(--transition);
         }
-        .detail-meta span { background: var(--bg-secondary); padding: 5px 10px; border-radius: 20px; }
-        .detail-synopsis { line-height: 1.7; margin-bottom: 30px; }
-        .detail-actions { display: flex; gap: 15px; flex-wrap: wrap; }
-        
-        .chapters-section { margin-top: 50px; }
-        .chapters-grid { 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
-            gap: 15px; margin-top: 20px;
+        .chapters-list .chapter-item:hover {
+            border-left-color: var(--primary);
+            transform: translateX(5px);
         }
-        .chapter-card { 
-            background: var(--bg-card); border-radius: var(--radius); 
-            padding: 15px; transition: var(--transition); border: 1px solid var(--border);
+        .chapter-item-actions button {
+            background: none; border: none; color: var(--text-secondary);
+            cursor: pointer; font-size: 1.2rem; margin-left: 15px;
         }
-        .chapter-card:hover { border-color: var(--primary); transform: translateX(5px); }
-        .chapter-title { font-weight: 600; margin-bottom: 5px; }
-        .chapter-meta { font-size: 0.85rem; color: var(--text-secondary); }
-        
-        /* --- LOADING Y ESTADOS --- */
-        .loading { 
-            display: flex; justify-content: center; align-items: center; 
-            height: 300px; flex-direction: column; gap: 20px;
+
+        /* --- MODAL DE LOGIN --- */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 2000;
         }
-        .spinner { 
-            width: 50px; height: 50px; border: 4px solid var(--border); 
-            border-left: 4px solid var(--primary); border-radius: 50%; 
-            animation: spin 1s linear infinite;
+        .modal-content {
+            background: var(--bg-secondary); padding: 2rem;
+            border-radius: var(--radius); width: 90%; max-width: 400px;
         }
-        .skeleton { 
-            background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-secondary) 50%, var(--bg-card) 75%);
-            background-size: 200% 100%; animation: loading 1.5s infinite;
-            border-radius: var(--radius);
-        }
-        
-        /* --- FOOTER --- */
-        footer { 
-            background: var(--bg-secondary); padding: 50px 5% 20px; 
-            margin-top: 80px; border-top: 1px solid var(--border);
-        }
-        .footer-content { 
-            max-width: 1400px; margin: 0 auto; 
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
-            gap: 40px; margin-bottom: 30px;
-        }
-        .footer-section h3 { margin-bottom: 20px; color: var(--primary); }
-        .footer-links { list-style: none; }
-        .footer-links li { margin-bottom: 12px; }
-        .footer-links a { color: var(--text-secondary); text-decoration: none; transition: var(--transition); }
-        .footer-links a:hover { color: var(--primary); }
-        .footer-bottom { 
-            text-align: center; padding-top: 30px; border-top: 1px solid var(--border); 
-            color: var(--text-secondary); font-size: 0.9rem;
-        }
-        
-        /* --- ANIMACIONES --- */
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes loading { 
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
+
         /* --- RESPONSIVE --- */
-        @media (max-width: 1024px) {
-            .hero-title { font-size: 2.8rem; }
-            .detail-header { flex-direction: column; }
-            .detail-poster { width: 100%; max-width: 300px; margin: 0 auto 30px; }
-        }
-        
         @media (max-width: 768px) {
-            .header-container { flex-wrap: wrap; height: auto; padding: 15px 0; }
-            .nav-main { order: 3; width: 100%; justify-content: center; margin-top: 15px; }
-            .search-container { order: 2; width: 100%; margin: 15px 0; }
-            .hero-title { font-size: 2.2rem; }
-            .content-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-            .section { padding: 40px 5%; }
-        }
-        
-        @media (max-width: 480px) {
-            .hero-section { height: auto; padding: 40px 5%; }
-            .hero-title { font-size: 1.8rem; }
-            .hero-actions { flex-direction: column; }
-            .content-grid { grid-template-columns: repeat(2, 1fr); }
-            .footer-content { grid-template-columns: 1fr; }
+            .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+            .main-content { margin-left: 0; }
+            .header-container { justify-content: space-between; }
+            /* Agrega una clase 'open' al sidebar con JS para mostrarlo */
+            .sidebar.open { transform: translateX(0); }
         }
     </style>
 </head>
 <body>
+
     <div id="app">
-        <!-- La aplicación se renderiza completamente con JavaScript -->
+        <header>
+            <div class="header-container">
+                <a href="#" class="logo">SHINES</a>
+                <div class="search-container">
+                    <input type="text" id="search-input" class="search-input" placeholder="Buscar series...">
+                    <button class="search-btn"><i class="fas fa-search"></i></button>
+                </div>
+                <div class="user-menu">
+                    <button class="theme-toggle" id="theme-toggle">
+                        <i class="fas fa-sun"></i>
+                    </button>
+                    <button class="user-avatar-btn" id="user-avatar-btn">
+                        <i class="fas fa-user"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <nav class="sidebar" id="sidebar">
+            <ul class="nav-main">
+                <li><a href="#library" class="nav-link active" data-view="library"><i class="fas fa-swatchbook"></i> Biblioteca</a></li>
+                <li><a href="#favorites" class="nav-link" data-view="favorites"><i class="fas fa-heart"></i> Favoritos</a></li>
+                <li><a href="#history" class="nav-link" data-view="history"><i class="fas fa-history"></i> Historial</a></li>
+                <li><a href="#news" class="nav-link" data-view="news"><i class="fas fa-newspaper"></i> Noticias</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content" id="main-content">
+            <!-- El contenido se renderizará aquí con JavaScript -->
+        </main>
     </div>
 
-    <!-- Firebase SDK -->
+    <!-- Firebase SDK (reemplaza con tu configuración) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <script>
-    // =================================================================
-    // CONFIGURACIÓN DE FIREBASE
-    // =================================================================
-    const FIREBASE_CONFIG = {
-        apiKey: "AIzaSyDsv2keytFIEeS4QT4_chwOHMgyWpV8gP4",
-        authDomain: "shinees.firebaseapp.com",
-        projectId: "shinees",
-        storageBucket: "shinees.appspot.com",
-        messagingSenderId: "109623976622",
-        appId: "1:109623976622:web:c9ab5a1c345f502b71833f",
-    };
+    document.addEventListener('DOMContentLoaded', ( ) => {
+        // --- CONFIGURACIÓN ---
+        const FIREBASE_CONFIG = {
+            apiKey: "TU_API_KEY", // <-- REEMPLAZA ESTO
+            authDomain: "TU_AUTH_DOMAIN", // <-- REEMPLAZA ESTO
+            projectId: "TU_PROJECT_ID", // <-- REEMPLAZA ESTO
+            storageBucket: "TU_STORAGE_BUCKET",
+            messagingSenderId: "TU_SENDER_ID",
+            appId: "TU_APP_ID"
+        };
+        firebase.initializeApp(FIREBASE_CONFIG);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
-    // Inicializar Firebase
-    firebase.initializeApp(FIREBASE_CONFIG);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    // =================================================================
-    // MÓDULO DE AUTENTICACIÓN (auth.js)
-    // =================================================================
-    const AuthModule = (() => {
-        let currentUser = null;
-        
-        // Escuchar cambios de autenticación
-        auth.onAuthStateChanged((user) => {
-            currentUser = user;
-            if (window.app && window.app.updateAuthState) {
-                window.app.updateAuthState(user);
-            }
-        });
-        
-        // Iniciar sesión
-        const login = async (email, password) => {
-            try {
-                const result = await auth.signInWithEmailAndPassword(email, password);
-                return { success: true, user: result.user };
-            } catch (error) {
-                return { success: false, error: error.message };
-            }
-        };
-        
-        // Registrar nuevo usuario
-        const register = async (email, password, displayName = '') => {
-            try {
-                const result = await auth.createUserWithEmailAndPassword(email, password);
-                if (displayName) {
-                    await result.user.updateProfile({ displayName });
-                }
-                return { success: true, user: result.user };
-            } catch (error) {
-                return { success: false, error: error.message };
-            }
-        };
-        
-        // Cerrar sesión
-        const logout = async () => {
-            try {
-                await auth.signOut();
-                return { success: true };
-            } catch (error) {
-                return { success: false, error: error.message };
-            }
-        };
-        
-        // Obtener usuario actual
-        const getCurrentUser = () => currentUser;
-        
-        return {
-            login,
-            register,
-            logout,
-            getCurrentUser
-        };
-    })();
-
-    // =================================================================
-    // APLICACIÓN PRINCIPAL
-    // =================================================================
-    document.addEventListener('DOMContentLoaded', () => {
-        const MAL_CLIENT_ID = '16d000832c5535ee1175473f869415c0';
         const MAL_API_BASE = 'https://api.myanimelist.net/v2';
-        
-        // Estado de la aplicación
-        let currentTheme = localStorage.getItem('shinees-theme') || 'dark';
-        let currentView = 'home';
-        let currentContentType = 'anime';
-        let searchQuery = '';
-        let isLoading = false;
-        
-        // Datos en caché
-        let cachedAnime = JSON.parse(localStorage.getItem('shinees-cached-anime') || '{}');
-        let cachedManga = JSON.parse(localStorage.getItem('shinees-cached-manga') || '{}');
-        
-        // =================================================================
-        // FUNCIONES DE UTILIDAD
-        // =================================================================
-        
-        // Mostrar notificación
-        function showNotification(message, type = 'info') {
-            // Eliminar notificación existente
-            const existing = document.querySelector('.notification');
-            if (existing) existing.remove();
-            
-            const notification = document.createElement('div');
-            notification.className = 'notification';
-            notification.innerHTML = message;
-            notification.style.cssText = `
-                position: fixed; top: 90px; right: 20px; 
-                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#ff6b1a'}; 
-                color: white; padding: 12px 20px; border-radius: 8px; 
-                box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 2000; 
-                animation: fadeIn 0.3s forwards; font-weight: 500;
-            `;
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
-        }
-        
-        // Aplicar tema
-        function applyTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            currentTheme = theme;
-            localStorage.setItem('shinees-theme', theme);
-        }
-        
-        // Cambiar tema
-        function toggleTheme() {
-            const themes = ['dark', 'light', 'girl', 'boy'];
-            const currentIndex = themes.indexOf(currentTheme);
-            const nextTheme = themes[(currentIndex + 1) % themes.length];
-            applyTheme(nextTheme);
-            showNotification(`Tema cambiado a: ${nextTheme}`);
-        }
-        
-        // Formatear número
-        function formatNumber(num) {
-            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-            return num.toString();
-        }
-        
-        // Generar enlace de Google Drive (simulado)
-        function generateDriveLink(contentId, chapter = null) {
-            // En una implementación real, esto se conectaría a tu base de datos
-            const baseUrl = 'https://drive.google.com/file/d/';
-            if (chapter) {
-                return `${baseUrl}${contentId}_chapter_${chapter}/view`;
-            }
-            return `${baseUrl}${contentId}/view`;
-        }
-        
-        // =================================================================
-        // API DE MYANIMELIST
-        // =================================================================
-        
-        // Obtener datos de la API de MyAnimeList
-        async function fetchFromMAL(endpoint, params = {}) {
-            const url = new URL(`${MAL_API_BASE}${endpoint}`);
-            Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
-            
-            try {
-                const response = await fetch(url, {
-                    headers: {
-                        'X-MAL-CLIENT-ID': MAL_CLIENT_ID
-                    }
-                });
-                
-                if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
-                return await response.json();
-            } catch (error) {
-                console.error('Error fetching from MAL:', error);
-                throw error;
+        const MAL_CLIENT_ID = '16d000832c5535ee1175473f869415c0'; // ID de cliente de ejemplo
+
+        // --- ELEMENTOS DEL DOM ---
+        const mainContent = document.getElementById('main-content' );
+        const navLinks = document.querySelectorAll('.nav-link');
+        const themeToggle = document.getElementById('theme-toggle');
+        const userAvatarBtn = document.getElementById('user-avatar-btn');
+
+        // --- ESTADO DE LA APLICACIÓN ---
+        let currentUser = null;
+        let currentView = 'library';
+
+        // --- MANEJO DE AUTENTICACIÓN ---
+        auth.onAuthStateChanged(user => {
+            currentUser = user;
+            updateUIForUser();
+        });
+
+        function updateUIForUser() {
+            if (currentUser) {
+                userAvatarBtn.innerHTML = `<i class="fas fa-sign-out-alt"></i>`;
+                userAvatarBtn.onclick = () => auth.signOut();
+            } else {
+                userAvatarbtn.innerHTML = `<i class="fas fa-user"></i>`;
+                userAvatarBtn.onclick = showLoginModal;
             }
         }
-        
-        // Buscar anime
-        async function searchAnime(query, limit = 20) {
-            const cacheKey = `search_${query}_${limit}`;
-            if (cachedAnime[cacheKey]) return cachedAnime[cacheKey];
-            
-            try {
-                const data = await fetchFromMAL('/anime', { 
-                    q: query, 
-                    limit, 
-                    fields: 'id,title,main_picture,synopsis,mean,rank,popularity,num_episodes,status,media_type' 
-                });
-                cachedAnime[cacheKey] = data;
-                localStorage.setItem('shinees-cached-anime', JSON.stringify(cachedAnime));
-                return data;
-            } catch (error) {
-                // Fallback a datos de ejemplo si la API falla
-                return getFallbackAnimeData();
-            }
-        }
-        
-        // Buscar manga
-        async function searchManga(query, limit = 20) {
-            const cacheKey = `search_${query}_${limit}`;
-            if (cachedManga[cacheKey]) return cachedManga[cacheKey];
-            
-            try {
-                const data = await fetchFromMAL('/manga', { 
-                    q: query, 
-                    limit, 
-                    fields: 'id,title,main_picture,synopsis,mean,rank,popularity,num_chapters,status,media_type' 
-                });
-                cachedManga[cacheKey] = data;
-                localStorage.setItem('shinees-cached-manga', JSON.stringify(cachedManga));
-                return data;
-            } catch (error) {
-                // Fallback a datos de ejemplo si la API falla
-                return getFallbackMangaData();
-            }
-        }
-        
-        // Obtener detalles de anime
-        async function getAnimeDetails(animeId) {
-            const cacheKey = `anime_${animeId}`;
-            if (cachedAnime[cacheKey]) return cachedAnime[cacheKey];
-            
-            try {
-                const data = await fetchFromMAL(`/anime/${animeId}`, { 
-                    fields: 'id,title,main_picture,alternative_titles,synopsis,mean,rank,popularity,num_episodes,status,media_type,genres,start_date,end_date,studios,rating' 
-                });
-                cachedAnime[cacheKey] = data;
-                localStorage.setItem('shinees-cached-anime', JSON.stringify(cachedAnime));
-                return data;
-            } catch (error) {
-                // Fallback a datos de ejemplo si la API falla
-                return getFallbackAnimeDetails(animeId);
-            }
-        }
-        
-        // Obtener detalles de manga
-        async function getMangaDetails(mangaId) {
-            const cacheKey = `manga_${mangaId}`;
-            if (cachedManga[cacheKey]) return cachedManga[cacheKey];
-            
-            try {
-                const data = await fetchFromMAL(`/manga/${mangaId}`, { 
-                    fields: 'id,title,main_picture,alternative_titles,synopsis,mean,rank,popularity,num_chapters,status,media_type,genres,start_date,end_date,authors' 
-                });
-                cachedManga[cacheKey] = data;
-                localStorage.setItem('shinees-cached-manga', JSON.stringify(cachedManga));
-                return data;
-            } catch (error) {
-                // Fallback a datos de ejemplo si la API falla
-                return getFallbackMangaDetails(mangaId);
-            }
-        }
-        
-        // =================================================================
-        // RENDERIZADO DE LA INTERFAZ
-        // =================================================================
-        
-        // Renderizar la aplicación completa
-        function renderApp() {
-            const currentUser = AuthModule.getCurrentUser();
-            const app = document.getElementById('app');
-            app.innerHTML = `
-                <header>
-                    <div class="header-container">
-                        <a href="#" class="logo" onclick="app.navigate('home')">SHINEES</a>
-                        
-                        <nav class="nav-main">
-                            <a href="#" class="nav-link ${currentView === 'home' ? 'active' : ''}" onclick="app.navigate('home')">Inicio</a>
-                            <a href="#" class="nav-link ${currentContentType === 'anime' && currentView === 'browse' ? 'active' : ''}" onclick="app.setContentType('anime')">Anime</a>
-                            <a href="#" class="nav-link ${currentContentType === 'manga' && currentView === 'browse' ? 'active' : ''}" onclick="app.setContentType('manga')">Manga</a>
-                            ${currentUser ? `<a href="#" class="nav-link" onclick="app.navigate('favorites')">Favoritos</a>` : ''}
-                        </nav>
-                        
-                        <div class="search-container">
-                            <input type="text" class="search-input" placeholder="Buscar..." value="${searchQuery}" onkeyup="app.handleSearch(event)">
-                            <button class="search-btn" onclick="app.performSearch()"><i class="fas fa-search"></i></button>
-                        </div>
-                        
-                        <div class="user-menu">
-                            <button class="theme-toggle" onclick="app.toggleTheme()">
-                                ${currentTheme === 'dark' ? '🌙' : currentTheme === 'light' ? '☀️' : currentTheme === 'girl' ? '🌸' : '⚡'}
-                            </button>
-                            
-                            ${currentUser ? `
-                                <div class="user-avatar" onclick="app.showUserMenu()">
-                                    ${currentUser.email.charAt(0).toUpperCase()}
-                                </div>
-                            ` : `
-                                <button class="btn btn-secondary" onclick="app.showLoginModal()" style="padding: 8px 20px; font-size: 0.9rem;">
-                                    <i class="fas fa-sign-in-alt"></i> Entrar
-                                </button>
-                            `}
-                        </div>
-                    </div>
-                </header>
-                
-                <main class="main-content" id="main-content">
-                    ${renderContent()}
-                </main>
-                
-                <footer>
-                    <div class="footer-content">
-                        <div class="footer-section">
-                            <h3>Explorar</h3>
-                            <ul class="footer-links">
-                                <li><a href="#" onclick="app.navigate('home')">Inicio</a></li>
-                                <li><a href="#" onclick="app.setContentType('anime')">Anime</a></li>
-                                <li><a href="#" onclick="app.setContentType('manga')">Manga</a></li>
-                            </ul>
-                        </div>
-                        
-                        <div class="footer-section">
-                            <h3>Cuenta</h3>
-                            <ul class="footer-links">
-                                ${currentUser ? `
-                                    <li><a href="#" onclick="app.showUserMenu()">Mi Perfil</a></li>
-                                    <li><a href="#" onclick="app.logout()">Cerrar Sesión</a></li>
-                                ` : `
-                                    <li><a href="#" onclick="app.showLoginModal()">Iniciar Sesión</a></li>
-                                    <li><a href="#" onclick="app.showRegisterModal()">Registrarse</a></li>
-                                `}
-                            </ul>
-                        </div>
-                        
-                        <div class="footer-section">
-                            <h3>Shinees</h3>
-                            <ul class="footer-links">
-                                <li><a href="#">Sobre Nosotros</a></li>
-                                <li><a href="#">Términos de Uso</a></li>
-                                <li><a href="#">Contacto</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="footer-bottom">
-                        <p>© 2024 Shinees Platform. Todos los derechos reservados.</p>
-                    </div>
-                </footer>
-            `;
-            
-            // Aplicar el tema actual
-            applyTheme(currentTheme);
-            
-            // Animar elementos al cargar
-            setTimeout(() => {
-                animateElements();
-            }, 100);
-        }
-        
-        // Renderizar contenido según la vista actual
-        function renderContent() {
-            if (isLoading) {
-                return `
-                    <div class="loading">
-                        <div class="spinner"></div>
-                        <div>Cargando...</div>
-                    </div>
-                `;
-            }
-            
-            switch(currentView) {
-                case 'home':
-                    return renderHomePage();
-                case 'browse':
-                    return renderBrowsePage();
-                case 'detail':
-                    return renderDetailPage();
-                case 'favorites':
-                    return renderFavoritesPage();
-                default:
-                    return renderHomePage();
-            }
-        }
-        
-        // Renderizar página de inicio
-        function renderHomePage() {
-            return `
-                <section class="hero-section">
-                    <div class="hero-content">
-                        <h1 class="hero-title">Descubre el mundo del <span style="color: var(--primary)">anime y manga</span></h1>
-                        <p class="hero-description">Miles de series y cómics japoneses a tu disposición. Encuentra tus favoritos y descubre nuevas joyas.</p>
-                        <div class="hero-actions">
-                            <button class="btn btn-primary" onclick="app.setContentType('anime')">
-                                <i class="fas fa-play"></i> Ver Anime
-                            </button>
-                            <button class="btn btn-secondary" onclick="app.setContentType('manga')">
-                                <i class="fas fa-book"></i> Leer Manga
-                            </button>
-                        </div>
-                    </div>
-                    <div class="hero-bg"></div>
-                </section>
-                
-                <section class="section">
-                    <div class="section-header">
-                        <h2 class="section-title">Anime Popular</h2>
-                        <a href="#" class="view-all" onclick="app.setContentType('anime')">
-                            Ver todo <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                    
-                    <div class="content-grid" id="popular-anime">
-                        <!-- Se llena con JavaScript -->
-                    </div>
-                </section>
-                
-                <section class="section">
-                    <div class="section-header">
-                        <h2 class="section-title">Manga Destacado</h2>
-                        <a href="#" class="view-all" onclick="app.setContentType('manga')">
-                            Ver todo <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                    
-                    <div class="content-grid" id="popular-manga">
-                        <!-- Se llena con JavaScript -->
-                    </div>
-                </section>
-            `;
-        }
-        
-        // Renderizar página de exploración
-        function renderBrowsePage() {
-            const title = currentContentType === 'anime' ? 'Anime' : 'Manga';
-            return `
-                <section class="section">
-                    <div class="section-header">
-                        <h2 class="section-title">${title} ${searchQuery ? `- "${searchQuery}"` : ''}</h2>
-                        <div style="display: flex; gap: 15px; align-items: center;">
-                            <select onchange="app.changeSort(event)" style="padding: 8px 12px; background: var(--bg-card); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius);">
-                                <option value="popularity">Popularidad</option>
-                                <option value="score">Puntuación</option>
-                                <option value="title">Título</option>
-                                <option value="newest">Más nuevos</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="content-grid" id="browse-content">
-                        <!-- Se llena con JavaScript -->
-                    </div>
-                    
-                    <div style="text-align: center; margin-top: 40px;">
-                        <button class="btn btn-secondary" onclick="app.loadMore()" id="load-more-btn">
-                            <i class="fas fa-plus"></i> Cargar más
-                        </button>
-                    </div>
-                </section>
-            `;
-        }
-        
-        // Renderizar página de detalles
-        function renderDetailPage() {
-            return `
-                <div class="detail-page" id="detail-content">
-                    <!-- Se llena con JavaScript -->
-                </div>
-            `;
-        }
-        
-        // Renderizar página de favoritos
-        function renderFavoritesPage() {
-            const currentUser = AuthModule.getCurrentUser();
-            return `
-                <section class="section">
-                    <div class="section-header">
-                        <h2 class="section-title">Mis Favoritos</h2>
-                    </div>
-                    
-                    ${currentUser ? `
-                        <div class="content-grid" id="favorites-content">
-                            <p style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-secondary);">
-                                Aún no tienes favoritos. ¡Explora nuestro catálogo y añade tus series favoritas!
-                            </p>
-                        </div>
-                    ` : `
-                        <div style="text-align: center; padding: 60px 20px;">
-                            <h3>Inicia sesión para ver tus favoritos</h3>
-                            <p style="color: var(--text-secondary); margin: 20px 0 30px;">Guarda tus series y mangas favoritos para acceder rápidamente a ellos.</p>
-                            <button class="btn btn-primary" onclick="app.showLoginModal()">Iniciar Sesión</button>
-                        </div>
-                    `}
-                </section>
-            `;
-        }
-        
-        // =================================================================
-        // MODALES DE AUTENTICACIÓN
-        // =================================================================
-        
-        // Mostrar modal de login
+
         function showLoginModal() {
+            if (document.querySelector('.modal-overlay')) return;
             const modal = document.createElement('div');
             modal.className = 'modal-overlay';
-            modal.style.cssText = `
-                position: fixed; inset: 0; background: rgba(0,0,0,0.7); 
-                display: flex; justify-content: center; align-items: center; z-index: 2000;
-            `;
             modal.innerHTML = `
-                <div style="background: var(--bg-card); padding: 2rem; border-radius: var(--radius); width: 90%; max-width: 400px; position: relative;">
-                    <button class="theme-toggle" style="position: absolute; top: 10px; right: 10px;" onclick="this.closest('.modal-overlay').remove()">✕</button>
-                    <h2 style="margin-bottom: 1.5rem;">Iniciar Sesión</h2>
-                    <form id="login-form" style="display: grid; gap: 1rem;">
-                        <div>
-                            <label style="display: block; margin-bottom: 0.5rem;">Email</label>
-                            <input type="email" class="search-input" name="email" required style="width: 100%;">
-                        </div>
-                        <div>
-                            <label style="display: block; margin-bottom: 0.5rem;">Contraseña</label>
-                            <input type="password" class="search-input" name="password" required style="width: 100%;">
-                        </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar</button>
-                    </form>
-                    <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary);">
-                        ¿No tienes cuenta? <a href="#" style="color: var(--primary);" onclick="app.showRegisterModal()">Regístrate</a>
-                    </p>
+                <div class="modal-content">
+                    <h2>Iniciar Sesión / Registrarse</h2>
+                    <p>Usa tu cuenta de Google para continuar.</p>
+                    <button id="google-login" class="btn btn-primary" style="width:100%; margin-top: 20px;">
+                        <i class="fab fa-google"></i> Conectar con Google
+                    </button>
                 </div>
             `;
-            
             document.body.appendChild(modal);
+            modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
             
-            // Manejar envío del formulario
-            modal.querySelector('#login-form').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const formData = new FormData(e.target);
-                const email = formData.get('email');
-                const password = formData.get('password');
-                
-                const result = await AuthModule.login(email, password);
-                if (result.success) {
-                    modal.remove();
-                    showNotification('¡Bienvenido!', 'success');
-                    renderApp();
-                } else {
-                    showNotification('Error: ' + result.error, 'error');
-                }
-            });
-        }
-        
-        // Mostrar modal de registro
-        function showRegisterModal() {
-            const modal = document.createElement('div');
-            modal.className = 'modal-overlay';
-            modal.style.cssText = `
-                position: fixed; inset: 0; background: rgba(0,0,0,0.7); 
-                display: flex; justify-content: center; align-items: center; z-index: 2000;
-            `;
-            modal.innerHTML = `
-                <div style="background: var(--bg-card); padding: 2rem; border-radius: var(--radius); width: 90%; max-width: 400px; position: relative;">
-                    <button class="theme-toggle" style="position: absolute; top: 10px; right: 10px;" onclick="this.closest('.modal-overlay').remove()">✕</button>
-                    <h2 style="margin-bottom: 1.5rem;">Crear Cuenta</h2>
-                    <form id="register-form" style="display: grid; gap: 1rem;">
-                        <div>
-                            <label style="display: block; margin-bottom: 0.5rem;">Nombre</label>
-                            <input type="text" class="search-input" name="displayName" style="width: 100%;">
-                        </div>
-                        <div>
-                            <label style="display: block; margin-bottom: 0.5rem;">Email</label>
-                            <input type="email" class="search-input" name="email" required style="width: 100%;">
-                        </div>
-                        <div>
-                            <label style="display: block; margin-bottom: 0.5rem;">Contraseña</label>
-                            <input type="password" class="search-input" name="password" required style="width: 100%;">
-                        </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">Registrarse</button>
-                    </form>
-                    <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary);">
-                        ¿Ya tienes cuenta? <a href="#" style="color: var(--primary);" onclick="app.showLoginModal()">Inicia sesión</a>
-                    </p>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-            
-            // Manejar envío del formulario
-            modal.querySelector('#register-form').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const formData = new FormData(e.target);
-                const email = formData.get('email');
-                const password = formData.get('password');
-                const displayName = formData.get('displayName');
-                
-                const result = await AuthModule.register(email, password, displayName);
-                if (result.success) {
-                    modal.remove();
-                    showNotification('¡Cuenta creada exitosamente!', 'success');
-                    renderApp();
-                } else {
-                    showNotification('Error: ' + result.error, 'error');
-                }
-            });
-        }
-        
-        // =================================================================
-        // FUNCIONALIDADES PRINCIPALES
-        // =================================================================
-        
-        // Navegar entre vistas
-        function navigate(view, params = {}) {
-            currentView = view;
-            if (params.contentType) currentContentType = params.contentType;
-            if (params.query) searchQuery = params.query;
-            
-            renderApp();
-            
-            // Cargar datos según la vista
-            switch(view) {
-                case 'home':
-                    loadHomePageData();
-                    break;
-                case 'browse':
-                    loadBrowsePageData();
-                    break;
-                case 'detail':
-                    if (params.id) loadDetailData(params.id);
-                    break;
-            }
-        }
-        
-        // Establecer tipo de contenido (anime/manga)
-        function setContentType(type) {
-            currentContentType = type;
-            navigate('browse');
-        }
-        
-        // Manejar búsqueda
-        function handleSearch(event) {
-            if (event.key === 'Enter') {
-                performSearch();
-            } else {
-                searchQuery = event.target.value;
-            }
-        }
-        
-        // Realizar búsqueda
-        function performSearch() {
-            if (searchQuery.trim()) {
-                navigate('browse', { query: searchQuery });
-            }
-        }
-        
-        // Cargar datos de la página de inicio
-        async function loadHomePageData() {
-            isLoading = true;
-            renderApp();
-            
-            try {
-                // Cargar anime popular
-                const animeData = await searchAnime('', 8);
-                renderContentGrid('popular-anime', animeData.data || [], 'anime');
-                
-                // Cargar manga popular
-                const mangaData = await searchManga('', 8);
-                renderContentGrid('popular-manga', mangaData.data || [], 'manga');
-            } catch (error) {
-                console.error('Error loading home page data:', error);
-                showNotification('Error al cargar los datos', 'error');
-            }
-            
-            isLoading = false;
-            renderApp();
-        }
-        
-        // Cargar datos de la página de exploración
-        async function loadBrowsePageData() {
-            isLoading = true;
-            renderApp();
-            
-            try {
-                let data;
-                if (currentContentType === 'anime') {
-                    data = await searchAnime(searchQuery, 20);
-                } else {
-                    data = await searchManga(searchQuery, 20);
-                }
-                
-                renderContentGrid('browse-content', data.data || [], currentContentType);
-            } catch (error) {
-                console.error('Error loading browse page data:', error);
-                showNotification('Error al cargar los datos', 'error');
-            }
-            
-            isLoading = false;
-            renderApp();
-        }
-        
-        // Cargar datos de la página de detalles
-        async function loadDetailData(contentId) {
-            isLoading = true;
-            renderApp();
-            
-            try {
-                let data;
-                if (currentContentType === 'anime') {
-                    data = await getAnimeDetails(contentId);
-                } else {
-                    data = await getMangaDetails(contentId);
-                }
-                
-                renderDetailContent(data);
-            } catch (error) {
-                console.error('Error loading detail data:', error);
-                showNotification('Error al cargar los detalles', 'error');
-                navigate('home');
-            }
-            
-            isLoading = false;
-            renderApp();
-        }
-        
-        // Renderizar grid de contenido
-        function renderContentGrid(containerId, items, type) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            
-            container.innerHTML = items.map(item => {
-                const title = item.node?.title || item.title;
-                const image = item.node?.main_picture?.medium || item.main_picture?.medium || 'https://via.placeholder.com/200x300/1a1a1a/ffffff?text=No+Image';
-                
-                return `
-                    <div class="content-card" onclick="app.navigate('detail', { id: ${item.node?.id || item.id}, contentType: '${type}' })">
-                        <img src="${image}" alt="${title}" class="card-image">
-                        <div class="card-content">
-                            <div class="card-title">${title}</div>
-                            <div class="card-meta">
-                                <span>${type === 'anime' ? 'Anime' : 'Manga'}</span>
-                                <span>⭐ ${item.node?.mean || item.mean || 'N/A'}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            
-            // Animar las tarjetas
-            setTimeout(() => {
-                const cards = container.querySelectorAll('.content-card');
-                cards.forEach((card, index) => {
-                    setTimeout(() => {
-                        card.classList.add('visible');
-                    }, index * 100);
-                });
-            }, 50);
-        }
-        
-        // Renderizar contenido de detalles
-        function renderDetailContent(data) {
-            const container = document.getElementById('detail-content');
-            if (!container) return;
-            
-            const title = data.title;
-            const image = data.main_picture?.large || data.main_picture?.medium || 'https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image';
-            const synopsis = data.synopsis || 'Descripción no disponible.';
-            
-            // Generar capítulos/episodios (simulado)
-            const numChapters = currentContentType === 'anime' ? data.num_episodes : data.num_chapters;
-            const chapters = Array.from({length: Math.min(numChapters || 10, 50)}, (_, i) => ({
-                title: `${currentContentType === 'anime' ? 'Episodio' : 'Capítulo'} ${i + 1}`,
-                link: generateDriveLink(data.id, i + 1)
-            }));
-            
-            container.innerHTML = `
-                <div class="detail-header">
-                    <img src="${image}" alt="${title}" class="detail-poster">
-                    
-                    <div class="detail-info">
-                        <h1 class="detail-title">${title}</h1>
-                        
-                        <div class="detail-meta">
-                            <span>⭐ ${data.mean || 'N/A'}</span>
-                            <span>👥 ${formatNumber(data.popularity || 0)}</span>
-                            <span>${data.media_type || 'Unknown'}</span>
-                            <span>${data.status || 'Unknown'}</span>
-                        </div>
-                        
-                        <p class="detail-synopsis">${synopsis}</p>
-                        
-                        <div class="detail-actions">
-                            <button class="btn btn-primary" onclick="app.playContent(${data.id})">
-                                <i class="fas fa-play"></i> ${currentContentType === 'anime' ? 'Ver Ahora' : 'Leer Ahora'}
-                            </button>
-                            <button class="btn btn-secondary">
-                                <i class="fas fa-plus"></i> Mi Lista
-                            </button>
-                            <button class="btn btn-secondary">
-                                <i class="fas fa-share"></i> Compartir
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="chapters-section">
-                    <h2>${currentContentType === 'anime' ? 'Episodios' : 'Capítulos'}</h2>
-                    
-                    <div class="chapters-grid">
-                        ${chapters.map(chapter => `
-                            <div class="chapter-card" onclick="window.open('${chapter.link}', '_blank')">
-                                <div class="chapter-title">${chapter.title}</div>
-                                <div class="chapter-meta">Disponible en Google Drive</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
-        
-        // Animar elementos al cargar
-        function animateElements() {
-            const cards = document.querySelectorAll('.content-card');
-            cards.forEach((card, index) => {
-                setTimeout(() => {
-                    card.classList.add('visible');
-                }, index * 100);
-            });
-        }
-        
-        // Actualizar estado de autenticación
-        function updateAuthState(user) {
-            // Volver a renderizar la aplicación cuando cambie el estado de autenticación
-            renderApp();
-        }
-        
-        // Cerrar sesión
-        async function logout() {
-            const result = await AuthModule.logout();
-            if (result.success) {
-                showNotification('Sesión cerrada', 'info');
-                navigate('home');
-            } else {
-                showNotification('Error al cerrar sesión: ' + result.error, 'error');
-            }
-        }
-        
-        // =================================================================
-        // DATOS DE EJEMPLO (FALLBACK)
-        // =================================================================
-        
-        function getFallbackAnimeData() {
-            return {
-                data: [
-                    { node: { id: 1, title: 'Attack on Titan', mean: 8.5, popularity: 1500000, main_picture: { medium: 'https://via.placeholder.com/200x300/1a1a1a/ffffff?text=AOT' } } },
-                    { node: { id: 2, title: 'Demon Slayer', mean: 8.7, popularity: 1400000, main_picture: { medium: 'https://via.placeholder.com/200x300/1a1a1a/ffffff?text=DS' } } },
-                    { node: { id: 3, title: 'Jujutsu Kaisen', mean: 8.6, popularity: 1300000, main_picture: { medium: 'https://via.placeholder.com/200x300/1a1a1a/ffffff?text=JJK' } } },
-                    { node: { id: 4, title: 'One Piece', mean: 8.8, popularity: 1200000, main_picture: { medium: 'https://via.placeholder.com/200x300/1a1a1a/ffffff?text=OP' } } }
-                ]
+            document.getElementById('google-login').onclick = () => {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                auth.signInWithPopup(provider).then(() => modal.remove());
             };
         }
-        
-        function getFallbackMangaData() {
-            return {
-                data: [
-                    { node: { id: 1, title: 'Berserk', mean: 9.3, popularity: 800000, main_picture: { medium: 'https://via.placeholder.com/200x300/1a1a1a/ffffff?text=Berserk' } } },
-                    { node: { id: 2, title: 'One Punch Man', mean: 8.9, popularity: 900000, main_picture: { medium: 'https://via.placeholder.com/200x300/1a1a1a/ffffff?text=OPM' } } },
-                    { node: { id: 3, title: 'Tokyo Ghoul', mean: 8.2, popularity: 700000, main_picture: { medium: 'https://via.placeholder.com/200x300/1a1a1a/ffffff?text=TG' } } },
-                    { node: { id: 4, title: 'My Hero Academia', mean: 8.1, popularity: 850000, main_picture: { medium: 'https://via.placeholder.com/200x300/1a1a1a/ffffff?text=MHA' } } }
-                ]
-            };
-        }
-        
-        function getFallbackAnimeDetails(id) {
-            return {
-                id: id,
-                title: 'Attack on Titan',
-                main_picture: { large: 'https://via.placeholder.com/300x450/1a1a1a/ffffff?text=AOT' },
-                mean: 8.5,
-                popularity: 1500000,
-                num_episodes: 75,
-                status: 'Finished Airing',
-                media_type: 'TV',
-                synopsis: 'En un mundo donde la humanidad vive dentro de ciudades rodeadas por enormes muros para protegerse de titanes gigantescos que devoran humanos, la historia sigue a Eren Yeager, quien jura exterminar a los titanes después de que destruyen su ciudad natal y matan a su madre.'
-            };
-        }
-        
-        function getFallbackMangaDetails(id) {
-            return {
-                id: id,
-                title: 'Berserk',
-                main_picture: { large: 'https://via.placeholder.com/300x450/1a1a1a/ffffff?text=Berserk' },
-                mean: 9.3,
-                popularity: 800000,
-                num_chapters: 380,
-                status: 'Currently Publishing',
-                media_type: 'Manga',
-                synopsis: 'Guts, un mercenario conocido como el "Espadachín Negro", está marcado por un destino cruel. En su búsqueda de venganza contra su antiguo amigo Griffith, líder de la Banda del Halcón, se enfrenta a horrores inimaginables en un mundo oscuro y brutal.'
-            };
-        }
-        
-        // =================================================================
-        // API PÚBLICA
-        // =================================================================
-        
-        // API pública para los controladores de eventos
-        window.app = {
-            navigate,
-            setContentType,
-            handleSearch,
-            performSearch,
-            toggleTheme,
-            showLoginModal,
-            showRegisterModal,
-            logout,
-            updateAuthState,
-            playContent: (id) => {
-                window.open(generateDriveLink(id), '_blank');
-            },
-            changeSort: (event) => {
-                showNotification(`Ordenando por: ${event.target.value}`);
-                // En una implementación real, esto recargaría los datos ordenados
-            },
-            loadMore: () => {
-                showNotification('Cargando más contenido...');
-                // En una implementación real, esto cargaría más resultados
-            },
-            showUserMenu: () => {
-                const user = AuthModule.getCurrentUser();
-                showNotification(`Usuario: ${user?.email}`);
-            }
+
+        // --- MANEJO DE TEMAS ---
+        const themes = ['dark', 'light', 'girl', 'boy'];
+        let currentThemeIndex = 0;
+        themeToggle.onclick = () => {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            const theme = themes[currentThemeIndex];
+            document.documentElement.setAttribute('data-theme', theme);
+            themeToggle.innerHTML = theme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
         };
-        
-        // =================================================================
-        // INICIALIZACIÓN
-        // =================================================================
-        
-        // Inicializar la aplicación
-        function init() {
-            applyTheme(currentTheme);
-            renderApp();
-            loadHomePageData();
+
+        // --- NAVEGACIÓN ---
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                currentView = link.dataset.view;
+                document.querySelector('.nav-link.active').classList.remove('active');
+                link.classList.add('active');
+                renderView();
+            });
+        });
+
+        // --- RENDERIZADO DE VISTAS ---
+        function renderView() {
+            mainContent.innerHTML = ''; // Limpiar contenido
+            switch (currentView) {
+                case 'library':
+                    renderLibrary();
+                    break;
+                case 'favorites':
+                    renderPlaceholder("Favoritos", "Aquí aparecerán las series que marques como favoritas.");
+                    break;
+                case 'history':
+                    renderPlaceholder("Historial", "Tu historial de lectura se guardará aquí.");
+                    break;
+                case 'news':
+                    renderPlaceholder("Anuncios y Noticias", "Las últimas noticias y actualizaciones de SHINES.");
+                    break;
+            }
         }
-        
-        // Iniciar la aplicación cuando el DOM esté listo
-        init();
+
+        function renderPlaceholder(title, text) {
+            mainContent.innerHTML = `
+                <h1 class="section-title">${title}</h1>
+                <p>${text}</p>
+            `;
+        }
+
+        // --- LÓGICA DE LA BIBLIOTECA ---
+        async function fetchManga(query = "manhwa") {
+            try {
+                const response = await fetch(`${MAL_API_BASE}/manga?q=${query}&limit=30&fields=id,title,main_picture`, {
+                    headers: { 'X-MAL-CLIENT-ID': MAL_CLIENT_ID }
+                });
+                if (!response.ok) throw new Error('Fallo en la red');
+                const data = await response.json();
+                return data.data;
+            } catch (error) {
+                console.error("Error fetching manga:", error);
+                mainContent.innerHTML = `<p>Error al cargar los datos. Inténtalo de nuevo más tarde.</p>`;
+                return [];
+            }
+        }
+
+        async function renderLibrary() {
+            mainContent.innerHTML = `<h1 class="section-title">Biblioteca</h1><div class="content-grid" id="library-grid">Cargando...</div>`;
+            const libraryGrid = document.getElementById('library-grid');
+            const mangaList = await fetchManga();
+            
+            libraryGrid.innerHTML = mangaList.map(manga => `
+                <div class="content-card" data-id="${manga.node.id}">
+                    <img src="${manga.node.main_picture.large}" alt="${manga.node.title}" class="card-image">
+                    <div class="card-content">
+                        <p class="card-title">${manga.node.title}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.content-card').forEach(card => {
+                card.addEventListener('click', () => renderDetailView(card.dataset.id));
+            });
+        }
+
+        // --- VISTA DE DETALLE ---
+        async function fetchMangaDetails(id) {
+            const response = await fetch(`${MAL_API_BASE}/manga/${id}?fields=id,title,main_picture,synopsis,num_chapters`, {
+                headers: { 'X-MAL-CLIENT-ID': MAL_CLIENT_ID }
+            });
+            return await response.json();
+        }
+
+        async function renderDetailView(id) {
+            const details = await fetchMangaDetails(id);
+            // Simulación de capítulos en Google Drive
+            const chaptersHTML = Array.from({ length: details.num_chapters || 20 }, (_, i) => `
+                <div class="chapter-item">
+                    <p>Capítulo ${i + 1}</p>
+                    <div class="chapter-item-actions">
+                        <button title="Marcar como visto"><i class="far fa-eye"></i></button>
+                        <a href="https://drive.google.com/drive/folders/TU_CARPETA_ID" target="_blank" title="Leer en Drive">
+                           <i class="fas fa-book-open"></i>
+                        </a>
+                    </div>
+                </div>
+            ` ).join('');
+
+            mainContent.innerHTML = `
+                <div class="detail-view">
+                    <div class="detail-header">
+                        <img src="${details.main_picture.large}" alt="${details.title}" class="detail-poster">
+                        <div class="detail-info">
+                            <h1>${details.title}</h1>
+                            <p>${details.synopsis.substring(0, 400)}...</p>
+                            <div class="detail-actions">
+                                <button class="btn btn-primary"><i class="fas fa-heart"></i> Añadir a Favoritos</button>
+                                <button class="btn btn-secondary">Comentar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <h2 class="section-title">Capítulos</h2>
+                    <div class="chapters-list">${chaptersHTML}</div>
+                </div>
+            `;
+        }
+
+        // --- INICIALIZACIÓN ---
+        renderView();
+        updateUIForUser();
     });
     </script>
 </body>
